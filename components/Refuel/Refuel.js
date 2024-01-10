@@ -4,7 +4,7 @@ import Header from '../Navigation/Header';
 import BottomBar from '../Common/BottomBar';
 import { useNavigation } from '@react-navigation/native';
 import AddRefuel from './AddRefuel';
-const Refule = () => {
+const Refuel = () => {
   const navigation = useNavigation();
   return (
     // if no vehicle :- add vehiclee
@@ -13,7 +13,7 @@ const Refule = () => {
       <Header />
       <View style={styles.content}>
         <Text> Refule Screen </Text>
-        <Button title="Add Refule" onPress={() => navigation.navigate('AddRefuel')} ></Button>
+        <Button title="Add Refuel" onPress={() => navigation.navigate('AddRefuel')} ></Button>
       </View>
     </View>
   );
@@ -34,4 +34,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Refule;
+export default Refuel;

@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#eee', // Adjust the color as needed
+    backgroundColor: 'grey', // Adjust the color as needed
   },
   title: {
     fontSize: 18,

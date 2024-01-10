@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View,Text, TextInput, Button, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 const CreateAccount = () => {
   const navigation = useNavigation();
@@ -19,18 +19,22 @@ const CreateAccount = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.mainHeading}> Create Account </Text>
+      <Text style={styles.headings}> Name </Text>
       <TextInput
         style={styles.input}
         placeholder="Name"
         value={name}
         onChangeText={(text) => setName(text)}
       />
+      <Text style={styles.headings}> NickName</Text>
       <TextInput
         style={styles.input}
         placeholder="Nickname"
         value={nickname}
         onChangeText={(text) => setNickname(text)}
       />
+      <Text style={styles.headings}> Email Address</Text>
       <TextInput
         style={styles.input}
         placeholder="Email Address"
@@ -47,13 +51,25 @@ const CreateAccount = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical : 20,
+    backgroundColor : '#C5E3DC'
+  },
+  headings :{
+    fontSize : 20,
+    marginVertical : 20,
+  },
+  mainHeading :{
+    fontSize : 25,
+    marginVertical : 20,
+    fontWeight : 'bold'
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    backgroundColor : 'white',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,

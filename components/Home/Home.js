@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image,Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Header from '../Navigation/Header';
 import VehicleList from './VehicleList';
 
@@ -8,7 +8,12 @@ const Home = () => {
     <View style={styles.container}>
       <Header />
       <View style={styles.content}>
-        <Text> Home Screen </Text>
+      <Image source={require('../../sources/Union.png')} style={styles.image} />
+        <Text style={{color:'#EB655F' , fontSize : 20 , marginTop : 20}}> This is the Home Screen </Text>
+
+      <Image  source={require('../../sources/Maskgroup.png')} style={styles.image2} />
+      {/* or this */}
+      <Image  source={require('../../sources/image1.png')} style={styles.image2} />
         <VehicleList/>
       </View>
 
@@ -19,7 +24,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#C5E3DC',
   },
   content: {
     flex: 1,
