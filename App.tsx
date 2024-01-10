@@ -1,117 +1,104 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
   View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [word, setWord] = useState('');
+  const [previousRequests, setPreviousRequests] = useState([]);
+  const [apiData, setApiData] = useState();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`https://api.genderize.io/?name=${word}`);
+      const data = await response.json();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+      setApiData(data);
+      setWord('');
+      console.log('fetchData ', word);
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+      // Update previousRequests state
+      setPreviousRequests(prevRequests => [...prevRequests, data]);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        placeholder="Enter a word"
+        value={word}
+        onChangeText={text => setWord(text)}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+      <Button title="Fetch Data" onPress={fetchData} />
+
+      <ScrollView style={styles.cardContainer1}>
+        {apiData !== undefined ? (
+          <View style={styles.card1}>
+            <Text>Name: {apiData.name}</Text>
+            <Text>Gender: {apiData.gender}</Text>
+            <Text>Probability: {apiData.probability}</Text>
+          </View>
+        ) : null}
       </ScrollView>
-    </SafeAreaView>
+
+      <ScrollView style={styles.cardContainer2}>
+        {previousRequests.map((prevWord, index) => (
+          <View key={index} style={styles.card2}>
+            <Text>{index + 1}</Text>
+            <Text>Name: {prevWord.name}</Text>
+            <Text>Gender: {prevWord.gender}</Text>
+            <Text>Probability: {prevWord.probability}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    padding: 10,
+    width: '100%',
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  cardContainer1: {
+    marginTop: 20,
+    maxHeight: 100,
   },
-  highlight: {
-    fontWeight: '700',
+  cardContainer2: {
+    marginTop: 20,
+    maxHeight: 400,
+  },
+  card1: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "green"
+  },
+  card2: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: "blue"
   },
 });
 
