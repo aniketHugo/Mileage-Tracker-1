@@ -1,62 +1,37 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
-
+import { View,Text, TextInput, Button, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 const SetPassCode = () => {
-  const [passcode, setPasscode] = useState('');
-  const [confirmPasscode, setConfirmPasscode] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const navigation = useNavigation();
+  const [Code, setName] = useState('');
+  const [ConfirmCode, serConfirmCode] = useState('');
 
-  const handlePasscodeChange = (text) => {
-    if (/^\d*$/.test(text) && text.length <= 4) {
-      setPasscode(text);
-      setErrorMessage('');
-    }
-  };
-
-  const handleConfirmPasscodeChange = (text) => {
-    if (/^\d*$/.test(text) && text.length <= 4) {
-      setConfirmPasscode(text);
-      setErrorMessage('');
-    }
-  };
 
   const handleSubmit = () => {
-    if (passcode.length !== 4 || confirmPasscode.length !== 4) {
-      setErrorMessage('Passcode should be 4 digits.');
-      return;
-    }
+    // Handle account creation logic here
 
-    if (passcode !== confirmPasscode) {
-      setErrorMessage('Passcodes do not match.');
-      return;
-    }
-
-    // Here, you can submit the passcode
-    console.log('Passcode set:', passcode);
-    // Add logic to save or process the passcode
+    navigation.navigate('Home')
+    // Add logic to submit or process the account details
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.errorText}>{errorMessage}</Text>
-      <View style={styles.passcodeContainer}>
-        {[...Array(4)].map((_, index) => (
-          <TextInput
-            key={index}
-            style={styles.passcodeInput}
-            maxLength={1}
-            keyboardType="numeric"
-            onChangeText={(text) =>
-              index === 0
-                ? handlePasscodeChange(text)
-                : handleConfirmPasscodeChange(text)
-            }
-            value={index === 0 ? passcode[index] : confirmPasscode[index]}
-            secureTextEntry={true}
-          />
-        ))}
-      </View>
-      <Button title="Submit" onPress={handleSubmit} />
+      <Text style={styles.mainHeading}> Set a Passcode </Text>
+      <Text style={styles.headings}> Enter a 4 digit Passcode </Text>
+      <TextInput
+        style={styles.input}
+        placeholder="# # # #"
+        value={Code}
+        onChangeText={(text) => setCode(text)}
+      />
+      <Text style={styles.headings}> Confirm Passcode</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="# # # #"
+        value={ConfirmCode}
+        onChangeText={(text) => serConfirmCode(text)}
+      />
+      <Button title="Continue" onPress={handleSubmit} />
     </View>
   );
 };
@@ -64,27 +39,29 @@ const SetPassCode = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical : 20,
+    backgroundColor : '#C5E3DC'
   },
-  passcodeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+  headings :{
+    fontSize : 20,
+    marginVertical : 20,
   },
-  passcodeInput: {
+  mainHeading :{
+    fontSize : 25,
+    marginVertical : 20,
+    fontWeight : 'bold'
+  },
+  input: {
     borderWidth: 1,
     borderColor: '#ccc',
+    backgroundColor : 'white',
     borderRadius: 5,
     padding: 10,
-    marginHorizontal: 5,
-    textAlign: 'center',
-    width: 40,
-  },
-  errorText: {
-    color: 'red',
     marginBottom: 10,
+    width: '100%',
   },
 });
 

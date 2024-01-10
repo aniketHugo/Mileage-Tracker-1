@@ -1,62 +1,41 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import Screen1 from './Screen1'; // Import your screen components
+import Screen2 from './Screen2';
+import Tab1Screen from './Tab1Screen';
+import Tab2Screen from './Tab2Screen';
 
-const BottomBar = () => {
-  const handleHomePress = () => {
-    console.log('Home button pressed');
-    // Handle logic for Home button press
-  };
+const Drawer = createDrawerNavigator();
+const Tab = createBottomTabNavigator();
 
-  const handleRefuelPress = () => {
-    console.log('Refuel button pressed');
-    // Handle logic for Refuel button press
-  };
-
-  const handlePerformancePress = () => {
-    console.log('Performance button pressed');
-    // Handle logic for Performance button press
-  };
-
-  const handleVehiclePress = () => {
-    console.log('Vehicle button pressed');
-    // Handle logic for Vehicle button press
-  };
-
+const TabNavigator = () => {
   return (
-    <View style={styles.bottomBar}>
-      <TouchableOpacity onPress={handleHomePress} style={styles.tabButton}>
-        <Text>Home</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleRefuelPress} style={styles.tabButton}>
-        <Text>Refuel</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handlePerformancePress} style={styles.tabButton}>
-        <Text>Performance</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleVehiclePress} style={styles.tabButton}>
-        <Text>Vehicle</Text>
-      </TouchableOpacity>
-    </View>
+    <Tab.Navigator>
+      <Tab.Screen name="Tab1" component={Tab1Screen} />
+      <Tab.Screen name="Tab2" component={Tab2Screen} />
+    </Tab.Navigator>
   );
 };
 
-const styles = StyleSheet.create({
-  bottomBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: 'grey',
-    // position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 60,
-  },
-  tabButton: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+const DrawerNavigator = () => {
+  return (
+    <Drawer.Navigator initialRouteName="Tabs">
+      <Drawer.Screen name="Tabs" component={TabNavigator} />
+      <Drawer.Screen name="Screen1" component={Screen1} />
+      <Drawer.Screen name="Screen2" component={Screen2} />
+      {/* Add more screens here */}
+    </Drawer.Navigator>
+  );
+};
 
-export default BottomBar;
+const App = () => {
+  return (
+    <NavigationContainer>
+      <DrawerNavigator />
+    </NavigationContainer>
+  );
+};
+
+export default App;

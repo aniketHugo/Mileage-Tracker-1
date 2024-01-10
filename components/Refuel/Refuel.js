@@ -1,7 +1,6 @@
 import React from 'react';
 import { View,Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Header from '../Navigation/Header';
-import BottomBar from '../Common/BottomBar';
 import { useNavigation } from '@react-navigation/native';
 import AddRefuel from './AddRefuel';
 const Refuel = () => {

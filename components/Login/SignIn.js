@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Image, Text, StyleSheet, TouchableOpacity, Button, Pressable } from 'react-native';
 import Header from '../Navigation/Header';
 import { useNavigation } from '@react-navigation/native';
 const SignIn = () => {
@@ -11,11 +11,22 @@ const SignIn = () => {
         <Text style={{fontWeight : 'bold' , fontSize : 20 ,color: '#FF4E4E' }} >  Mileage Tracker</Text>
       <View style={styles.content}>
         <Text style={{marginBottom : 15}}>Create an Account to get started</Text>
-        <Button title='Sign Up' onPress={() => navigation.navigate('CreateAccount')} style={styles.btn} /> 
+        <Pressable onPress={() => navigation.navigate('CreateAccount')} style={styles.btn} >
+          <Text style={styles.btnName}>
+            Sign Up
+          </Text>
+          </Pressable> 
       </View>
-      <Image  source={require('../../sources/img3.png')} style={styles.image2} />
 
-      
+
+
+      <View style={styles.users}>
+        <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
+        <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
+        <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
+      </View>
+      {/* if no user :- then this image */}
+      <Image  source={require('../../sources/img3.png')} style={styles.image2} />
 
     </View>
   );
@@ -28,10 +39,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems : 'center'
   },
+  users :{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   btn : {
-    backgroundColor : 'red',
+    backgroundColor : '#0B3C58',
+    padding : 10,
+    width : 250,
     color : 'blue',
-    marginTop : 10
+    borderRadius : 10,
+    marginTop : 10,
+    alignItems : 'center'
+  },
+  btnName : {
+    color : 'white',
+
   },
   content: {
     flex: 1,
