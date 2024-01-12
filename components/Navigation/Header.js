@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import { View, Button, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import DrawerNavigation from './DrawerNavigation';
 const Header = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
@@ -20,17 +21,20 @@ const Header = () => {
 
   return (
     <View>
-      {/* Header */}
+      {/* <DrawerNavigation></DrawerNavigation> */}
       <View style={styles.header}>
-        <Button title="=" onPress={toggleSidebar} />
-        <Text style={styles.title}>Mileage Tracker</Text>
-        <Button title="Home" onPress={handleButton1} />
+        <Pressable onPress={toggleSidebar} >
+        <Image source={require('../../sources/userIcon2.png')}></Image>
+        </Pressable>
+        {/* <Button title="=" onPress={toggleSidebar} /> */}
+        {/* <Text style={styles.title}>Mileage Tracker</Text> */}
+        {/* <Button title="Home" onPress={handleButton1} /> */}
       </View>
 
       {/* Sidebar */}
       {sidebarVisible && (
         <View style={styles.sidebar}>
-          <Button title="Switch Profile" onPress={() => navigation.navigate('SignIn')} />
+          <Button title="Switch Profile" onPress={() => navigation.navigate('SignInStack')} />
           <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
         </View>
       )}
@@ -45,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: 'grey', // Adjust the color as needed
+    // backgroundColor: 'grey', // Adjust the color as needed
   },
   title: {
     fontSize: 18,

@@ -44,9 +44,14 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     marginTop: 50,
+    backgroundColor : 'white',
+    color : 'black',
+    borderRadius : 20,
+    
   },
   dropdownButton: {
-    borderWidth: 1,
+    borderColor : 'white',
+    // borderWidth: 1,
     padding: 10,
     width: 150,
     alignItems: 'center',

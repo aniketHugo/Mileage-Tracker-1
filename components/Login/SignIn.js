@@ -21,7 +21,9 @@ const SignIn = () => {
 
 
       <View style={styles.users}>
+        <Pressable onPress={() => navigation.navigate('Home')}>
         <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
+        </Pressable>
         <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
         <Image  source={require('../../sources/PayeeItem.png')} style={styles.image3} />
       </View>
