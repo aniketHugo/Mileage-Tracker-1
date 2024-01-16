@@ -1,17 +1,16 @@
-import { createDrawerNavigator } from '@react-navigation/drawer';
+// import { createDrawerNavigator } from '@react-navigation/drawer';
 
-const Drawer = createDrawerNavigator();
+// const Drawer = createDrawerNavigator();
 import SignIn from './components/Login/SignIn';
 import Nav from './components/Navigation/Nav';
+import Home from './components/Home/Home';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 function App() {
   return (
-    <NavigationContainer>
-        <Drawer.Navigator>
-        <Drawer.Screen name="Feed" component={Nav} />
-        {/* <Drawer.Screen name="Article" component={Article} /> */}
-        </Drawer.Navigator>
-    </NavigationContainer>
+    <View>
+
+    </View>
   );
 }
  

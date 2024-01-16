@@ -16,6 +16,7 @@ import Performance from '../Performance/Performance';
 import AddRefuel from  '../Refuel/AddRefuel';
 import RefuelStack from '../Refuel/RefuelStack'
 import LoginStack from '../Login/LoginStack';
+// import Draw from './Draw';
 const Footer = () => {
 
   const Footer = ({ navigation }) => {

@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Button,TouchableOpacity, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+
+import Home from '../Home/Home';
+import SignIn from '../Login/SignIn';
 const Header = () => {
+
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
@@ -20,12 +25,15 @@ const Header = () => {
 
   return (
     <View>
-      {/* <DrawerNavigation></DrawerNavigation> */}
       <View style={styles.header}>
-        <Pressable onPress={toggleSidebar} >
+    
+        {/* <Pressable onPress={() => navigation.openDrawer()} >
         <Image source={require('../../sources/userIcon2.png')}></Image>
-        </Pressable>
-        {/* <Button title="=" onPress={toggleSidebar} /> */}
+        </Pressable> */}
+        {/* <TouchableOpacity onPress={() => navigation.openDrawer()}>
+    <Text>Open Drawer</Text>
+  </TouchableOpacity> */}
+        <Button title="=" onPress={toggleSidebar} />
         {/* <Text style={styles.title}>Mileage Tracker</Text> */}
         {/* <Button title="Home" onPress={handleButton1} /> */}
       </View>

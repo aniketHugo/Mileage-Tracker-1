@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Header from '../Navigation/Header';
-
+import App from '../../App';
 const Performance = () => {
   return (
     // Add vehicle button + (image + details) list of all vehicles

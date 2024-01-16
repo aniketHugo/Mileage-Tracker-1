@@ -4,8 +4,12 @@ import Header from '../Navigation/Header';
 import VehicleList from './VehicleList';
 import Sidebar from '../Common/Sidebar';
 import FuelData from '../Refuel/FuelData';
+import App from '../../App';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 const Home = () => {
   return (
+    <SafeAreaView>
+
     <View style={styles.container}>
       <Header />
       <ScrollView contentContainerStyle={styles.content}>
@@ -14,15 +18,15 @@ const Home = () => {
         <Image source={require('../../sources/Union.png')} style={styles.image} />
         <Text style={{ color: '#EB655F', fontSize: 20, marginTop: 20 }}> Hi Snack Muncher, </Text>
         <Text>Here is everything about your</Text>
-
+  
         {1==2 ? (
           
           <Image source={require('../../sources/Maskgroup.png')} style={styles.image2} />
           
-        ) : (
-          <VehicleList />
-
-        )}
+          ) : (
+            <VehicleList />
+            
+            )}
         {/* or this */}
 
         <Image source={require('../../sources/image1.png')} style={styles.image2} />
@@ -47,6 +51,7 @@ const Home = () => {
 
       </View>
 
+            </SafeAreaView>
    
   );
 };
