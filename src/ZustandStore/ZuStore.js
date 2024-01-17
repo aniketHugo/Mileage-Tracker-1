@@ -1,0 +1,17 @@
+// userStore.js
+import {create} from 'zustand';
+import Realm from 'realm';
+const UseUserStore = create((set) => ({
+  selectedUserId: null,
+  selectedUserName : null,
+  vehicleLength : 0,
+  refuelSelectedVehicle : null,
+  refuelSelectedVehicleId : null,
+  setRefuelSelectedVehicleId: (id) => set({ refuelSelectedVehicleId: id }),
+  setRefuelSelectedVehicle: (name) => set({ refuelSelectedVehicle: name }),
+  setSelectedUserId: (userId) => set({ selectedUserId: userId }),
+  setVehicleLength: (len) => set({ vehicleLength: len }),
+  setSelectedUserName: (name) => set({ selectedUserName: name }),
+}));
+
+export default UseUserStore;

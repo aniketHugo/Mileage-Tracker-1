@@ -1,18 +1,16 @@
-// import { createDrawerNavigator } from '@react-navigation/drawer';
+import React, { useEffect } from 'react';
+import { RealmProvider } from '@realm/react';
+import Footer from './src/Navigation/Footer';
+import { PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from './src/Database/mySchema';
 
-// const Drawer = createDrawerNavigator();
-import SignIn from './components/Login/SignIn';
-import Nav from './components/Navigation/Nav';
-import Home from './components/Home/Home';
-import { View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-function App() {
+const SCHEMA_VERSION = 1;
+
+const App = () => {
   return (
-    <View>
-
-    </View>
+    <RealmProvider schema={[PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema]}>
+      <Footer />
+    </RealmProvider>
   );
-}
- 
-export default App;
+};
 
+export default App;
