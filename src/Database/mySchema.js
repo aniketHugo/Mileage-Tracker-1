@@ -7,6 +7,7 @@ export const UserSchema = {
       name: 'string',
       nickName: 'string',
       email: 'string',
+      isLoggedIn: { type: 'bool', default: false }, 
       vehicles: { type: 'linkingObjects', objectType: 'Vehicle', property: 'user' },
     },
   };
@@ -49,3 +50,17 @@ export const UserSchema = {
     },
   };
   
+
+  export const AuthenticationSchema = {
+    name: 'Authentication',
+    primaryKey: 'id',
+    properties: {
+      id: 'string',
+      name: 'string',
+      userId : 'string',
+      nickName: 'string',
+      passCode : 'string',
+      email: 'string',
+      isLoggedIn: { type: 'bool', default: false }, 
+    },
+  };

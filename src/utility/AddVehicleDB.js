@@ -1,6 +1,8 @@
 import Realm from 'realm';
 import { PerformanceDataSchema, RefuelDataSchema,UserSchema, VehicleSchema } from '../Database/mySchema';
 import { useRealm } from '@realm/react';
+import UseUserStore from '../ZustandStore/ZuStore';
+
 const AddVehicleDB = async (realm, userId, name, type, cc) => {
   try {
 
@@ -10,10 +12,10 @@ const AddVehicleDB = async (realm, userId, name, type, cc) => {
       console.error(`User with ID ${userId} does not exist.`);
       return;
     }
-
+    const geniD = generateUniqueId();
     realm.write(() => {
       const newVehicle = {
-        id: generateUniqueId(),
+        id: geniD,
         name: name,
         vehicleType: type,
         engineCC: parseInt(cc, 10),
@@ -24,9 +26,14 @@ const AddVehicleDB = async (realm, userId, name, type, cc) => {
       realm.create('Vehicle', newVehicle);
     });
 
+    // const numVehicles = realm.objects('Vehicle').length;
+    // console.log('Veh len = ',numVehicles)
+
+    return geniD;
     console.log('Vehicle added to database:', { userId, name, type, cc });
   } catch (error) {
     console.error('Error adding vehicle to database:', error);
+    return -1;
   }
 };
 

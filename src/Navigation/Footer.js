@@ -12,6 +12,7 @@ import Performance from '../Screens/Performance/Performance';
 // import MyStore from '../DB/MyStore'
 import Draw from './Draw';
 import VehicleStack from './Stacks/VehicleStack';
+
 const Footer = () => {
   const Footer = ({ navigation }) => {
     return (
@@ -35,6 +36,11 @@ const Footer = () => {
           <Image source={require('../assets/Vehicle.png')}></Image>
           <Text style={styles.name}> Vehicle </Text>
         </Pressable>
+
+        {/* <Pressable style={styles.btn}  onPress={() => navigation.navigate('ViewDb')}> 
+          <Image source={require('../assets/Vehicle.png')}></Image>
+          <Text style={styles.name}> DB </Text>
+        </Pressable> */}
         
       </View>
     ); 
@@ -48,6 +54,7 @@ const Footer = () => {
         <Tab.Screen name="Performance" component={Performance} />
         <Tab.Screen options={{ headerShown: false }} name="VehicleStack" component={VehicleStack} />
         <Tab.Screen options={{ headerShown: false }} name="SignInStack" component={LoginStack} />
+        {/* <Tab.Screen options={{ headerShown: false }} name="ViewDb" component={DB} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );

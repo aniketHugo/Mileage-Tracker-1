@@ -1,45 +1,44 @@
 import React, { useState ,useEffect} from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
-import { PerformanceDataSchema,RefuelDataSchema,UserSchema,VehicleSchema } from '../../Database/mySchema';
 import { useRealm } from '@realm/react';
+
 const VehicleList = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [selectedVehicle,setSelectedVehicle] = useState('Select a Vehicle')
   const selectedUserId = UseUserStore((state) => state.selectedUserId);
-  const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
-  const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
   const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
+  const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
   const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
   const [userVehicles, setUserVehicles] = useState([]);
+
   const toggleDropdown = () => { 
     setDropdownVisible(!dropdownVisible);
   };
+  const realm = useRealm();
 
   const handleOptionSelect = (id,name) => {
     // Handle the selection of an option here
     console.log('Selected:', name);
+    // Log(selectedUserId,id,realm)
 
     setSelectedVehicle(name)
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
     setDropdownVisible(false); // Close the dropdown after selection
-    console.log(refuelSelectedVehicleId)
   };
 
-  const realm = useRealm();
   useEffect(() => {
     if (selectedUserId) {
       const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
-      console.log("Veh :- ",vehicles)
       setUserVehicles(Array.from(vehicles));
     }
-  }, [selectedUserId, ]);
+  }, [selectedUserId,refuelSelectedVehicle ]);
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container3}>
       <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-        <Text>{selectedVehicle}</Text>
+        <Text>{refuelSelectedVehicle}</Text>
       </TouchableOpacity>
 
       {dropdownVisible && (
@@ -56,19 +55,21 @@ const VehicleList = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container3: {
     alignItems: 'center',
     marginTop: 50,
-    backgroundColor : 'white',
+    // backgroundColor : 'red',
     color : 'black',
     borderRadius : 10,
     zIndex : 1,
     
   },
   dropdownButton: {
-    borderColor : 'white',
+    // borderColor : 'black',
+    backgroundColor : '#ffffff',
     padding: 10,
-    width: 150,
+    borderRadius: 5,
+    width: '50%',
     alignItems: 'center',
     zIndex : 2,
   },
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     top: 40,
     backgroundColor: '#fff',
     borderRadius: 5,
-    width : 150,
+    width : '50%',
     padding: 10,
     zIndex: 3,
     alignItems : 'center'

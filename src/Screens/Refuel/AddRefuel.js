@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import VehicleList from './VehicleList';
 import UseUserStore from '../../ZustandStore/ZuStore';
-
+import AddRefuelDB from '../../utility/AddRefuelDB';
+import { useNavigation } from '@react-navigation/native';
+import { useRealm } from '@realm/react';
 const AddRefuel = () => {
   const [vehicleName, setVehicleName] = useState('');
   const [refuelDate, setRefuelDate] = useState('');
@@ -11,18 +13,39 @@ const AddRefuel = () => {
   const [consumed, setConsumed] = useState('');
   const [price, setPrice] = useState('');
   const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
+  const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
+  const selectedUserId = UseUserStore((state) =>  state.selectedUserId )
+  const navigate = useNavigation();
+
+  const realm = useRealm();
 
   const handleSubmit = () => {
     // Handle form submission, validate data, and perform necessary actions
-    console.log('Submitted Data:', {
-      vehicleName,
+    // console.log('Submitted Data:', {
+    //   refuelSelectedVehicle,
+    //   refuelDate,
+    //   startReading,
+    //   endReading,
+    //   consumed,
+    //   price,
+    // });
+
+    if (!selectedUserId) {
+      console.log('No user selected.');
+      return;
+    }
+    AddRefuelDB(
+      realm,
+      selectedUserId,
+      refuelSelectedVehicleId,
       refuelDate,
       startReading,
       endReading,
       consumed,
-      price,
-      refuelSelectedVehicle,
-    });
+      price);
+    console.log('Refueled successfully')
+    navigate.goBack();
+    
   };
 
   return (

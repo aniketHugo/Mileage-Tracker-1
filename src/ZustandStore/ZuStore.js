@@ -5,7 +5,7 @@ const UseUserStore = create((set) => ({
   selectedUserId: null,
   selectedUserName : null,
   vehicleLength : 0,
-  refuelSelectedVehicle : null,
+  refuelSelectedVehicle : 'select',
   refuelSelectedVehicleId : null,
   setRefuelSelectedVehicleId: (id) => set({ refuelSelectedVehicleId: id }),
   setRefuelSelectedVehicle: (name) => set({ refuelSelectedVehicle: name }),

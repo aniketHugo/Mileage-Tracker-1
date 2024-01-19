@@ -4,12 +4,13 @@ import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import FetchRefuelData from '../../API/FetchRefuelData';
-const FuelData = () => {
+const FuelData2 = () => {
   const [refuelData, setRefuelData] = useState([]);
   const selectedUserId = UseUserStore((state) => state.selectedUserId)
   const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
   const realm = useRealm()
   const navigation = useNavigation();
+
 
   useFocusEffect(
     useCallback(() => {
@@ -24,37 +25,13 @@ const FuelData = () => {
       fetchRefuelData();
     }, [refuelSelectedVehicleId])
   );
-
-  // useEffect(() => {
-
-  //   const fetchRefuelData = async () => {
-  //     try {
-  //       const data  = FetchRefuelData(realm,selectedUserId,refuelSelectedVehicleId);
-  //       setRefuelData(data);
-  //     } catch (error) {
-  //       console.log('Error fetching refuel data:', error);
-  //     }
-  //   };
-  //   fetchRefuelData();
-  // }, [refuelSelectedVehicleId]);
-
   return (
 
     <View style={{ flex: 1 }}>
       {/* <Text> Fuel Insights</Text> */}
-      <ScrollView contentContainerStyle={styles.fuelData}>
  
         {refuelData.map((item,index) => (
-          <Pressable key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails',{ refuelItem: {      
-          id: item.id,
-          refuelDate: item.refuelDate,      // Change 'date' to the actual type for refuelDate
-          startReading: item.startReading,   // Change 'float' to the actual type for startReading
-          endReading: item.endReading,     // Change 'float' to the actual type for endReading
-          consumed: item.consumed,       // Change 'float' to the actual type for consumed
-          price: item.price,          // Change 'float' to the actual type for price
-          vehicleId: item.vehicle.id,
-          vehicleName: item.vehicle.name,
-          }})}>
+          <Pressable key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
             <View style={styles.iconContainer}>
               <Image source={require('../../assets/refuelimg.png')} ></Image>
             </View>
@@ -71,8 +48,6 @@ const FuelData = () => {
 
 
         ))}
-
-      </ScrollView>
 
     </View>
 
@@ -126,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around', // Adjust spacing between cards
     alignItems: 'center', // Align items vertically
     marginTop: 50, // Adjust margin as needed
-  }, 
+  },
   rowCard: {
     backgroundColor: '#ffffff', // Card background color
     padding: 20,
@@ -140,4 +115,4 @@ const styles = StyleSheet.create({
   },
 
 });
-export default FuelData;
+export default FuelData2;

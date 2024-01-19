@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Image, Text, ScrollView, StyleSheet } from 'react-native';
 import Header from '../../Navigation/Header';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from '../../Database/mySchema';
 import { useRealm } from '@realm/react';
+import { useFocusEffect } from '@react-navigation/native';
 const VehiclesData = () => {
   const selectedUserId = UseUserStore((state) => state.selectedUserId);
   const [userVehicles, setUserVehicles] = useState([]);
   const realm = useRealm();
 
-  useEffect(() => {
-    if (selectedUserId) {
-      const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
+  // useEffect(() => {
+  //   if (selectedUserId) {
+  //     const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
 
-      setUserVehicles(Array.from(vehicles));
-    }
-  }, [selectedUserId, ]);
+  //     setUserVehicles(Array.from(vehicles));
+  //   }
+  // }, [selectedUserId, ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (selectedUserId) {
+        const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
+  
+        setUserVehicles(Array.from(vehicles));
+      }
+    }, [selectedUserId])
+  );
 
   return (
     <View style={styles.container2}>

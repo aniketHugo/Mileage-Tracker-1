@@ -1,9 +1,7 @@
 import React from 'react';
 import { View, Button, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import Header from '../../Navigation/Header';
 import { useNavigation } from '@react-navigation/native';
-import AddRefuel from './AddRefuel';
-import VehicleList from '../Home/VehicleList';
+import VehicleList from './VehicleList';
 import FuelData from './FuelData';
 
 const NoVehicle = () => {
@@ -26,7 +24,6 @@ const EmptyData = () => {
   const Navigation = useNavigation();
   return (
     <View>
-
       <View style={styles.content}>
         <Image source={require('../../assets/clowd.png')} style={styles.image1} />
         <Text style={styles.heading}>No refuelling records yet!</Text>
@@ -44,10 +41,10 @@ const EmptyData = () => {
 const VehicleExists = () => {
   const Navigation = useNavigation();
   return (
-    <View>
+    <View style={styles.container2}>
       {/* Vehicle Exists */}
       <VehicleList />
-      <FuelData />
+      <FuelData/>
       <View style={styles.btn2}>
 
         <Pressable onPress={() => Navigation.navigate('addRefuel')} style={styles.btn} >
@@ -70,7 +67,7 @@ const Refuel = () => {
     <View style={styles.container}>
       {/* <Header /> */}
 
-      <View style={styles.content}>
+      {/* <View style={styles.content}> */}
         {
           1 == 2 ? (
             NoVehicle()
@@ -86,7 +83,7 @@ const Refuel = () => {
           )
         }
 
-      </View>
+      {/* </View> */}
     </View>
   );
 };
@@ -94,7 +91,9 @@ const Refuel = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F2F2',
+  },
+  container2: {
+    flex: 1,
   },
   btn2: {
     alignItems: 'flex-end',
@@ -145,6 +144,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    width : '100%',
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',

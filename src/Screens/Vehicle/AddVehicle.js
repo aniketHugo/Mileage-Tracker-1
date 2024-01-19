@@ -16,30 +16,33 @@ const AddVehicle = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
+  const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
+  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
+  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
+
   const selectedUserId = UseUserStore((state) => state.selectedUserId);
   const handleOptionSelect = (option) => {
     // Handle the selection of an option here
     console.log('Selected:', option);
     setVehicleType(option)
     setDropdownVisible(false); // Close the dropdown after selection
-  };
+  // console.log('len = ',vehicleLength)
 
+  };
+ 
   const handleSubmit = () => {
     if (!selectedUserId) {
       console.log('No user selected.');
       return;
     }
 
-    // console.log('Submitted Data:', {
-    //   user_id: selectedUserId,
-    //   vehicleName,
-    //   vehicleType,
-    //   engineCC,
-    // });
 
-    AddVehicleDB(realm,selectedUserId, vehicleName, vehicleType, engineCC);
-    console.log('Vehicle added successfully')
-    navigation.navigate({ name: 'Vehicle', params: { refresh: true } });
+    const data = AddVehicleDB(realm,selectedUserId, vehicleName, vehicleType, engineCC);
+    setRefuelSelectedVehicle(vehicleName)
+    setRefuelSelectedVehicleId(vehicleName)
+    console.log('Vehicle added successfully id = ',data)
+    navigation.goBack();
     
   };
 

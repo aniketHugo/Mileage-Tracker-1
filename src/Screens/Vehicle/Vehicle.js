@@ -3,7 +3,6 @@ import { View, Button, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pr
 import Header from '../../Navigation/Header';
 import { useNavigation } from '@react-navigation/native';
 import AddVehicle from './AddVehicle';
-import VehicleList from '../Home/VehicleList';
 import VehiclesData from './VehiclesData';
 
 const NoVehicle = () => {
