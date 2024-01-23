@@ -9,37 +9,14 @@ import EnterPasscode from '../../Screens/Login/EnterPassCode';
 const Stack = createStackNavigator();
 
 const LoginStack = () => {
-  const HomeScreen = ({ navigation }) => {
-    return (
-      <View style={styles.container}>
-        <Button
-          title="Go to Screen 2"
-          onPress={() => navigation.navigate('ProfileScreen')}
-        />
-      </View>
-    );
-  };
-
-  const ProfileScreen = ({ navigation }) => {
-    return (
-      <View style={styles.container}>
-        <Button
-          title="Go to Screen 1"
-          onPress={() => navigation.navigate('HomeScreen')}
-        />
-      </View>
-    );
-  };
 
   return (
-    // <NavigationContainer>
       <Stack.Navigator initialRouteName="SignIn">
         <Stack.Screen options={{ headerShown: false }}  name="SignIn" component={SignIn} />
-        <Stack.Screen name="CreateAccount" component={CreateAccount} />
-        <Stack.Screen name="SetPassCode" component={SetPassCode} />
-        <Stack.Screen name="EnterPassCode" component={EnterPasscode} />
+        <Stack.Screen options={{ headerShown: false }}  name="CreateAccount" component={CreateAccount} />
+        <Stack.Screen options={{ headerShown: false }}  name="SetPassCode" component={SetPassCode} />
+        <Stack.Screen options={{ headerShown: false }}  name="EnterPassCode" component={EnterPasscode} />
       </Stack.Navigator>
-    // </NavigationContainer>
   );
 };
 

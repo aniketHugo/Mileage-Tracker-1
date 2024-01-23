@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, TouchableOpacity, Text, Image, StyleSheet, ScrollView, Pressable, SafeAreaView } from 'react-native';
 import Realm from 'realm';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
@@ -27,8 +27,10 @@ const RefuelDetails = ({ route }) => {
     }
 
     return (
+        <SafeAreaView>
 
-        <View style={{ flex: 1 }}>
+       
+        <View >
 
 
             <View style={styles.headingContainer}>
@@ -65,7 +67,7 @@ const RefuelDetails = ({ route }) => {
                 </View>
             </View>
         </View>
-
+        </SafeAreaView>
     );
 };
 

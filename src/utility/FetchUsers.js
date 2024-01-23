@@ -7,7 +7,7 @@ const FetchUsers = async (realm) => {
 
     
     
-    console.log('Fetched Users:', users);
+    // console.log('Fetched Users:', users);
     return users;
   } catch (error) {
     console.error('Error in fetching users:', error);

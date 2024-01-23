@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Pressable, Image, Text, StyleSheet, SafeAreaView,TouchableOpacity, ScrollView } from 'react-native';
-import Header from '../../Navigation/Header';
 import Realm from 'realm';
 import { PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from '../../Database/mySchema';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +9,7 @@ import { useRealm } from '@realm/react';
 import FetchUsers from '../../utility/FetchUsers';
 import LoginUser from '../../utility/LoginUser';
 import LogoutUser from '../../utility/LogoutUser';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SignIn = () => {
   const [users, setUsers] = useState([]);
@@ -19,6 +19,8 @@ const SignIn = () => {
   const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
   const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
   const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+  const selectedUserId = UseUserStore((state) => state.selectedUserId);
+  // const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
   const [loading, setLoading] = useState(true)
   const realm = useRealm();
 
@@ -32,7 +34,7 @@ const SignIn = () => {
     };
 
     fetchUsers();
-  }, []);
+  }, [selectedUserId]);
 
   const handleUserPress = async (userId, userName) => {
     // Handle the press event for a user button
@@ -40,24 +42,38 @@ const SignIn = () => {
     // console.log('Logout Update :- ',logout)
 
     console.log('User pressed:', userName);
-    setSelectedUserId(userId)
-    setSelectedUserName(userName)
-    setRefuelSelectedVehicleId(null)
-    setRefuelSelectedVehicle('select')
-    LoginUser(realm, userId)
+    const res = await LoginUser(realm, navigation,userId,"","signIn");
+    console.log(res);
+    if(res == "Navigate to enter Passcode"){
+      navigation.navigate('EnterPassCode',{data : {
+        userId : userId,
+        userName : userName
+      }});
+      return;
+    }
+    else{
+      setSelectedUserId(userId)
+      setSelectedUserName(userName)
+      setRefuelSelectedVehicleId(null)
+      setRefuelSelectedVehicle('select')
+      navigation.navigate('Home')
+    }
+    
 
 
-    navigation.navigate('Home')
-    // Navigate or perform other actions as needed
   };
 
   return (
 
-
+<LinearGradient
+      colors={['#C5E3DC', '#F6F6EC']}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
 <SafeAreaView>
 
     <View style={styles.container}>
-      <Header />
       <Image resizeMode="contain" source={require('../../assets/logo.png')} style={styles.image1} />
       <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
       <View style={styles.content}>
@@ -72,7 +88,7 @@ const SignIn = () => {
         </View>
         :
         
-        <View style={styles.usersStyle}>
+        <ScrollView contentContainerStyle={styles.usersStyle}>
 
           {/* <ScrollView style={styles.usersStyle}> */}
             {users.map((user) => (
@@ -82,7 +98,7 @@ const SignIn = () => {
               </Pressable>
             ))}
           {/* </ScrollView> */}
-       </View>
+       </ScrollView>
       }
 
       {/* if no user :- then this image */}
@@ -93,7 +109,7 @@ const SignIn = () => {
       </SafeAreaView>
 
 
-
+      </LinearGradient>
 
 
   );
@@ -102,9 +118,10 @@ const SignIn = () => {
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
-    backgroundColor: '#C5E3DC',
+    // backgroundColor: '#C5E3DC',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingTop : 20,
   },
   userPressable : {
     margin : 10,
@@ -125,7 +142,10 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   usersStyle: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop : 20,
+    flexWrap: 'wrap', // Allow items to wrap to the next row
+    justifyContent: 'space-between', // Adjust as needed
   },
   image2 : {
     width : '100%'

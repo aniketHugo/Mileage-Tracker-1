@@ -31,13 +31,10 @@ const Vehicle = () => {
     <View style={styles.container}>
 
       <View style={styles.content}>
-        {
-          1 == 2 ? (
-            NoVehicle()
-          ) : (
+        
+          
             <VehiclesData/>
-          )
-        }
+          
           <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn} >
             <Image source={require('../../assets/Large.png')}></Image>
           </Pressable>

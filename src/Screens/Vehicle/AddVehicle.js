@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { View, Image, TextInput,TouchableOpacity, Button, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, TextInput,TouchableOpacity, Button, Text, StyleSheet, Pressable } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import AddVehicleDB from '../../utility/AddVehicleDB';
 import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import RNFS from 'react-native-fs';
+
 const AddVehicle = () => {
   const realm = useRealm();
   const navigation = useNavigation();
@@ -11,24 +14,51 @@ const AddVehicle = () => {
   const [vehicleType, setVehicleType] = useState('option1');
   const [engineCC, setEngineCC] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const setSelectedVehicleImage = UseUserStore((state) => state.setSelectedVehicleImage);
+
+  useEffect(() => {
+
+  },[selectedImage])
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const openImagePicker = async () => {
+    try {
+      const result = await launchImageLibrary();
+      console.log(result)
+      if (!result.didCancel && !result.error) {
+        const source = { uri: result.assets[0].uri };
+        console.log(source.uri)
+        setSelectedImage(source.uri); 
+        setSelectedVehicleImage(`data:image/png;base64,${source.uri}`)
+        // saveImageToRealm(result.base64);
+      }
+      else{
+        console.log("Cannot add image")
+      }
+      // const photo = result.edges[0]?.node.image;
+      
+      // if (photo) {
+      //   const source = { uri: photo.uri };
+      //   setSelectedImage(source);
+      //   // Save the image to your database or perform any other actions
+      // }
+    }catch (error) {
+      console.error('Error launching image library:', error);
+    }
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
-  const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
   const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
   const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
 
   const selectedUserId = UseUserStore((state) => state.selectedUserId);
   const handleOptionSelect = (option) => {
-    // Handle the selection of an option here
     console.log('Selected:', option);
     setVehicleType(option)
     setDropdownVisible(false); // Close the dropdown after selection
-  // console.log('len = ',vehicleLength)
-
   };
  
   const handleSubmit = () => {
@@ -38,9 +68,10 @@ const AddVehicle = () => {
     }
 
 
-    const data = AddVehicleDB(realm,selectedUserId, vehicleName, vehicleType, engineCC);
+    const data = AddVehicleDB(realm,selectedUserId, vehicleName, vehicleType, engineCC,selectedImage);
     setRefuelSelectedVehicle(vehicleName)
-    setRefuelSelectedVehicleId(vehicleName)
+    setRefuelSelectedVehicleId(data._j)
+    setSelectedImage(null);
     console.log('Vehicle added successfully id = ',data)
     navigation.goBack();
     
@@ -49,9 +80,16 @@ const AddVehicle = () => {
 
   return (
     <View style={styles.container}>
+      <Image source={selectedImage} />
+      <Text>{selectedImage}</Text>
       <Text style={styles.heading1}>Add Vehicle</Text>
-
-      <Image resizeMode="contain" source={require('../../assets/CameraLogo.png')} style={styles.image1} />
+      <View style={styles.container}>
+      {/* <Button title="Pick Image" onPress={openImagePicker} /> */}
+      <Image source={selectedImage} />
+    </View>
+      <Pressable onPress={openImagePicker} >
+        <Image resizeMode="contain" source={require('../../assets/CameraLogo.png')} style={styles.image1} />
+      </Pressable>
       <TextInput
         style={styles.input}
         placeholder="Vehicle Name"

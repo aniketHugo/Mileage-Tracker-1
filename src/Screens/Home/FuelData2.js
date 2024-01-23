@@ -27,11 +27,11 @@ const FuelData2 = () => {
   );
   return (
 
-    <View style={{ flex: 1 }}>
+    <View style={styles.fuelContainer}>
       {/* <Text> Fuel Insights</Text> */}
  
         {refuelData.map((item,index) => (
-          <Pressable key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
+          <View key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
             <View style={styles.iconContainer}>
               <Image source={require('../../assets/refuelimg.png')} ></Image>
             </View>
@@ -44,7 +44,7 @@ const FuelData2 = () => {
             <View style={styles.priceContainer}>
               <Text style={styles.price}>+S$ {item.price}</Text>
             </View>
-          </Pressable>
+          </View>
 
 
         ))}
@@ -64,6 +64,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom : 10,
     elevation: 3,
+  },
+  fuelContainer : {
+    padding : 0,
   },
   iconContainer: {
     flex: 1,

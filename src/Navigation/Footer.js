@@ -1,60 +1,82 @@
-import React from 'react';
-import { View,Text, Button, Image,StyleSheet, Pressable } from 'react-native';
+
+
+import React, { useState } from 'react';
+import { View, Text, Button, Image, StyleSheet, Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Tab = createBottomTabNavigator();
-import Home from '../Screens/Home/Home';
-import RefuelStack from './Stacks/RefuelStack';
-import LoginStack from './Stacks/LoginStack';
-import Vehicle from '../Screens/Vehicle/Vehicle';
-import Performance from '../Screens/Performance/Performance';
-// import MyStore from '../DB/MyStore'
 import Draw from './Draw';
+import RefuelStack from './Stacks/RefuelStack';
 import VehicleStack from './Stacks/VehicleStack';
+import LoginStack from './Stacks/LoginStack';
+import Performance from '../Screens/Performance/Performance';
 
-const Footer = () => {
-  const Footer = ({ navigation }) => {
-    return (
-      <View style={styles.footer}>
-        <Pressable style={styles.btn} onPress={() => navigation.navigate('Homes')}> 
-          <Image source={require('../assets/HomeIcon2.png')}></Image>
-          <Text style={styles.name}> Home </Text>
-        </Pressable>
 
-        <Pressable style={styles.btn}  onPress={() => navigation.navigate('RefuelStack')}> 
-          <Image source={require('../assets/Refuelcon.png')}></Image>
-          <Text style={styles.name}> Refuel </Text>
-        </Pressable>
+const Tab = createBottomTabNavigator();
 
-        <Pressable style={styles.btn}  onPress={() => navigation.navigate('Performance')}> 
-          <Image source={require('../assets/Performance.png')}></Image>
-          <Text style={styles.name}> Performance </Text>
-        </Pressable>
+const Footer = ({ navigation, state }) => {
+  const [focusedTab, setFocusedTab] = useState(state.routes[state.index].name);
 
-        <Pressable style={styles.btn}  onPress={() => navigation.navigate('VehicleStack')}> 
-          <Image source={require('../assets/Vehicle.png')}></Image>
-          <Text style={styles.name}> Vehicle </Text>
-        </Pressable>
-
-        {/* <Pressable style={styles.btn}  onPress={() => navigation.navigate('ViewDb')}> 
-          <Image source={require('../assets/Vehicle.png')}></Image>
-          <Text style={styles.name}> DB </Text>
-        </Pressable> */}
-        
-      </View>
-    ); 
+  const handleTabPress = (tabName) => {
+    setFocusedTab(tabName);
+    navigation.navigate(tabName);
   };
 
+  const tabImages = {
+    Homes: {
+      Filled: require('../assets/HomeFilled.png'),
+      Unfilled: require('../assets/HomeUnfilled.png'),
+    },
+    RefuelStack: {
+      Filled: require('../assets/RefuelFilled.png'),
+      Unfilled: require('../assets/RefuelUnfilled.png'),
+    },
+    Performance: {
+      Filled: require('../assets/PerformanceFilled.png'),
+      Unfilled: require('../assets/PerformanceUnfilled.png'),
+    },
+    VehicleStack: {
+      Filled: require('../assets/VehicleFilled.png'),
+      Unfilled: require('../assets/VehicleUnfilled.png'),
+    },
+  };
+  const getTabImage = (tabName) => {
+    return focusedTab === tabName ? tabImages[tabName].Filled : tabImages[tabName].Unfilled;
+  };
+  return (
+    <View style={styles.footer}>
+      <Pressable style={styles.btn} onPress={() => handleTabPress('Homes')}>
+        <Image source={getTabImage('Homes')} />
+        <Text style={styles.name}> Home </Text>
+      </Pressable>
+
+      <Pressable style={styles.btn} onPress={() => handleTabPress('RefuelStack')}>
+        <Image source={getTabImage('RefuelStack')} />
+        <Text style={styles.name}> Refuel </Text>
+      </Pressable>
+
+      <Pressable style={styles.btn} onPress={() => handleTabPress('Performance')}>
+        <Image source={getTabImage('Performance')} />
+        <Text style={styles.name}> Performance </Text>
+      </Pressable>
+
+      <Pressable style={styles.btn} onPress={() => handleTabPress('VehicleStack')}>
+        <Image source={getTabImage('VehicleStack')} />
+        <Text style={styles.name}> Vehicle </Text>
+      </Pressable>
+    </View>
+  );
+};
+
+const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator tabBar={(props) => <Footer {...props} />}>
         <Tab.Screen options={{ headerShown: false }} name="Homes" component={Draw} />
-        <Tab.Screen options={{ headerShown: false }}  name="RefuelStack" component={RefuelStack} />
+        <Tab.Screen options={{ headerShown: false }} name="RefuelStack" component={RefuelStack} />
         <Tab.Screen name="Performance" component={Performance} />
         <Tab.Screen options={{ headerShown: false }} name="VehicleStack" component={VehicleStack} />
         <Tab.Screen options={{ headerShown: false }} name="SignInStack" component={LoginStack} />
-        {/* <Tab.Screen options={{ headerShown: false }} name="ViewDb" component={DB} /> */}
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -73,15 +95,12 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: 'white', // Adjust the color as needed
   },
-  btn : {
-    alignItems:'center'
-  }
+  btn: {
+    alignItems: 'center',
+  },
+  name: {
+    marginTop: 5, // Adjust the spacing as needed
+  },
 });
 
-export default Footer;
-
-{/* <Tab.Screen name="PassCode" component={PassCode} />
-<Tab.Screen name="CreateAccount" component={CreateAccount} />
-<Tab.Screen name="SetPassCode" component={SetPassCode} /> */}
-{/* <Tab.Screen name="addVehicle" component={AddVehicle} />
-<Tab.Screen name="AddRefuel" component={AddRefuel} /> */}
+export default App;

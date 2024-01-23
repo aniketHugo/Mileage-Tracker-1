@@ -1,94 +1,140 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet,SafeAreaView, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useRealm } from '@realm/react';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
+import LoginUser from '../../utility/LoginUser';
+import UseUserStore from '../../ZustandStore/ZuStore';
+import LinearGradient from 'react-native-linear-gradient';
+import BackHeader from '../../Navigation/BackHeader';
 
 
-
-const EnterPasscode = () => {
+const EnterPasscode = ({route}) => {
   const navigation = useNavigation();
-  const [code, setCode] = useState(['', '', '', '']);
   const [errorMsg , setErrorMsg] = useState('');
-
-  const handleCodeChange = (index, value) => {
-    const newCode = [...code];
-    newCode[index] = value;
-
-    // Move to the next box if a digit is entered
-    if (value && index < 3) {
-      refs[index + 1]?.current?.focus();
+  const realm = useRealm();
+  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId)
+  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
+  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
+  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    if (route.params && route.params.data) {
+      setData(route.params.data);
     }
+  }, [route.params]);
 
-    setCode(newCode);
-  };
-  const handleKeyPress = (index, key) => {
-    // Move to the previous box when backspace is pressed in the first box
-    if (key === 'Backspace' && index > 0 && code[index]=='') {
-      refs[index - 1]?.current?.focus();
-    }
+  const [pinCode1, setPinCode1] = useState('');
+
+  const handlePinCodeChange1 = (code) => {
+    setPinCode1(code);
   };
 
+  const handlePinCodeComplete1 =  async (code) => {
+    setPinCode1(code);
+    console.log('Pin code entered:', code);
+  };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Move to the previous box when backspace is pressed in the first box
-    const code1 = code.join('');
-    if (code1 == '9999') {
-      setErrorMsg('The passcodes do not match')
+    console.log(pinCode1,data);
+    const res = await LoginUser(realm, navigation, data.userId,pinCode1,"entered");
+    console.log("enter passcode res :- ",res)
+    if(res == "wrong passcode entered"){
+      setErrorMsg('Wrong Passcode')
     }
     else{
-      setErrorMsg('')
-      navigation.navigate('Home')
+      setSelectedUserId(data.userId)
+      setSelectedUserName(data.userName)
+      setRefuelSelectedVehicleId(null)
+      setRefuelSelectedVehicle('select')
+      navigation.navigate('Home');
     }
   };
 
 
   // Refs for each TextInput
-  const refs = [useRef(), useRef(), useRef(), useRef()];
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+      colors={['#C5E3DC', '#F6F6EC']}
+      style={{ flex: 1 }}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+    >
+      <SafeAreaView style={styles.container}>
+      <BackHeader/>
       <Text style={styles.mainHeading}> Welcome Back! </Text>
       <Text style={styles.headings}> Enter a 4-Digit Passcode * </Text>
       <Text style={styles.secondHeadings}> Just checking it’s really you!</Text>
-      
-      <View style={styles.inputBox} >
+      <View  style = {styles.inputBox}>
 
-      {code.map((digit, index) => (
-        <TextInput
-        key={index}
-        ref={refs[index]}
-        style={styles.input}
-        keyboardType="numeric"
-        maxLength={1}
-        value={digit}
-        onChangeText={(value) => handleCodeChange(index, value)}
-        onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(index, key)}
+      <SmoothPinCodeInput
+        // password
+        // mask="*"
+       
+        cellStyle={styles.cellStyle}
+        cellStyleFocused={styles.cellStyleFocused}
+        textStyle={styles.textStyle}
+        value={pinCode1}
+        onTextChange={handlePinCodeChange1}
+        onFulfill={handlePinCodeComplete1}
         />
-        ))}
-      </View>
 
-      {/* <Text>{`Entered Code: ${code.join('')}`}</Text> */}
-
-      <Text>{errorMsg} </Text>
-      <Pressable onPress={handleSubmit} style={styles.btn3} >
+        </View>
+      <Text style={styles.errMsg}>{errorMsg} </Text>
+      <Pressable onPress={handleSubmit} style={styles.btn} >
         <Text style={styles.btnName}>
           Continue
         </Text>
       </Pressable>
-    </View>
+    </SafeAreaView> 
+    </LinearGradient>
+
+    
   ); 
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical : 20,
-    backgroundColor : '#C5E3DC'
+  },
+  errMsg : {
+    margin : 10,
+    color : '#F93333'
+  },
+  btn: {
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    alignSelf : 'center',
+    width: 250,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  btnName: {
+    color: 'white',
+  },
+  cellStyle : {
+    backgroundColor : 'white',
+    alignItems : 'center',
+    borderRadius : 5,
+    padding : 10,
+    width : 70,
+    marginHorizontal : 20,
+  },
+  cellStyleFocused : {
+    borderWidth : 2,
+    borderColor : 'black'
+  },
+  textStyle : {
+    color : 'black'
   },
   inputBox : {
-    flexDirection : 'row'
+    alignItems : 'center',
+    justifyContent : 'center',
   },
   errorHeading : {
     color : '#F93333',
@@ -100,22 +146,14 @@ const styles = StyleSheet.create({
   },
   secondHeadings : {
     marginBottom: 10,
+    color : '#6D8A9B'
   },
   mainHeading :{
     fontSize : 25,
     marginVertical : 20,
     fontWeight : 'bold'
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor : 'white',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: '20%',
-    marginEnd : 20,
-  },
+
 });
 
 export default EnterPasscode;

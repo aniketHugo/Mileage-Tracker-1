@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { View,Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
 
@@ -10,6 +10,7 @@ const VehicleList = () => {
   const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
   const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
   const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
+  const setSelectedVehicleImage = UseUserStore((state) => state.setSelectedVehicleImage);
   const [userVehicles, setUserVehicles] = useState([]);
 
   const toggleDropdown = () => { 
@@ -17,7 +18,7 @@ const VehicleList = () => {
   };
   const realm = useRealm();
 
-  const handleOptionSelect = (id,name) => {
+  const handleOptionSelect = (id,name,img) => {
     // Handle the selection of an option here
     console.log('Selected:', name);
     // Log(selectedUserId,id,realm)
@@ -25,6 +26,7 @@ const VehicleList = () => {
     setSelectedVehicle(name)
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
+    setSelectedVehicleImage(`data:image/png;base64,${img}`)
     setDropdownVisible(false); // Close the dropdown after selection
   };
 
@@ -39,12 +41,13 @@ const VehicleList = () => {
     <View style={styles.container3}>
       <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
         <Text>{refuelSelectedVehicle}</Text>
+        <Image source={require('../../assets/DropdownIcon1.png')} ></Image>
       </TouchableOpacity>
 
       {dropdownVisible && (
         <View style={styles.dropdown}>
           {userVehicles.map((vehicle, index) => (
-        <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id,vehicle.name)}>
+        <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id,vehicle.name,vehicle.vehicleImage)}>
           <Text style={styles.dropdownText}>{vehicle.name}</Text>
         </TouchableOpacity>
       ))}
@@ -66,12 +69,15 @@ const styles = StyleSheet.create({
   },
   dropdownButton: {
     // borderColor : 'black',
+    flexDirection : 'row',
+    justifyContent : 'space-evenly',
     backgroundColor : '#ffffff',
     padding: 10,
-    borderRadius: 5,
-    width: '50%',
+    borderRadius: 8,
+    width: 200,
     alignItems: 'center',
-    zIndex : 2,
+    // zIndex : 2,
+    elevation : 3,
   },
   dropdown: {
     position: 'absolute',

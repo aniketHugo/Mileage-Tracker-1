@@ -2,12 +2,18 @@ import Realm from 'realm';
 import { PerformanceDataSchema, RefuelDataSchema,UserSchema, VehicleSchema } from '../Database/mySchema';
 import { useRealm } from '@realm/react';
 import UseUserStore from '../ZustandStore/ZuStore';
+import RNFS from 'react-native-fs';
 
-const AddVehicleDB = async (realm, userId, name, type, cc) => {
+const AddVehicleDB = async (realm, userId, name, type, cc,uri) => {
   try {
 
     const existingUser = realm.objectForPrimaryKey('User', userId);
+   let fileContent = "";
+    if(uri){
+       fileContent = await RNFS.readFile(uri, 'base64');
+    }
 
+    console.log("File content ",fileContent.length)
     if (!existingUser) {
       console.error(`User with ID ${userId} does not exist.`);
       return;
@@ -19,11 +25,18 @@ const AddVehicleDB = async (realm, userId, name, type, cc) => {
         name: name,
         vehicleType: type,
         engineCC: parseInt(cc, 10),
+        vehicleImage : fileContent,
         user: existingUser, // Use the existing user object
       };
 
+      if(!newVehicle.vehicleImage){
+        console.log("No image exists")
+      }
+      else{
+        realm.create('Vehicle', newVehicle);
+      }
+
       // Add the new vehicle to the Vehicle schema
-      realm.create('Vehicle', newVehicle);
     });
 
     // const numVehicles = realm.objects('Vehicle').length;

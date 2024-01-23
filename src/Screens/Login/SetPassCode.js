@@ -1,132 +1,168 @@
-import React, { useState, useRef } from 'react';
-import { View, TextInput, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, SafeAreaView,Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
-
-
-const SetPassCode = () => {
+import CreateUser from '../../utility/CreateUser';
+import { useRealm } from '@realm/react';
+import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
+import LinearGradient from 'react-native-linear-gradient';
+import UseUserStore from '../../ZustandStore/ZuStore';
+import BackHeader from '../../Navigation/BackHeader';
+const SetPassCode = ({route}) => {
   const navigation = useNavigation();
-  const [code, setCode] = useState(['', '', '', '']);
-  const [confirmCode, setConfirmCode] = useState(['', '', '', '']);
   const [errorMsg , setErrorMsg] = useState('');
-
-  const handleCodeChange = (index, value) => {
-    const newCode = [...code];
-    newCode[index] = value;
-
-    // Move to the next box if a digit is entered
-    if (value && index < 3) {
-      refs[index + 1]?.current?.focus();
+  const realm = useRealm();
+  const [data, setData] = useState(null);
+  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId)
+  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
+  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
+  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+  useEffect(() => {
+    if (route.params && route.params.data) {
+      setData(route.params.data);
     }
+  }, [route.params]);
 
-    setCode(newCode);
-  };
-  const handleKeyPress = (index, key) => {
+  const handleSubmit = async() => {
     // Move to the previous box when backspace is pressed in the first box
-    if (key === 'Backspace' && index > 0 && code[index]=='') {
-      refs[index - 1]?.current?.focus();
-    }
-  };
-
-  const handleCodeChange2 = (index, value) => {
-    const newCode = [...confirmCode];
-    newCode[index] = value;
-
-    // Move to the next box if a digit is entered
-    if (value && index < 3) {
-      refs2[index + 1]?.current?.focus();
-    }
-
-    setConfirmCode(newCode);
-  };
-
-  const handleKeyPress2 = (index, key) => {
-    // Move to the previous box when backspace is pressed in the first box
-    if (key === 'Backspace' && index > 0 && confirmCode[index] =='') {
-      refs2[index - 1]?.current?.focus();
-    }
-  };
-
-  const handleSubmit = () => {
-    // Move to the previous box when backspace is pressed in the first box
-    const code1 = code.join('');
-    const code2 = confirmCode.join('');
-    if (code1 != code2) {
+    console.log(pinCode1,pinCode2)
+    if (pinCode1 != pinCode2) {
       setErrorMsg('The passcodes do not match')
     }
     else{
       setErrorMsg('')
-      navigation.navigate('Home')
+      console.log("set pass code props1" , data.name,data.nickname,pinCode1,data.email)
+      const datas = CreateUser(realm,data.name,data.nickname,pinCode1,data.email);
+      console.log('Create user response :- ', datas._j.userId);
+      setSelectedUserId(datas._j.userId)
+      setSelectedUserName(datas._j.name)
+      setRefuelSelectedVehicleId(null)
+      setRefuelSelectedVehicle('select')
+      navigation.navigate('Home') 
     }
   };
 
+  const [pinCode1, setPinCode1] = useState('');
 
-  // Refs for each TextInput
-  const refs = [useRef(), useRef(), useRef(), useRef()];
-  const refs2 = [useRef(), useRef(), useRef(), useRef()];
+  const handlePinCodeChange1 = (code) => {
+    setPinCode1(code);
+  };
+
+  const handlePinCodeComplete1 = (code) => {
+    setPinCode1(code);
+    console.log('Pin code entered:', code);
+  };
+
+
+  const [pinCode2, setPinCode2] = useState('');
+
+  const handlePinCodeChange2 = (code) => {
+    setPinCode2(code);
+  };
+
+  const handlePinCodeComplete2 = (code) => {
+    setPinCode2(code);
+    console.log('Pin code entered:', code);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.mainHeading}> Create Account </Text>
-      <Text style={styles.headings}> NaEnter a 4-Digit Passcode * </Text>
+    <LinearGradient
+    colors={['#C5E3DC', '#F6F6EC']}
+    style={{ flex: 1 }}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 0, y: 1 }}
+  >
+    <SafeAreaView style={styles.container}>
+      <View>
+      <BackHeader/>
+
+      <Text style={styles.mainHeading}> Set a Passcode </Text>
+      <Text style={styles.headings}> Enter a 4-Digit Passcode * </Text>
       <Text style={styles.secondHeadings}> You will need to enter at every app launch </Text>
-      
-      <View style={styles.inputBox} >
+      <View style={styles.inputBox}>
 
-      {code.map((digit, index) => (
-        <TextInput
-        key={index}
-        ref={refs[index]}
-        style={styles.input}
-        keyboardType="numeric"
-        maxLength={1}
-        value={digit}
-        onChangeText={(value) => handleCodeChange(index, value)}
-        onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(index, key)}
+      <SmoothPinCodeInput
+        // password
+        // mask="*"
+        cellStyle={styles.cellStyle}
+        cellStyleFocused={styles.cellStyleFocused}
+        textStyle={styles.textStyle}
+        value={pinCode1}
+        onTextChange={handlePinCodeChange1}
+        onFulfill={handlePinCodeComplete1}
         />
-        ))}
-      </View>
 
-      <Text>{`Entered Code: ${code.join('')}`}</Text>
+        </View>
 
       <Text style={styles.headings}>Confirm Passcode * </Text>
-      <View style={styles.inputBox} >
+      <View style={styles.inputBox}>
 
-      {confirmCode.map((digit, index) => (
-        <TextInput
-        key={index}
-        ref={refs2[index]}
-        style={styles.input}
-        keyboardType="numeric"
-        maxLength={1}
-        value={digit}
-        onChangeText={(value) => handleCodeChange2(index, value)}
-        onKeyPress={({ nativeEvent: { key } }) => handleKeyPress2(index, key)}
+      <SmoothPinCodeInput
+        // password
+        // mask="*"
+        cellStyle={styles.cellStyle}
+        // cellStyleFocused={styles.cellStyleFocused}
+        textStyle={styles.textStyle}
+        value={pinCode2}
+        onTextChange={handlePinCodeChange2}
+        onFulfill={handlePinCodeComplete2}
         />
-        ))}
-      </View>
-      <Text>{`Entered Code: ${confirmCode.join('')}`}</Text>
+        </View>
+
       <Text>{errorMsg} </Text>
-      <Pressable onPress={handleSubmit} style={styles.btn3} >
+
+    </View>
+    <View style={styles.container2}>
+      <Pressable onPress={handleSubmit} style={styles.btn} >
         <Text style={styles.btnName}>
           Continue
         </Text>
       </Pressable>
+      <Pressable onPress={handleSubmit} style={styles.btn2} >
+        <Text >
+          Skip
+        </Text>
+      </Pressable>
     </View>
+    </SafeAreaView>
+    </LinearGradient>
   ); 
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
+    flexDirection : 'column',
+    justifyContent: 'space-between',
     // alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical : 20,
-    backgroundColor : '#C5E3DC'
+    // backgroundColor : '#C5E3DC'
+  },
+  container2: {
+    
+    flexDirection : 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   inputBox : {
-    flexDirection : 'row'
+    alignItems : 'center',
+    justifyContent : 'center',
+    marginVertical : 10
+  },
+  cellStyle : {
+    backgroundColor : 'white',
+    alignItems : 'center',
+    borderRadius : 5,
+    padding : 10,
+    width : 70,
+    
+  },
+  cellStyleFocused : {
+    borderWidth : 2,
+    borderColor : 'black'
+  },
+  textStyle : {
+    color : 'black'
   },
   errorHeading : {
     color : '#F93333',
@@ -153,6 +189,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '20%',
     marginEnd : 20,
+  },
+  btn: {
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width: 250,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  btn2: {
+    // backgroundColor: 'white',
+    padding: 10,
+    width: 250,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  btnName: {
+    color: 'white',
   },
 });
 

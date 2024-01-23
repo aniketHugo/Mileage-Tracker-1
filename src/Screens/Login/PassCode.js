@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import Header from '../../src/Navigation/Header';
+import Header from '../../Navigation/Header';
 
 const PassCode = () => {
   return (
