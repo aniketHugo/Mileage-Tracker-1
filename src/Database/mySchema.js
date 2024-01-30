@@ -33,7 +33,7 @@ export const UserSchema = {
     primaryKey: 'id',
     properties: {
       id: 'string',
-      refuelDate: 'string',      // Change 'date' to the actual type for refuelDate
+      refuelDate: 'date',      // Change 'date' to the actual type for refuelDate
       startReading: 'float',   // Change 'float' to the actual type for startReading
       endReading: 'float',     // Change 'float' to the actual type for endReading
       consumed: 'float',       // Change 'float' to the actual type for consumed

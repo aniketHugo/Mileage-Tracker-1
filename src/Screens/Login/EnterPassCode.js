@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet,SafeAreaView, Pressable } from 'react-native';
+import { View, Text, StyleSheet,SafeAreaView, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
+
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
 import LoginUser from '../../utility/LoginUser';
 import UseUserStore from '../../ZustandStore/ZuStore';
@@ -11,49 +12,44 @@ import BackHeader from '../../Navigation/BackHeader';
 
 const EnterPasscode = ({route}) => {
   const navigation = useNavigation();
-  const [errorMsg , setErrorMsg] = useState('');
   const realm = useRealm();
-  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId)
-  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
-  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
-  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+
+  // zustand
+  const mystore = UseUserStore();
+  //states
+  const [errorMsg , setErrorMsg] = useState('');
   const [data, setData] = useState(null);
+  const [pinCode1, setPinCode1] = useState('');
+
   useEffect(() => {
     if (route.params && route.params.data) {
       setData(route.params.data);
     }
   }, [route.params]);
 
-  const [pinCode1, setPinCode1] = useState('');
-
-  const handlePinCodeChange1 = (code) => {
-    setPinCode1(code);
-  };
-
-  const handlePinCodeComplete1 =  async (code) => {
-    setPinCode1(code);
-    console.log('Pin code entered:', code);
-  };
-
   const handleSubmit = async () => {
-    // Move to the previous box when backspace is pressed in the first box
     console.log(pinCode1,data);
-    const res = await LoginUser(realm, navigation, data.userId,pinCode1,"entered");
+    const res = await LoginUser(realm, navigation, data.userId,pinCode1,mystore);
     console.log("enter passcode res :- ",res)
     if(res == "wrong passcode entered"){
       setErrorMsg('Wrong Passcode')
     }
     else{
-      setSelectedUserId(data.userId)
-      setSelectedUserName(data.userName)
-      setRefuelSelectedVehicleId(null)
-      setRefuelSelectedVehicle('select')
-      navigation.navigate('Home');
+      console.log("Enterpasscode data = ",data)
+
+      navigation.navigate('TabNav');
     }
   };
 
 
-  // Refs for each TextInput
+
+  const handlePinCodeChange1 = (code) => {
+    setPinCode1(code);
+  };
+  const handlePinCodeComplete1 =  async (code) => {
+    setPinCode1(code);
+    console.log('Pin code entered:', code);
+  };
 
   return (
     <LinearGradient
@@ -72,7 +68,6 @@ const EnterPasscode = ({route}) => {
       <SmoothPinCodeInput
         // password
         // mask="*"
-       
         cellStyle={styles.cellStyle}
         cellStyleFocused={styles.cellStyleFocused}
         textStyle={styles.textStyle}

@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Refuel from '../../Screens/Refuel/Refuel';
 import AddRefuel from '../../Screens/Refuel/AddRefuel';
 import RefuelDetails from '../../Screens/Refuel/RefuelDetails';
+import EditRefuel from '../../Screens/Refuel/EditRefuel';
 const Stack = createStackNavigator();
 const HomeStack = createNativeStackNavigator();
 const RefuelStack = () => {
@@ -36,6 +37,7 @@ const RefuelStack = () => {
       <HomeStack.Navigator initialRouteName="refuel">
         <HomeStack.Screen name="Refuel" component={Refuel} />
         <HomeStack.Screen name="addRefuel" component={AddRefuel} />
+        <HomeStack.Screen name="editRefuel" component={EditRefuel} />
         <HomeStack.Screen options={{ headerShown: false }}   name="RefuelDetails" component={RefuelDetails} />
       </HomeStack.Navigator>
     // </NavigationContainer>

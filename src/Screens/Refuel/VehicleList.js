@@ -4,39 +4,42 @@ import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
 
 const VehicleList = () => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [selectedVehicle,setSelectedVehicle] = useState('Select a Vehicle')
-  const selectedUserId = UseUserStore((state) => state.selectedUserId);
-  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
-  const refuelSelectedVehicle = UseUserStore((state) => state.refuelSelectedVehicle);
-  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
-  const setSelectedVehicleImage = UseUserStore((state) => state.setSelectedVehicleImage);
+  const realm = useRealm();
+  const {
+    selectedUserId,
+    setRefuelSelectedVehicle,
+    refuelSelectedVehicle,
+    setRefuelSelectedVehicleId,
+    setSelectedVehicleImage,
+    setVehicleLength
+  } = UseUserStore();
+  
   const [userVehicles, setUserVehicles] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => { 
     setDropdownVisible(!dropdownVisible);
   };
-  const realm = useRealm();
 
+  useEffect(() => {
+    if (selectedUserId) {
+      const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
+      setUserVehicles(Array.from(vehicles)); 
+      // if(vehicles.length > 0) setRefuelSelectedVehicleId(vehicles[0].id)
+      // console.log(vehicles.length)
+      // setVehicleLength(vehicles.length)
+    }
+  }, [selectedUserId,refuelSelectedVehicle,dropdownVisible]);
+  
   const handleOptionSelect = (id,name,img) => {
-    // Handle the selection of an option here
     console.log('Selected:', name);
-    // Log(selectedUserId,id,realm)
-
-    setSelectedVehicle(name)
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
     setSelectedVehicleImage(`data:image/png;base64,${img}`)
     setDropdownVisible(false); // Close the dropdown after selection
   };
 
-  useEffect(() => {
-    if (selectedUserId) {
-      const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
-      setUserVehicles(Array.from(vehicles));
-    }
-  }, [selectedUserId,refuelSelectedVehicle ]);
-
+  
   return (
     <View style={styles.container3}>
       <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
@@ -60,7 +63,7 @@ const VehicleList = () => {
 const styles = StyleSheet.create({
   container3: {
     alignItems: 'center',
-    marginTop: 50,
+    marginVertical: 20,
     // backgroundColor : 'red',
     color : 'black',
     borderRadius : 10,

@@ -1,44 +1,37 @@
-import React, { useEffect } from 'react';
-import { View, Image, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, Button, Pressable } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Image, Text, StyleSheet, ScrollView, SafeAreaView, Pressable } from 'react-native';
+import { useRealm } from '@realm/react';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
+import OpenApp from '../../utility/OpenApp';
 import Header from '../../Navigation/Header';
 import VehicleList from '../Refuel/VehicleList';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FuelData2 from './FuelData2';
-import { useRealm } from '@realm/react';
 import LinearGradient from 'react-native-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
-import RNFS from 'react-native-fs';
+import MoneyGraph from '../Performance/MoneyGraph';
+import FuelInsights from './FuelInsights';
+import FetchRefuelData from '../../API/FetchRefuelData';
 
 const Home = () => {
-  const selectedUserName = UseUserStore((state) => state.selectedUserName);
-  const selectedUserId = UseUserStore((state) => state.selectedUserId);
-  const selectedVehicleImage = UseUserStore((state) => state.selectedVehicleImage);
-  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
-  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
   const realm = useRealm();
   const navigation = useNavigation();
 
-
-
-  useEffect(() => {
-    const fetchDataOnMount = async () => {
-      const user = realm.objects('Authentication')[0];
-      if (user) {
-        console.log('Auth status user :- ', user.userId);
-        const wt = await setSelectedUserId(user.userId)
-        const wt2 = await setSelectedUserName(user.name)
-        return;
-      }
-      else {
-        console.warn('No user found');
-        navigation.navigate("SignInStack")
-        return;
-      }
-    };
-
-    fetchDataOnMount();
-  }, [selectedUserId, selectedVehicleImage]);
-
+  const mystore = UseUserStore();
+  const [refuelData, setRefuelData] = useState([]);
+  useFocusEffect( 
+    useCallback(() => {
+      const fetchRefuelData = async () => {
+        try {
+          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
+          setRefuelData(data);
+        } catch (error) {
+          console.log('Error fetching refuel data:', error);
+        }
+      };
+      fetchRefuelData();
+    }, [mystore.selectedUserId, mystore.selectedVehicleImage, mystore.refuelSelectedVehicleId])
+  );
   return (
     <LinearGradient
       colors={['#C5E3DC', '#F6F6EC']}
@@ -47,71 +40,72 @@ const Home = () => {
       end={{ x: 0, y: 1 }}
     >
       <SafeAreaView>
-
         <View style={styles.container2}>
           <Header />
-
           <ScrollView contentContainerStyle={styles.content}>
-            {/* <Sidebar/> */}
-
             <Image source={require('../../assets/Union.png')} style={styles.image} />
-            <Text style={{ color: '#EB655F', fontSize: 20, marginTop: 20 }}> Hi {selectedUserName}  </Text>
+            <Text style={{ color: '#EB655F', fontSize: 20, marginTop: 20 }}> Hi {mystore.selectedUserName}  </Text>
             <Text>Here is everything about your</Text>
 
-            {1 == 2 ? (
-
-              <Image source={require('../../assets/Maskgroup.png')} style={styles.image2} />
-
-            ) : (
-              <VehicleList />
-
-            )}
-            {/* or this */}
-
-            {selectedVehicleImage != null && 
-
-            <View style={styles.vehicleImage}> 
-              <Image source={{ uri: selectedVehicleImage }} style={styles.image4} />
-            </View>
-            
-            }
-
-
-            {/* <Text> Fuel Insights</Text> */}
-
-
-            <View style={styles.fuelCard2}>
-              <View style={styles.card2}>
-                <Text style={styles.text, { fontSize: 18, fontWeight: 'bold' }}>Avg Fuel Consumption</Text>
-                <Text style={styles.text}>25 km/l</Text>
-              </View>
-              <View style={styles.card2}>
-                <Text style={styles.text, { fontSize: 18, fontWeight: 'bold' }}>Last Fuel Consumption</Text>
-                <Text style={styles.text}>25 km/l</Text>
-              </View>
-            </View>
-
-            {/* <Image style={styles.performanceImg1} source={require('../../assets/Graph2.png')}></Image> */}
-
-
-            <View style={styles.fuelDataContainer} >
-
-              <View style={styles.fuelHeading}>
-                <Text style={styles.fuelText} >Refuelling history</Text>
-                <Pressable onPress={() => navigation.navigate('RefuelStack')}>
-                  <Text style={styles.fuelText2}> see all ></Text>
+            {mystore.vehicleLength == 0 ? (
+              <View style={styles.content}>
+                <Image source={require('../../assets/Maskgroup.png')} style={styles.image3} />
+                <Text style={styles.heading2} > Add a vehicle to start tracking its {'\n'} refuelling & performance </Text>
+                <Pressable onPress={() => navigation.navigate('addVehicle' , {screen : "VehicleStack"})} style={styles.btn3} >
+                  <Text style={styles.btnName}>
+                    Add Vehicle
+                  </Text>
                 </Pressable>
               </View>
-              <FuelData2 />
-            </View>
+            ) : (
+              <>
+                <VehicleList />
 
+                {mystore.selectedVehicleImage != null &&
+                  <View style={styles.vehicleImage}>
+                    <Image source={{ uri: mystore.selectedVehicleImage }} style={styles.image4} />
+                  </View>
+                }
 
+                {refuelData.length == 0 ?
+                  <View style={styles.noData}>
+                  <View style={styles.content3}>
+                    <Image source={require('../../assets/clowd.png')} style={styles.image1} />
+                    <Text style={styles.heading4}>It’s time to add the refuelling details to get more insights</Text>
+                  </View>
+                    <View style={styles.btn2}>
+                      <Pressable onPress={() => navigation.navigate('addRefuel' ,{screen : 'RefuelStack'})} style={styles.btn} >
+                        <Text style={styles.btnName}>Add Refuelling</Text>
+                      </Pressable>
+                    </View>
+                </View>
+                  :
+                  <>
+                    <View style={styles.heading}>
+                      <Text style={styles.fuelText}> Fuel Insights</Text>
+                    </View>
 
+                    <FuelInsights refuelData={refuelData} />
 
+                    <View style={styles.heading}>
+                      <Text style={styles.fuelText}>Money spend on fuel</Text>
+                    </View>
+                    <MoneyGraph />
+                    <View style={styles.fuelDataContainer} >
+                      <View style={styles.fuelHeading}>
+                        <Text style={styles.fuelText} >Refuelling history</Text>
+                        <Pressable onPress={() => navigation.navigate('RefuelStack')}>
+                          <Text style={styles.fuelText2}> see all </Text>
+                        </Pressable>
+                      </View>
+                      <FuelData2 refuelData={refuelData}/>
+                    </View>
+                  </>
+                }
+              </>
+            )}
           </ScrollView>
-
         </View>
-
       </SafeAreaView>
     </LinearGradient>
 
@@ -128,19 +122,66 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   image4: {
-    width: 300, // Adjust the width as needed
-    height: 200, // Adjust the height as needed
+    width: 300,
+    height: 200,
     borderRadius: 10,
   },
-  vehicleImage : {
+  heading4: {
+    textAlign: 'center',
+    margin: 20,
+  },
+  noData : {
+    marginVertical : 20,
+  },
+  content3: {
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  heading2: {
+    textAlign: 'center',
+    marginVertical: 20,
+    fontSize: 20,
+  },
+  image3: {
+    backgroundColor: '#95C3BB',
+    borderRadius: 180
+  },
+  heading: {
+    // backgroundColor : 'red',
+    alignSelf: 'flex-start',
+    marginHorizontal: 10,
     marginTop: 20,
-    borderWidth : 8,
-    borderColor : 'white',
-    borderRadius : 10,
+    marginBottom: 10,
+  },
+  vehicleImage: {
+    marginTop: 20,
+    borderWidth: 8,
+    borderColor: 'white',
+    borderRadius: 10,
     // elevation : 5,
   },
-  performanceImg1: {
-    // width : '100%'
+  btn3: {
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width: 100,
+    color: 'blue',
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center'
+  },
+  btn: {
+    alignSelf : 'center',
+    alignItems: 'center',
+    margin: 10,
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width: 250,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  btnName: {
+    color: 'white',
   },
   fuelText: {
     fontSize: 20,
@@ -167,30 +208,29 @@ const styles = StyleSheet.create({
 
   },
   image3: {
-    marginTop: 20,
-    width: 100,
+    backgroundColor: '#95C3BB',
+    borderRadius: 180,
   },
   fuelCard2: {
-    flexDirection: 'row', // Arrange items horizontally
-    justifyContent: 'space-around', // Adjust spacing between cards
-    alignItems: 'center', // Align items vertically
-    marginTop: 50, // Adjust margin as needed
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     elevation: 3,
     backgroundColor: '#F0F2F2',
     width: '100%',
     paddingVertical: 20,
   },
   card2: {
-    backgroundColor: 'white', // Card background color
+    backgroundColor: 'white',
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 10,
-    width: 150, // Card width
+    width: 150,
     elevation: 3,
   },
   text: {
     fontSize: 16,
-    marginBottom: 10, // Spacing between texts
+    marginBottom: 10,
   },
   content: {
     flexGrow: 1,

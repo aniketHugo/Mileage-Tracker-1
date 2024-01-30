@@ -1,4 +1,3 @@
-import PassCode from "../Screens/Login/PassCode";
 
 const CreateUser = async (realm,name,nickname,passCode,email) => {
   try {

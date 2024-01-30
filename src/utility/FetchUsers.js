@@ -1,5 +1,3 @@
-import Realm from 'realm';
-import { PerformanceDataSchema, RefuelDataSchema,UserSchema, VehicleSchema } from '../Database/mySchema';
 const FetchUsers = async (realm) => {
   try {
 

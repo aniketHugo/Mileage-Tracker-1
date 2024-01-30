@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView,Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import CreateUser from '../../utility/CreateUser';
 import { useRealm } from '@realm/react';
+
+import CreateUser from '../../utility/CreateUser';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
 import LinearGradient from 'react-native-linear-gradient';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import BackHeader from '../../Navigation/BackHeader';
+
 const SetPassCode = ({route}) => {
   const navigation = useNavigation();
-  const [errorMsg , setErrorMsg] = useState('');
   const realm = useRealm();
+
+  //zustand
+  const mystore = UseUserStore();
+  //states
+  const [errorMsg , setErrorMsg] = useState('');
   const [data, setData] = useState(null);
-  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId)
-  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
-  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
-  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+  const [pinCode1, setPinCode1] = useState('');
+  const [pinCode2, setPinCode2] = useState('');
+
   useEffect(() => {
     if (route.params && route.params.data) {
       setData(route.params.data);
@@ -23,42 +28,33 @@ const SetPassCode = ({route}) => {
   }, [route.params]);
 
   const handleSubmit = async() => {
-    // Move to the previous box when backspace is pressed in the first box
     console.log(pinCode1,pinCode2)
     if (pinCode1 != pinCode2) {
       setErrorMsg('The passcodes do not match')
     }
     else{
       setErrorMsg('')
-      console.log("set pass code props1" , data.name,data.nickname,pinCode1,data.email)
       const datas = CreateUser(realm,data.name,data.nickname,pinCode1,data.email);
-      console.log('Create user response :- ', datas._j.userId);
-      setSelectedUserId(datas._j.userId)
-      setSelectedUserName(datas._j.name)
-      setRefuelSelectedVehicleId(null)
-      setRefuelSelectedVehicle('select')
-      navigation.navigate('Home') 
+      console.log('User created with user Id = ', datas._j.userId);
+      mystore.setSelectedUserId(datas._j.userId)
+      mystore.setSelectedUserName(datas._j.name)
+      mystore.setRefuelSelectedVehicleId(null)
+      mystore.setRefuelSelectedVehicle('select')
+      mystore.setVehicleLength(0);
+      navigation.navigate('TabNav') 
     }
   };
-
-  const [pinCode1, setPinCode1] = useState('');
 
   const handlePinCodeChange1 = (code) => {
     setPinCode1(code);
   };
-
   const handlePinCodeComplete1 = (code) => {
     setPinCode1(code);
     console.log('Pin code entered:', code);
   };
-
-
-  const [pinCode2, setPinCode2] = useState('');
-
   const handlePinCodeChange2 = (code) => {
     setPinCode2(code);
   };
-
   const handlePinCodeComplete2 = (code) => {
     setPinCode2(code);
     console.log('Pin code entered:', code);
@@ -90,7 +86,6 @@ const SetPassCode = ({route}) => {
         onTextChange={handlePinCodeChange1}
         onFulfill={handlePinCodeComplete1}
         />
-
         </View>
 
       <Text style={styles.headings}>Confirm Passcode * </Text>

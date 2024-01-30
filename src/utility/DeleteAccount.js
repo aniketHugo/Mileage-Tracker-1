@@ -1,6 +1,6 @@
 
 const DeleteAccount = async (realm, userId) => {
-    try {
+    try { 
         console.log("Here")
         realm.write(() => {
             // Step 1: Query the user with the specified userId

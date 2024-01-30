@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
@@ -8,9 +8,9 @@ import UseUserStore from '../../ZustandStore/ZuStore';
 import AddRefuelDB from '../../utility/AddRefuelDB';
 import DatePicker from 'react-native-date-picker';
 
-const AddRefuel = () => {
-  const [vehicleName, setVehicleName] = useState('');
-  const [refuelDate, setRefuelDate] = useState(new Date());
+const EditRefuel = ({route}) => {
+
+  const [refuelDate, setRefuelDate] = useState(null);
   const [startReading, setStartReading] = useState('');
   const [endReading, setEndReading] = useState('');
   const [consumed, setConsumed] = useState('');
@@ -18,22 +18,22 @@ const AddRefuel = () => {
 
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
-
   //zustand
-  const  mystore = UseUserStore();
+  const { refuelSelectedVehicleId, selectedUserId } = UseUserStore();
+
 
   const navigate = useNavigation();
   const realm = useRealm();
 
   const handleSubmit = () => {
-    if (!mystore.selectedUserId) {
+    if (!selectedUserId) {
       console.log('No user selected.');
       return;
     }
     AddRefuelDB(
       realm,
-      mystore.selectedUserId,
-      mystore.refuelSelectedVehicleId,
+      selectedUserId,
+      refuelSelectedVehicleId,
       refuelDate,
       startReading,
       endReading,
@@ -42,6 +42,20 @@ const AddRefuel = () => {
     console.log('Refueled successfully')
     navigate.goBack();
   };
+
+  const handleStartReading = (val) =>{
+    setStartReading(val)
+  }
+
+  useEffect(() => {
+    if (route.params && route.params.data) {
+        console.log('parans ',route.params.data)
+        setStartReading(route.params.data.startReading);
+        setEndReading(route.params.data.endReading);
+        setConsumed(route.params.data.consumed);
+        setPrice(route.params.data.price);
+    }
+  }, [route.params]);
 
   return (
     <View style={styles.container}>
@@ -68,12 +82,7 @@ const AddRefuel = () => {
       />
  
       <Button title="Open" onPress={() => setOpen(true)} />
-      {/* <TextInput
-        style={styles.input}
-        placeholder="YYYY-MM-DD"
-        value={refuelDate}
-        onChangeText={(text) => setRefuelDate(text)}
-      /> */}
+
 
       <Text style={styles.heading}>Odometer</Text>
       <View style={styles.inputContainer}>
@@ -81,18 +90,20 @@ const AddRefuel = () => {
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            value={startReading}
-            placeholder='Start Reading'
+            value={parseInt(startReading)}
+            // placeholder='Start Reading'
             onChangeText={(text) => setStartReading(text)}
           />
         </View>
+        <Text>{startReading}</Text>
+
 
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            value={endReading}
-            placeholder='End Reading'
+            value={parseInt(endReading)}
+            // placeholder='End Reading'
             onChangeText={(text) => setEndReading(text)}
           />
         </View>
@@ -104,17 +115,18 @@ const AddRefuel = () => {
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            value={consumed}
+            value={parseInt(consumed)}
             placeholder='Consumed'
             onChangeText={(text) => setConsumed(text)}
           />
         </View>
+        <Text>{consumed}</Text>
 
         <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            value={price}
+            value={parseInt(price)}
             placeholder='Price'
             onChangeText={(text) => setPrice(text)}
           />
@@ -187,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddRefuel;
+export default EditRefuel;

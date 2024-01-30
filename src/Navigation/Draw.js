@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { View, Text, StyleSheet, Modal, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Modal, Image,Pressable } from 'react-native';
 import Home from '../Screens/Home/Home';
 import LoginStack from './Stacks/LoginStack';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -19,18 +19,21 @@ const DrawerContent = ({ navigation }) => {
   const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
   const selectedUserId = UseUserStore((state) => state.selectedUserId);
   const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
+  const selectedVehicleImage = UseUserStore((state) => state.selectedVehicleImage);
+  const {selectedUserName} = UseUserStore();
 
   const handleDelete = async () =>{
     const res = await DeleteAccount(realm,selectedUserId);
-    console.log("Delete Account resp ",res);
+    console.log("Delete Account resp :-  ",res);
 
     if(res.msg == "Deleted"){
-      console.log("Deleted resp")
+      console.log("Account Deleted Successfully")
       setSelectedUserId(null)
       setSelectedUserName(null)
       setRefuelSelectedVehicleId(null)
+      selectedVehicleImage(null)
       setRefuelSelectedVehicle('select')
-      navigation.navigate('SignInStack')
+      navigation.navigate('LoginStack')
     }
   }
 
@@ -38,7 +41,9 @@ const DrawerContent = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.DrawerButttonBox}>
-          <Pressable style={styles.DrawerButttons} onPress={() => navigation.navigate('SignInStack')}>
+        <Image source={require('../assets/userIcon2.png')} style={styles.userIcon}></Image>
+          <Text style={styles.username}> {selectedUserName} </Text>
+          <Pressable style={styles.DrawerButttons} onPress={() => navigation.navigate('LoginStack')}>
             <Text style={styles.DrawerText}>Switch Account</Text>
           </Pressable>
           <Pressable style={styles.DrawerButttons} onPress={toggleModal}>
@@ -84,7 +89,6 @@ const Draw = () => {
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} />}>
       <Drawer.Screen options={{ headerShown: false }} name="Home" component={Home} />
-      <Drawer.Screen options={{ headerShown: false }} name="Login" component={LoginStack} />
     </Drawer.Navigator>
   );
 };
@@ -92,6 +96,16 @@ const Draw = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  username : {
+    margin : 10,
+    fontWeight : 'bold',
+    fontSize : 20,
+    color : '#0B3C58',
+  },
+  userIcon : {
+    marginHorizontal : 15,
+    marginTop : 20,
   },
   content: {
     flex: 1,
@@ -127,7 +141,7 @@ const styles = StyleSheet.create({
   },
   DrawerButttonBox: {
     marginVertical: 20,
-    borderRadius: 10,
+    // borderRadius: 10,
   },
   modalContainer: {
     flex: 1,

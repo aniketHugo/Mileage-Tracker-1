@@ -10,10 +10,8 @@ import RefuelStack from './Stacks/RefuelStack';
 import VehicleStack from './Stacks/VehicleStack';
 import LoginStack from './Stacks/LoginStack';
 import Performance from '../Screens/Performance/Performance';
-import EnterPassCode from '../Screens/Login/EnterPassCode';
+import EnterPasscode from '../Screens/Login/EnterPassCode';
 import LandingPage from '../Screens/LandingPage.js';
-import TabNav from './TabNav.js';
-import { createStackNavigator } from '@react-navigation/stack';
 
 const Tab = createBottomTabNavigator();
 
@@ -70,19 +68,25 @@ const Footer = ({ navigation, state }) => {
     </View>
   );
 };
-const Stack = createStackNavigator();
 
-
-const App = () => {
+const TabNav = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="LandingPage">
-        <Stack.Screen options={{ headerShown: false }} name="LandingPage" component={LandingPage} />
-        <Stack.Screen options={{ headerShown: false }} name="LoginStack" component={LoginStack} />
-        <Stack.Screen options={{ headerShown: false }} name="TabNav" component={TabNav} />
-        <Stack.Screen options={{ headerShown: false }} name="EnterPassCode" component={EnterPassCode} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <Tab.Navigator tabBarOptions={{
+        swipeEnabled: true, // Disable default swipe between tabs
+      }} tabBar={(props) => <Footer {...props} />}>
+
+        <Tab.Screen options={{ headerShown: false }}
+          name="Homes" component={Draw} />
+
+        <Tab.Screen options={{ headerShown: false }}
+          name="RefuelStack" component={RefuelStack} />
+
+        <Tab.Screen name="Performance" component={Performance} />
+
+        <Tab.Screen options={{ headerShown: false }}
+          name="VehicleStack" component={VehicleStack} />
+
+        </Tab.Navigator>
   );
 };
 
@@ -107,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default TabNav;

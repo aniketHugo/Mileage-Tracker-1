@@ -1,34 +1,39 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image,StyleSheet, ScrollView, Pressable } from 'react-native';
-import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+
+import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
-const FuelData2 = () => {
+
+const FuelData2 = (props) => {
   const [refuelData, setRefuelData] = useState([]);
-  const selectedUserId = UseUserStore((state) => state.selectedUserId)
-  const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
+  const mystore =  UseUserStore();
   const realm = useRealm()
   const navigation = useNavigation();
+  const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
-
-  useFocusEffect(
-    useCallback(() => {
-      const fetchRefuelData = async () => {
-        try {
-          const data  = FetchRefuelData(realm,selectedUserId,refuelSelectedVehicleId);
-          setRefuelData(data);
-        } catch (error) {
-          console.log('Error fetching refuel data:', error);
-        }
-      };
-      fetchRefuelData();
-    }, [refuelSelectedVehicleId])
-  );
-  return (
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchRefuelData = async () => {
+  //       try {
+  //         const data  = FetchRefuelData(realm,selectedUserId,refuelSelectedVehicleId);
+  //         setRefuelData(data);
+  //       } catch (error) {
+  //         console.log('Error fetching refuel data:', error);
+  //       }
+  //     };
+  //     fetchRefuelData();
+  //   }, [refuelSelectedVehicleId])
+  // );
+  useEffect(()=>{
+    if(props.refuelData){
+      setRefuelData(props.refuelData)
+    }
+  },[props])
+  return  (
 
     <View style={styles.fuelContainer}>
-      {/* <Text> Fuel Insights</Text> */}
  
         {refuelData.map((item,index) => (
           <View key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
@@ -37,7 +42,7 @@ const FuelData2 = () => {
             </View>
 
             <View style={styles.textContainer}>
-              <Text style={styles.mainHeading}>{item.refuelDate}</Text>
+              <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text>
               <Text style={styles.subHeading}>{item.consumed}</Text>
             </View>
 
@@ -45,8 +50,6 @@ const FuelData2 = () => {
               <Text style={styles.price}>+S$ {item.price}</Text>
             </View>
           </View>
-
-
         ))}
 
     </View>

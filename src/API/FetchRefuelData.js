@@ -1,6 +1,5 @@
 const FetchRefuelData = (realm,selectedUserId,refuelSelectedVehicleId) => {
     try {
-      console.log("F data", selectedUserId, refuelSelectedVehicleId)
       if(!refuelSelectedVehicleId || !selectedUserId){
         return [];
       }

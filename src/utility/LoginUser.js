@@ -1,52 +1,66 @@
-const LoginUser = async (realm,navigation, userId,passCode,from) => {
+
+const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
     try {
-        
         const user = realm.objectForPrimaryKey('User', userId);
         const auth = realm.objects('Authentication')[0];
-        console.log("curren :- ",user )
-        if(user.passCode != "" && from == "signIn"){
-            navigation.navigate('EnterPassCode',{data : {
-                userId : userId
-            }});
-            return "Navigate to enter Passcode";
+
+
+        if (user.passCode != passCode) {
+            console.log("wrong passcode entered , correct = ", user.passCode);
+            return "wrong passcode entered";
         }
-        else if(user.passCode != ""){
-            console.log("Entered :- ",passCode)
-            if(user.passCode != passCode){
-                return "wrong passcode entered";
-            }
-            else[
-                console.log("correct")
-            ]
-        }
+        else[
+            console.log("correct")
+        ]
+
 
         realm.write(() => {
             if (auth) {
                 auth.name = user.name;
                 auth.userId = user.id;
-                auth.email = user.email; 
+                auth.email = user.email;
                 auth.isLoggedIn = user.isLoggedIn;
                 auth.nickName = user.nickName;
-                auth.passCode = '2222';
-                
+                auth.passCode = user.passCode;
+
                 console.log(`User with ID ${userId} LoggedIn (updated)`);
                 console.log('Auth updated')
             } else {
-                    const newAuth = {
-                        id: generateUniqueId(),
-                        name : user.name,
-                        userId : user.id,
-                        email : user.email,
-                        isLoggedIn : user.isLoggedIn,
-                        nickName : user.nickName,
-                        passCode : '2222',
-                    };
-                    // Add the new vehicle to the Vehicle schema
-                    realm.create('Authentication', newAuth);
-                    console.log('Auth created')
+                const newAuth = {
+                    id: generateUniqueId(),
+                    name: user.name,
+                    userId: user.id,
+                    email: user.email,
+                    isLoggedIn: user.isLoggedIn,
+                    nickName: user.nickName,
+                    passCode: '2222',
+                };
+                // Add the new vehicle to the Vehicle schema
+                realm.create('Authentication', newAuth);
+                console.log('Auth created')
             }
         });
-        return "Ok"
+        mystore.setSelectedUserId(user.id);
+        mystore.setSelectedUserName(user.name);
+        const vehicles = user.vehicles;
+
+
+        if(vehicles.length > 0){
+            mystore.setRefuelSelectedVehicleId(vehicles[0].id)
+            mystore.setVehicleLength(vehicles.length)
+            mystore.setSelectedVehicleImage(`data:image/png;base64,${vehicles[0].vehicleImage}`)
+            mystore.setRefuelSelectedVehicle(vehicles[0].name)
+          }
+          else{
+            mystore.setRefuelSelectedVehicleId(null)
+            mystore.setVehicleLength(vehicles.length)
+            mystore.setSelectedVehicleImage(null)
+            mystore.setRefuelSelectedVehicle(null)
+          }
+
+
+        navigation.navigate('TabNav');
+
     } catch (error) {
         console.error('Error updating user login status:', error);
     }

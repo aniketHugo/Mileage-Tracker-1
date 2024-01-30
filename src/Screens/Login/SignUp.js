@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { View, Pressable, Image, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useRealm, useUser } from '@realm/react';
+import { useRealm } from '@realm/react';
 
 import UseUserStore from '../../ZustandStore/ZuStore';
+import ReusableButton from '../../Components/Buttons/ReusableButton';
 import FetchUsers from '../../utility/FetchUsers';
+import LoginUser from '../../utility/LoginUser';
 import LinearGradient from 'react-native-linear-gradient';
-import SwitchUser from '../../utility/SwitchUser';
 
 const SignIn = () => {
   const navigation = useNavigation();
   const realm = useRealm();
 
   //zustand
-  const mystore = UseUserStore();
-
-
+  const {
+    setRefuelSelectedVehicleId,
+    setRefuelSelectedVehicle,
+    setSelectedUserId,
+    setSelectedUserName,
+    selectedUserId
+  } = UseUserStore();
+  
   //states
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true)
@@ -23,16 +29,32 @@ const SignIn = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       const allUsers = await FetchUsers(realm);
+      // console.log("All datas :- ", allUsers);
       setUsers(allUsers);
       setLoading(false);
     };
     fetchUsers();
-  }, [mystore.selectedUserId]);
+  }, [selectedUserId]);
 
   const handleUserPress = async (userId, userName) => {
-    const res = await SwitchUser(realm, navigation, userId,mystore);
-    console.log(res);
-    
+    const res = await LoginUser(realm, navigation, userId, "", "signIn");
+    // console.log(res);
+    if (res == "Navigate to enter Passcode") {
+      navigation.navigate('EnterPassCode', {
+        data: {
+          userId: userId,
+          userName: userName
+        }
+      });
+      return;
+    }
+    else {
+      setSelectedUserId(userId)
+      setSelectedUserName(userName)
+      setRefuelSelectedVehicleId(null)
+      setRefuelSelectedVehicle('select')
+      navigation.navigate('Home')
+    }
   };
 
   return (
@@ -42,57 +64,45 @@ const SignIn = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
+      <SafeAreaView>
 
-      <View style={styles.container2}>
-        <SafeAreaView style={styles.upper}>
+        <View style={styles.container}>
           <Image resizeMode="contain" source={require('../../assets/logo.png')} style={styles.image1} />
           <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
-        </SafeAreaView>
-
-
-        {loading ?
-          <View>
-            <Text>Loading</Text>
+          <View style={styles.content}>
+            <ReusableButton destination="CreateAccount" navigation={navigation} Heading='Sign Up' />
           </View>
-          :
-          <View>
-            <Text style={styles.heading}>Who are you?</Text>
+
+          {loading ?
+            <View>
+              <Text>Loading</Text>
+            </View>
+            :
             <ScrollView contentContainerStyle={styles.usersStyle}>
+
               {users.map((user) => (
                 <Pressable style={styles.userPressable} key={user.id} onPress={() => handleUserPress(user.id, user.name)}>
                   <Image source={require('../../assets/userImg2.png')} style={styles.image3} />
                   <Text style={styles.pressableText} >{user.name} </Text>
                 </Pressable>
               ))}
-
-                <Pressable onPress={() => navigation.navigate('CreateAccount')}>
-                  <Image source={require('../../assets/FABs.png')} />
-                <  Text style={styles.pressableText} > Add User </Text>
-                </Pressable>
             </ScrollView>
-          </View>
-        }
-      </View>
+          }
 
+          <Image source={require('../../assets/img3.png')} style={styles.image2} />
+        </View>
+      </SafeAreaView>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container2: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: "space-between",
-    marginVertical : 20,
-  },
-  heading : {
-    alignSelf : 'center',
-    fontSize : 20,
-    fontWeight : 'bold',
-  },
-  upper: {
+  container: {
+    // flex: 1,
+    // backgroundColor: '#C5E3DC',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    paddingTop: 20,
   },
   userPressable: {
     margin: 10,
@@ -109,26 +119,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
-  addBtn: {
-    backgroundColor: '#0B3C58',
-    padding: 10,
-    // width : 100,
-    color: 'blue',
-    borderRadius: 100,
-    marginTop: 10,
-    alignItems: 'center'
-  },
   btnName: {
     color: 'white',
   },
   usersStyle: {
-    // flex: 1,
-    alignSelf: 'center',
     flexDirection: 'row',
-    margin: 20,
-    width: '60%',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    marginTop: 20,
+    flexWrap: 'wrap', 
+    justifyContent: 'space-between', 
   },
   image2: {
     width: '100%'

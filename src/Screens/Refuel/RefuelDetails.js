@@ -1,83 +1,98 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet, ScrollView, Pressable, SafeAreaView } from 'react-native';
-import Realm from 'realm';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { useRealm } from '@realm/react';
 import { useNavigation } from '@react-navigation/native';
 import DeleteRefuel from '../../utility/DeleteRefuel';
+
+
+
 const RefuelDetails = ({ route }) => {
     const { refuelItem } = route.params;
-    const [refuelData, setRefuelData] = useState([]);
-    const selectedUserId = UseUserStore((state) => state.selectedUserId)
-    const refuelSelectedVehicleId = UseUserStore((state) => state.refuelSelectedVehicleId);
     const realm = useRealm();
     const navigation = useNavigation();
-    useEffect(() => {
-        // Add your code here that depends on refuelItem
-        console.log("props ", refuelItem)
-        console.log('RefuelDetails component mounted with refuelItem:', refuelItem);
 
-        // Example: If you need to use refuelItem in state or other logic
-        // setSomeState(refuelItem.someValue);
+    useEffect(() => {
+        console.log('RefuelDetails component mounted with refuelItem:', refuelItem);
     }, [refuelItem]);
 
-    const handleDelete = (rid,vid) =>{
-        DeleteRefuel(realm,rid,vid)
+    const handleDelete = (rid, vid) => {
+        DeleteRefuel(realm, rid, vid)
         navigation.goBack();
     }
 
     return (
-        <SafeAreaView>
+            <View style={styles.container}>
+                <View>
 
-       
-        <View >
+                    <View style={styles.headingContainer}>
+                        <View style={styles.subHeadingContainer}>
+                            <Pressable onPress={() => navigation.goBack()}>
+                                <Image source={require('../../assets/BackIcon.png')} ></Image>
+                            </Pressable>
+                            <Text style={styles.bigHeading}>{refuelItem.refuelDate}</Text>
+                            <Pressable onPress={() => handleDelete(refuelItem.id, refuelItem.vehicleId)}>
+                                <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
+                                </Image>
+                            </Pressable>
+                        </View>
+                        <Text style={styles.smallHeading}>{refuelItem.vehicleName}</Text>
+                    </View>
 
+                    <View style={styles.cardContainer}>
 
-            <View style={styles.headingContainer}>
-                <View style={styles.subHeadingContainer}>
-                    <Pressable onPress={() => navigation.goBack()}>
-                        <Image source={require('../../assets/BackIcon.png')} ></Image>
+                        <View style={styles.rowContainer}>
+                            <Text style={styles.heading}>Start Reading</Text>
+                            <Text style={styles.value}>{refuelItem.startReading}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Text style={styles.heading}>End Reading</Text>
+                            <Text style={styles.value}>{refuelItem.endReading}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Text style={styles.heading}>Consumed</Text>
+                            <Text style={styles.value}>{refuelItem.consumed}</Text>
+                        </View>
+                        <View style={styles.rowContainer}>
+                            <Text style={styles.heading}>Price</Text>
+                            <Text style={styles.value}>{refuelItem.price}</Text>
+                        </View>
+                    </View>
+                </View>
+
+                    <Pressable style={styles.bottom} onPress={() => { navigation.navigate('editRefuel', { data: refuelItem }) }}>
+                        <Text style={styles.bottomText}>Edit</Text>
                     </Pressable>
-                    <Text style={styles.bigHeading}>{refuelItem.refuelDate}</Text>
-                    <Pressable onPress={() => handleDelete(refuelItem.id,refuelItem.vehicleId)}>
-                        <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
-                        </Image>
-                    </Pressable>
-                </View>
-                <Text style={styles.smallHeading}>{refuelItem.vehicleName}</Text>
             </View>
-
-            <View style={styles.cardContainer}>
-
-                <View style={styles.rowContainer}>
-                    <Text style={styles.heading}>Start Reading</Text>
-                    <Text style={styles.value}>{refuelItem.startReading}</Text>
-                </View>
-                <View style={styles.rowContainer}>
-                    <Text style={styles.heading}>End Reading</Text>
-                    <Text style={styles.value}>{refuelItem.endReading}</Text>
-                </View>
-                <View style={styles.rowContainer}>
-                    <Text style={styles.heading}>Consumed</Text>
-                    <Text style={styles.value}>{refuelItem.consumed}</Text>
-                </View>
-                <View style={styles.rowContainer}>
-                    <Text style={styles.heading}>Price</Text>
-                    <Text style={styles.value}>{refuelItem.price}</Text>
-                </View>
-            </View>
-        </View>
-        </SafeAreaView>
     );
 };
 
 
 const styles = StyleSheet.create({
+    container : {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: "space-between",
+    },
+    bottom : {
+        borderWidth : 2,
+        padding : 10,
+        alignItems : 'center',
+        margin : 10,
+        width : '70%',
+        alignSelf : 'center',
+        borderRadius : 10,
+        borderColor : '#0B3C58',
+    },
+    bottomText : {
+        fontWeight : 'bold',
+        color : '#0B3C58'
+    },
     cardContainer: {
         backgroundColor: '#fff',
         borderRadius: 5,
         padding: 10,
-        margin: 10,
+        margin: 20,
         elevation: 3,
     },
     headingContainer: {

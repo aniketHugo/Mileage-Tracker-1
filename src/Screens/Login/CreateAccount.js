@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, Image, TextInput, Button, StyleSheet, SafeAreaView, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, TextInput, Button, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from '../../Database/mySchema';
-import Realm from 'realm';
 import { useRealm } from '@realm/react';
+
 import LinearGradient from 'react-native-linear-gradient';
 import BackHeader from '../../Navigation/BackHeader'
 
 const CreateAccount = () => {
   const navigation = useNavigation();
+  const realm = useRealm();
+
+  //states
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +18,7 @@ const CreateAccount = () => {
   const [errorMessage2, setErrorMessage2] = useState('');
   const [errorMessage3, setErrorMessage3] = useState('');
   const [checked, setChecked] = useState(false);
-  const realm = useRealm();
+
   const handleCheckboxToggle = () => {
     if (name && email && /^[a-zA-Z]+$/.test(name) && (/^[a-zA-Z]+$/.test(nickname) || nickname.length === 0) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setChecked(true);
@@ -51,52 +53,11 @@ const CreateAccount = () => {
       setErrorMessage3('Invalid Mail');
       return;
     } else {
-      console.log('Valid email address:', email);
+      // console.log('Valid email address:', email);
     }
 
     navigation.navigate('SetPassCode', { data: { name: name, nickname: nickname, email: email } })
-
-    console.log('Name:', name);
-    console.log('Nickname:', nickname);
-    console.log('Email:', email);
-
     return;
-
-    // Add the user to the Realm database
-
-    //   const userId = `${name}_${Date.now()}`; // You might want to generate a unique ID
-
-    //   realm.write(() => {
-    //     realm.create('User', {
-    //       id: userId,
-    //       name: name,
-    //       nickName: nickname,
-    //       email: email,
-    //     });
-    //   });
-
-    //   // Clear the form after adding the user
-    //   setName('');
-    //   setNickname('');
-    //   setEmail('');
-
-
-    //   const allUsers = realm.objects('User');
-    //   allUsers.forEach((user) => {
-    //     console.log('User ID:', user.id);
-    //     console.log('User Name:', user.name);
-    //     console.log('User Nickname:', user.nickName);
-    //     console.log('User Email:', user.email);
-    //     // Add more properties as needed
-    //   });
-
-    // // Log the contents of the User schema
-    // console.log('Users in Realm:', allUsers);
-
-    //   console.log()
-
-    //   // Navigate to the next screen or perform additional actions as needed
-    //   navigation.navigate('SetPassCode');
   };
 
   return (
@@ -106,13 +67,9 @@ const CreateAccount = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <KeyboardAvoidingView style={styles.mainPage}>
-
-
-        <SafeAreaView style={styles.container}>
-
-        <BackHeader/>
-          {/* <View > */}
+      <ScrollView contentContainerStyle={styles.mainPage}>
+        <View style={styles.container2}>
+          <BackHeader />
           <Text style={styles.mainHeading}> Create Account </Text>
           <Text style={styles.headings}> Name * </Text>
           <TextInput
@@ -141,7 +98,8 @@ const CreateAccount = () => {
             autoCapitalize="none"
           />
           <Text style={styles.errorHeading}>    {errorMessage3}</Text>
-        </SafeAreaView>
+        </View>
+
         <View style={styles.check}>
           <View style={styles.checkBox}>
             <TouchableOpacity onPress={handleCheckboxToggle} style={styles.Text}>
@@ -170,20 +128,16 @@ const CreateAccount = () => {
             </TouchableOpacity>
           </View>
 
-          {/* <Button title="Create Account" onPress={handleCreateAccount} /> */}
+
         </View>
-        {/* </View> */}
-
-
-      </KeyboardAvoidingView>
+      </ScrollView>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  container2: {
     marginTop: 10,
-    margin: 'auto',
     width: '90%',
     alignItems: 'flex-start',
     justifyContent: 'center',
@@ -191,7 +145,7 @@ const styles = StyleSheet.create({
   mainPage: {
     flex: 1,
     alignItems: 'center',
-    flexDirection: 'column',
+    // flexDirection: 'column',
     justifyContent: "space-between"
   },
   errorHeading: {
@@ -208,11 +162,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   check: {
-    height: 170,
     backgroundColor: 'white',
     alignItems: 'center',
+    paddingVertical : 10,
 
-    justifyContent: 'space-around',
   },
   checkText: {
     lineHeight: 17,
@@ -231,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 4,
     width: '100%',
   },
   buttonEnable: {

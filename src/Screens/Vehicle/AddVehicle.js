@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, TextInput,TouchableOpacity, Button, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Image, TextInput, TouchableOpacity, Button, Text, StyleSheet, Pressable } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import AddVehicleDB from '../../utility/AddVehicleDB';
 import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 
 const AddVehicle = () => {
   const realm = useRealm();
   const navigation = useNavigation();
+  const mystore = UseUserStore();
+
+
   const [vehicleName, setVehicleName] = useState('');
   const [vehicleType, setVehicleType] = useState('option1');
   const [engineCC, setEngineCC] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const setSelectedVehicleImage = UseUserStore((state) => state.setSelectedVehicleImage);
 
-  useEffect(() => {
 
-  },[selectedImage])
   const [selectedImage, setSelectedImage] = useState(null);
 
   const openImagePicker = async () => {
@@ -28,21 +28,15 @@ const AddVehicle = () => {
       if (!result.didCancel && !result.error) {
         const source = { uri: result.assets[0].uri };
         console.log(source.uri)
-        setSelectedImage(source.uri); 
-        setSelectedVehicleImage(`data:image/png;base64,${source.uri}`)
-        // saveImageToRealm(result.base64);
+        setSelectedImage(source.uri);
+
+        mystore.setSelectedVehicleImage(`data:image/png;base64,${source.uri}`)
       }
-      else{
+      else {
         console.log("Cannot add image")
       }
-      // const photo = result.edges[0]?.node.image;
-      
-      // if (photo) {
-      //   const source = { uri: photo.uri };
-      //   setSelectedImage(source);
-      //   // Save the image to your database or perform any other actions
-      // }
-    }catch (error) {
+
+    } catch (error) {
       console.error('Error launching image library:', error);
     }
   };
@@ -51,42 +45,54 @@ const AddVehicle = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
-  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle);
-  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId);
 
-  const selectedUserId = UseUserStore((state) => state.selectedUserId);
+
+
   const handleOptionSelect = (option) => {
     console.log('Selected:', option);
     setVehicleType(option)
-    setDropdownVisible(false); // Close the dropdown after selection
+    setDropdownVisible(false);
   };
- 
-  const handleSubmit = () => {
-    if (!selectedUserId) {
+
+  const handleSubmit = async () => {
+    if (!mystore.selectedUserId) {
       console.log('No user selected.');
       return;
     }
 
+    const data = await AddVehicleDB(realm, mystore.selectedUserId, vehicleName, vehicleType, engineCC, selectedImage);
+    console.log("ret = ", data);
 
-    const data = AddVehicleDB(realm,selectedUserId, vehicleName, vehicleType, engineCC,selectedImage);
-    setRefuelSelectedVehicle(vehicleName)
-    setRefuelSelectedVehicleId(data._j)
-    setSelectedImage(null);
-    console.log('Vehicle added successfully id = ',data)
-    navigation.goBack();
-    
+    if (data.msg == "Added Successfully") {
+      console.log("veh added resp = ", data)
+      mystore.setRefuelSelectedVehicle(vehicleName)
+      mystore.setRefuelSelectedVehicleId(data.id)
+      mystore.setVehicleLength(data.len) 
+      setSelectedImage(`data:image/png;base64,${selectedImage}`);
+      console.log('Vehicle added successfully id = ', data.id)
+      navigation.goBack();
+    }
+    else {
+      console.warn("Vehicle Not added !!!!! ", data._j.msg)
+    }
+
+
   };
 
 
   return (
     <View style={styles.container}>
-      <Image source={selectedImage} />
-      <Text>{selectedImage}</Text>
       <Text style={styles.heading1}>Add Vehicle</Text>
-      <View style={styles.container}>
-      {/* <Button title="Pick Image" onPress={openImagePicker} /> */}
-      <Image source={selectedImage} />
-    </View>
+      <View style={styles.container2}>
+
+      <Text>mystore.selectedUserId = {mystore.selectedUserId} </Text>
+      <Text>mystore.selectedUserName = {mystore.selectedUserName} </Text>
+      <Text>mystore.refuelSelectedVehicle = {mystore.refuelSelectedVehicle} </Text>
+      <Text>mystore.refuelSelectedVehicleId = {mystore.refuelSelectedVehicleId} </Text>
+      <Text>mystore.vehicleLength = {mystore.vehicleLength} </Text>
+      {/* <Text>mystore.selectedVehicleImage = {mystore.selectedVehicleImage.length} </Text> */}
+
+      </View>
       <Pressable onPress={openImagePicker} >
         <Image resizeMode="contain" source={require('../../assets/CameraLogo.png')} style={styles.image1} />
       </Pressable>
@@ -129,7 +135,7 @@ const AddVehicle = () => {
         onChangeText={(text) => setEngineCC(text)}
       />
       <Button title="Add" onPress={handleSubmit} />
-      
+
     </View>
   );
 };
@@ -161,24 +167,24 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     width: '100%',
-    zIndex : 2,
-    height : 60,
-    justifyContent : 'center'
+    zIndex: 2,
+    height: 60,
+    justifyContent: 'center'
   },
   dropdown: {
     // position: 'relative',
     // top: 40,
     backgroundColor: '#fff',
     borderRadius: 5,
-    width : 150,
+    width: 150,
     padding: 10,
-    marginTop : 0,
+    marginTop: 0,
     zIndex: 3,
-    alignItems : 'center',
+    alignItems: 'center',
   },
-  dropdownText : {
-    padding : 5,
-    fontSize : 15,
+  dropdownText: {
+    padding: 5,
+    fontSize: 15,
   }
 });
 

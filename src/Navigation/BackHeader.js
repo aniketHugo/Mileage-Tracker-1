@@ -1,29 +1,24 @@
-import React, { useState } from 'react';
-import { View, Button, TouchableOpacity, Text, StyleSheet, Image, Pressable } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import Draw from './Draw';
 
 
 const BackHeader = () => {
-
-    const handleButton1 = () => {
-        console.log('Button 1 pressed');
-    };
 
 
     const navigation = useNavigation();
 
     return (
-            <View style={styles.header}>
-                <Pressable onPress={() => navigation.goBack()} >
-                    <Image source={require('../assets/BackArrow.png')}></Image>
-                </Pressable>
-            </View>
+        <View style={styles.header1}>
+            <Pressable onPress={() => navigation.goBack()} >
+                <Image source={require('../assets/BackArrow.png')}></Image>
+            </Pressable>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    header: {
+    header1: {
         paddingVertical: 12,
     },
 });
