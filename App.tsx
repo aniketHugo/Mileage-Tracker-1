@@ -1,8 +1,10 @@
 import React from 'react';
 import { RealmProvider } from '@realm/react';
 import Footer from './src/Navigation/Footer';
-import { AuthenticationSchema, PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from './src/Database/mySchema';
+// import { AuthenticationSchema, RefuelDataSchema, UserSchema, VehicleSchema } from './src/Database/mySchema';
 import Realm from 'realm';
+
+import { User , Refuel , Vehicle,Authentication} from './src/Database/mySchema'
 
 const SCHEMA_VERSION = 1; // Increment the schema version
 
@@ -42,9 +44,9 @@ const migrationFunction = (oldRealm, newRealm) => {
 const App = () => {
   return (
     <RealmProvider
-      schema={[PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema,AuthenticationSchema]}
+      schema={[ User , Refuel , Vehicle,Authentication]}
       schemaVersion={SCHEMA_VERSION}
-      migration={migrationFunction}
+      // migration={migrationFunction}
     >
       <Footer />
     </RealmProvider>

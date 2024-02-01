@@ -71,9 +71,7 @@ const Footer = ({ navigation, state }) => {
 
 const TabNav = () => {
   return (
-      <Tab.Navigator tabBarOptions={{
-        swipeEnabled: true, // Disable default swipe between tabs
-      }} tabBar={(props) => <Footer {...props} />}>
+      <Tab.Navigator tabBar={(props) => <Footer {...props} />}>
 
         <Tab.Screen options={{ headerShown: false }}
           name="Homes" component={Draw} />

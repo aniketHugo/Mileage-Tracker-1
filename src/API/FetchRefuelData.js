@@ -1,24 +1,21 @@
-const FetchRefuelData = (realm,selectedUserId,refuelSelectedVehicleId) => {
+const FetchRefuelData = (realm,selectedUserId,refuelSelectedVehicleId,mystore) => {
     try {
       if(!refuelSelectedVehicleId || !selectedUserId){
         return [];
       }
-      const user = realm.objectForPrimaryKey('User', selectedUserId);
-      const vehicle = realm.objectForPrimaryKey('Vehicle', refuelSelectedVehicleId);
-
-      if (user && vehicle) {
-        const refuelDataArray = vehicle.refuelData.filtered(`vehicle == $0`, vehicle);
-
+        const refuel = realm
+        .objects('Refuel')
+        .filtered('vehicleId == $0', (refuelSelectedVehicleId).toString());
+        const refuelDataArray = refuel;
+        // console.log("User aand vehicle ok = ",refuelDataArray)
+        
         // Convert the Realm refuelDataArray to a plain JavaScript array
-        const refuelDataPlainArray = Array.from(refuelDataArray);
+        // const refuelDataPlainArray = Array.from(refuelDataArray);
+        mystore.setRefuelData(refuel);
 
-        return refuelDataPlainArray;
-      } else {
-        console.log('User or Vehicle not found.');
-        return [];
-      }
+        return refuelDataArray;
     } catch (error) {
-      console.log('Error fetching refuel data:', error);
+      console.log('Oh! Error fetching refuel data:', error);
     }
   };
 

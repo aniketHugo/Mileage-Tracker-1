@@ -4,17 +4,10 @@ import { VictoryChart, VictoryBar, VictoryAxis } from 'victory-native';
 import { useRealm } from "@realm/react";
 import FetchRefuelData from "../../API/FetchRefuelData";
 import UseUserStore from "../../ZustandStore/ZuStore";
-const MoneyGraph = (props) => {
-    const [refuelData, setRefuelData] = useState([]);
-    const { selectedUserId, selectedVehicleImage, refuelSelectedVehicleId } = UseUserStore();
-    const realm = useRealm()
-    useEffect(()=>{
-        if(props.refuelData){
-          setRefuelData(props.refuelData)
-        }
-      },[props])
+const MoneyGraph = () => {
+    const mystore = UseUserStore();
     // Group data by months and calculate total money spent for each month
-    const groupedData = refuelData.reduce((acc, data) => {
+    const groupedData = mystore.refuelData.reduce((acc, data) => {
         const refuelDate = new Date(data.refuelDate);
         const monthKey = refuelDate.getMonth();
 
@@ -26,9 +19,9 @@ const MoneyGraph = (props) => {
         return acc;
     }, {});
 
-    // console.log("ref = ",refuelData)
+    // console.log("ref = ",mystore.refuelData)
     const chartData = Object.values(groupedData);
-    if(refuelData.length == 0){
+    if(mystore.refuelData.length == 0){
         return (
             <></>
         )

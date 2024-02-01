@@ -11,82 +11,88 @@ const RefuelDetails = ({ route }) => {
     const { refuelItem } = route.params;
     const realm = useRealm();
     const navigation = useNavigation();
+    const mystore = UseUserStore();
 
     useEffect(() => {
         console.log('RefuelDetails component mounted with refuelItem:', refuelItem);
     }, [refuelItem]);
 
-    const handleDelete = (rid, vid) => {
-        DeleteRefuel(realm, rid, vid)
-        navigation.goBack();
+
+    const handleDelete = async (rid, vid) => {
+        // Find the RefuelData entry in the vehicle's refuelData linkingObjects
+
+        const res = await DeleteRefuel(realm, rid, vid, mystore);
+        // console.log("res = ", res)
+        // setRefuelData(res);
+        navigation.navigate('Refuel');
     }
 
     return (
-            <View style={styles.container}>
-                <View>
+        <View style={styles.container}>
+            <View>
 
-                    <View style={styles.headingContainer}>
-                        <View style={styles.subHeadingContainer}>
-                            <Pressable onPress={() => navigation.goBack()}>
-                                <Image source={require('../../assets/BackIcon.png')} ></Image>
-                            </Pressable>
-                            <Text style={styles.bigHeading}>{refuelItem.refuelDate}</Text>
-                            <Pressable onPress={() => handleDelete(refuelItem.id, refuelItem.vehicleId)}>
-                                <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
-                                </Image>
-                            </Pressable>
-                        </View>
-                        <Text style={styles.smallHeading}>{refuelItem.vehicleName}</Text>
+                <View style={styles.headingContainer}>
+                    <View style={styles.subHeadingContainer}>
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <Image source={require('../../assets/BackIcon.png')} ></Image>
+                        </Pressable>
+                        <Text style={styles.bigHeading}>{refuelItem.refuelDate}</Text>
+                        <Pressable onPress={() => handleDelete(refuelItem.id, refuelItem.vehicleId)}>
+                            <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
+                            </Image>
+                        </Pressable>
                     </View>
-
-                    <View style={styles.cardContainer}>
-
-                        <View style={styles.rowContainer}>
-                            <Text style={styles.heading}>Start Reading</Text>
-                            <Text style={styles.value}>{refuelItem.startReading}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <Text style={styles.heading}>End Reading</Text>
-                            <Text style={styles.value}>{refuelItem.endReading}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <Text style={styles.heading}>Consumed</Text>
-                            <Text style={styles.value}>{refuelItem.consumed}</Text>
-                        </View>
-                        <View style={styles.rowContainer}>
-                            <Text style={styles.heading}>Price</Text>
-                            <Text style={styles.value}>{refuelItem.price}</Text>
-                        </View>
-                    </View>
+                    <Text style={styles.smallHeading}>{refuelItem.vehicleName}</Text>
                 </View>
 
-                    <Pressable style={styles.bottom} onPress={() => { navigation.navigate('editRefuel', { data: refuelItem }) }}>
-                        <Text style={styles.bottomText}>Edit</Text>
-                    </Pressable>
+                <View style={styles.cardContainer}>
+
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.heading}>Start Reading</Text>
+                        <Text style={styles.value}>{refuelItem.startReading}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.heading}>End Reading</Text>
+                        <Text style={styles.value}>{refuelItem.endReading}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.heading}>Consumed</Text>
+                        <Text style={styles.value}>{refuelItem.consumed}</Text>
+                    </View>
+                    <View style={styles.rowContainer}>
+                        <Text style={styles.heading}>Price</Text>
+                        <Text style={styles.value}>{refuelItem.price}</Text>
+                    </View>
+                </View>
             </View>
+
+            <Pressable style={styles.bottom} onPress={() => { navigation.navigate('editRefuel', { data: refuelItem }) }}>
+                <Text style={styles.bottomText}>Edit</Text>
+            </Pressable>
+        </View>
     );
 };
 
 
 const styles = StyleSheet.create({
-    container : {
+    container: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: "space-between",
     },
-    bottom : {
-        borderWidth : 2,
-        padding : 10,
-        alignItems : 'center',
-        margin : 10,
-        width : '70%',
-        alignSelf : 'center',
-        borderRadius : 10,
-        borderColor : '#0B3C58',
+    bottom: {
+        borderWidth: 2,
+        padding: 10,
+        alignItems: 'center',
+        margin: 10,
+        width: '70%',
+        alignSelf: 'center',
+        borderRadius: 10,
+        borderColor: '#0B3C58',
     },
-    bottomText : {
-        fontWeight : 'bold',
-        color : '#0B3C58'
+    bottomText: {
+        fontWeight: 'bold',
+        color: '#0B3C58'
     },
     cardContainer: {
         backgroundColor: '#fff',

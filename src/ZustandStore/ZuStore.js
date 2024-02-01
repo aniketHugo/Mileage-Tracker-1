@@ -4,7 +4,7 @@ import Realm from 'realm';
 const UseUserStore = create((set) => ({
   selectedUserId: null,
   selectedUserName : null,
-
+  refuelData : [],
   
   refuelSelectedVehicle : 'select',
   refuelSelectedVehicleId : null,
@@ -14,6 +14,7 @@ const UseUserStore = create((set) => ({
   selectedVehicleImage : null,
 //////////////////////////////////////////////////////
   setSelectedUserId: (userId) => set({ selectedUserId: userId }),
+  setRefuelData: (data) => set({ refuelData: data }),
   setSelectedUserName: (name) => set({ selectedUserName: name }),
 
   setRefuelSelectedVehicle: (name) => set({ refuelSelectedVehicle: name }),

@@ -14,27 +14,53 @@ const DrawerContent = ({ navigation }) => {
     setModalVisible(!isModalVisible);
   };
   const realm = useRealm();
-  const setRefuelSelectedVehicleId = UseUserStore((state) => state.setRefuelSelectedVehicleId)
-  const setRefuelSelectedVehicle = UseUserStore((state) => state.setRefuelSelectedVehicle)
-  const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
-  const selectedUserId = UseUserStore((state) => state.selectedUserId);
-  const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
-  const selectedVehicleImage = UseUserStore((state) => state.selectedVehicleImage);
   const {selectedUserName} = UseUserStore();
 
+  const mystore =  UseUserStore();
   const handleDelete = async () =>{
-    const res = await DeleteAccount(realm,selectedUserId);
-    console.log("Delete Account resp :-  ",res);
+    // const res = await DeleteAccount(realm,mystore);
+    const user = realm.objectForPrimaryKey('User', mystore.selectedUserId);
+    const vehicles = realm.objects('Vehicle').filtered('userId = $0', (mystore.selectedUserId).toString());
+    const refuel = realm.objects('Refuel').filtered('userId = $0', (mystore.selectedUserId).toString());
+    const auth = realm.objects('Authentication')[0];
 
-    if(res.msg == "Deleted"){
-      console.log("Account Deleted Successfully")
-      setSelectedUserId(null)
-      setSelectedUserName(null)
-      setRefuelSelectedVehicleId(null)
-      selectedVehicleImage(null)
-      setRefuelSelectedVehicle('select')
-      navigation.navigate('LoginStack')
+    if (user) {
+      console.log("$$$ user found")
+        realm.write(() => {
+            realm.delete(vehicles);
+            realm.delete(user);
+            realm.delete(refuel);
+        });
+      console.log("$$$ user del")
+
+        if (auth) {
+          realm.write(() => {
+            realm.delete(auth);
+          });
+            console.log("Auth deleted");
+        }
+        else {
+            console.log("Auth does not exist")
+        }
+        console.log("Deleted ", mystore.selectedUserId);
+        mystore.setSelectedUserId(null)
+        mystore.setSelectedUserName(null)
+        mystore.setRefuelSelectedVehicleId(null)
+        mystore.setRefuelSelectedVehicle('select')
+
     }
+    console.log("Delete Account resp :-  ");
+      navigation.navigate('LoginStack')
+
+    // if(res.msg == "Deleted"){
+    //   console.log("Account Deleted Successfully")
+    //   // setSelectedUserId(null)
+    //   // setSelectedUserName(null)
+    //   // setRefuelSelectedVehicleId(null)
+    //   // setSelectedVehicleImage(null)
+    //   // setRefuelSelectedVehicle('select')
+    //   navigation.navigate('LoginStack')
+    // }
   }
 
   return (

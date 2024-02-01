@@ -22,14 +22,15 @@ const SignIn = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const allUsers = await FetchUsers(realm);
-      setUsers(allUsers);
+      const users = await realm.objects('User');
+      setUsers(users);
       setLoading(false);
     };
     fetchUsers();
-  }, [mystore.selectedUserId]);
+  }, []);
 
   const handleUserPress = async (userId, userName) => {
+    console.log("Swith : - ",userId,typeof(userId))
     const res = await SwitchUser(realm, navigation, userId,mystore);
     console.log(res);
     

@@ -1,6 +1,7 @@
-
+import Realm from "realm";
 const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
     try {
+        console.log("login  = ",userId, typeof(userId))
         const user = realm.objectForPrimaryKey('User', userId);
         const auth = realm.objects('Authentication')[0];
 
@@ -19,21 +20,20 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
                 auth.name = user.name;
                 auth.userId = user.id;
                 auth.email = user.email;
-                auth.isLoggedIn = user.isLoggedIn;
                 auth.nickName = user.nickName;
                 auth.passCode = user.passCode;
 
                 console.log(`User with ID ${userId} LoggedIn (updated)`);
                 console.log('Auth updated')
             } else {
+                const AuthId = new Realm.BSON.ObjectId();
                 const newAuth = {
-                    id: generateUniqueId(),
+                    id: AuthId,
                     name: user.name,
                     userId: user.id,
                     email: user.email,
-                    isLoggedIn: user.isLoggedIn,
                     nickName: user.nickName,
-                    passCode: '2222',
+                    passCode: user.passCode,
                 };
                 // Add the new vehicle to the Vehicle schema
                 realm.create('Authentication', newAuth);
@@ -42,7 +42,9 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
         });
         mystore.setSelectedUserId(user.id);
         mystore.setSelectedUserName(user.name);
-        const vehicles = user.vehicles;
+
+        const vehicles = realm.objects('Vehicle').filtered('userId == $0', (userId).toString());
+
 
 
         if(vehicles.length > 0){
@@ -64,9 +66,6 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
     } catch (error) {
         console.error('Error updating user login status:', error);
     }
-};
-const generateUniqueId = () => {
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 };
 
 

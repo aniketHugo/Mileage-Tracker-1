@@ -29,6 +29,7 @@ const EnterPasscode = ({route}) => {
 
   const handleSubmit = async () => {
     console.log(pinCode1,data);
+    console.log("Param = ",data.userId, typeof(data.userId))
     const res = await LoginUser(realm, navigation, data.userId,pinCode1,mystore);
     console.log("enter passcode res :- ",res)
     if(res == "wrong passcode entered"){

@@ -34,13 +34,8 @@ const SetPassCode = ({route}) => {
     }
     else{
       setErrorMsg('')
-      const datas = CreateUser(realm,data.name,data.nickname,pinCode1,data.email);
-      console.log('User created with user Id = ', datas._j.userId);
-      mystore.setSelectedUserId(datas._j.userId)
-      mystore.setSelectedUserName(datas._j.name)
-      mystore.setRefuelSelectedVehicleId(null)
-      mystore.setRefuelSelectedVehicle('select')
-      mystore.setVehicleLength(0);
+      const datas = CreateUser(realm,data.name,data.nickname,pinCode1,data.email,mystore);
+      console.log("create user resp = ",datas)
       navigation.navigate('TabNav') 
     }
   };

@@ -2,29 +2,25 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View, Image, Text, StyleSheet, ScrollView, SafeAreaView, Pressable } from 'react-native';
 import { useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-
-import OpenApp from '../../utility/OpenApp';
+import LinearGradient from 'react-native-linear-gradient';
+import UseUserStore from '../../ZustandStore/ZuStore';
+import FetchRefuelData from '../../API/FetchRefuelData';
 import Header from '../../Navigation/Header';
 import VehicleList from '../Refuel/VehicleList';
-import UseUserStore from '../../ZustandStore/ZuStore';
 import FuelData2 from './FuelData2';
-import LinearGradient from 'react-native-linear-gradient';
 import MoneyGraph from '../Performance/MoneyGraph';
 import FuelInsights from './FuelInsights';
-import FetchRefuelData from '../../API/FetchRefuelData';
 
 const Home = () => {
   const realm = useRealm();
   const navigation = useNavigation();
-
   const mystore = UseUserStore();
-  const [refuelData, setRefuelData] = useState([]);
+  
   useFocusEffect( 
     useCallback(() => {
       const fetchRefuelData = async () => {
         try {
-          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
-          setRefuelData(data);
+          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId,mystore);
         } catch (error) {
           console.log('Error fetching refuel data:', error);
         }
@@ -67,7 +63,7 @@ const Home = () => {
                   </View>
                 }
 
-                {refuelData.length == 0 ?
+                {mystore.refuelData.length == 0 ?
                   <View style={styles.noData}>
                   <View style={styles.content3}>
                     <Image source={require('../../assets/clowd.png')} style={styles.image1} />
@@ -85,7 +81,7 @@ const Home = () => {
                       <Text style={styles.fuelText}> Fuel Insights</Text>
                     </View>
 
-                    <FuelInsights refuelData={refuelData} />
+                    <FuelInsights />
 
                     <View style={styles.heading}>
                       <Text style={styles.fuelText}>Money spend on fuel</Text>
@@ -98,7 +94,7 @@ const Home = () => {
                           <Text style={styles.fuelText2}> see all </Text>
                         </Pressable>
                       </View>
-                      <FuelData2 refuelData={refuelData}/>
+                      <FuelData2 />
                     </View>
                   </>
                 }

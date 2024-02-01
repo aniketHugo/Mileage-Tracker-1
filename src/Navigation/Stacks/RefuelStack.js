@@ -8,7 +8,7 @@ import AddRefuel from '../../Screens/Refuel/AddRefuel';
 import RefuelDetails from '../../Screens/Refuel/RefuelDetails';
 import EditRefuel from '../../Screens/Refuel/EditRefuel';
 const Stack = createStackNavigator();
-const HomeStack = createNativeStackNavigator();
+const Mystack = createNativeStackNavigator();
 const RefuelStack = () => {
   const HomeScreen = ({ navigation }) => {
     return (
@@ -34,13 +34,13 @@ const RefuelStack = () => {
 
   return (
     // <NavigationContainer>
-      <HomeStack.Navigator initialRouteName="refuel">
-        <HomeStack.Screen name="Refuel" component={Refuel} />
-        <HomeStack.Screen name="addRefuel" component={AddRefuel} />
-        <HomeStack.Screen name="editRefuel" component={EditRefuel} />
-        <HomeStack.Screen options={{ headerShown: false }}   name="RefuelDetails" component={RefuelDetails} />
-      </HomeStack.Navigator>
-    // </NavigationContainer>
+      <Mystack.Navigator initialRouteName="refuel">
+        <Mystack.Screen name="Refuel" component={Refuel} />
+        <Mystack.Screen name="addRefuel" component={AddRefuel} />
+        <Mystack.Screen name="editRefuel" component={EditRefuel} />
+        <Mystack.Screen options={{ headerShown: false }}   name="RefuelDetails" component={RefuelDetails} />
+      </Mystack.Navigator>
+    // </NavigationContainer>  ads
   );
 };
 

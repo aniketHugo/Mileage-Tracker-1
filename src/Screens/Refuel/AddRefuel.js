@@ -40,7 +40,7 @@ const AddRefuel = () => {
       consumed,
       price);
     console.log('Refueled successfully')
-    navigate.goBack();
+    // navigate.goBack();
   };
 
   return (

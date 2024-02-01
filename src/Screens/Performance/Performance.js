@@ -18,8 +18,8 @@ const FuelGraph = () => {
       const fetchRefuelData = async () => {
         try {
           const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
-          setRefuelData(data);
-          console.log("refuel data fetched");
+         
+          // console.log("refuel data fetched");
         } catch (error) {
           console.log('Error fetching refuel data:', error);
         }
@@ -42,8 +42,8 @@ const FuelGraph = () => {
             </View>
           }
           <View style={styles.content}>
-              <MoneyGraph refuelData={refuelData} />
-              <MileageGraph refuelData={refuelData}/>
+              <MoneyGraph  />
+              <MileageGraph />
             
           </View>
         </View>

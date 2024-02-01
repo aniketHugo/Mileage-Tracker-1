@@ -23,7 +23,7 @@ const VehicleList = () => {
 
   useEffect(() => {
     if (selectedUserId) {
-      const vehicles = realm.objects('Vehicle').filtered('user.id = $0', selectedUserId);
+      const vehicles = realm.objects('Vehicle').filtered('userId = $0', (selectedUserId).toString());
       setUserVehicles(Array.from(vehicles)); 
       // if(vehicles.length > 0) setRefuelSelectedVehicleId(vehicles[0].id)
       // console.log(vehicles.length)

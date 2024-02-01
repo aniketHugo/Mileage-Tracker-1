@@ -1,56 +1,58 @@
 import Realm from 'realm';
-import { PerformanceDataSchema, RefuelDataSchema,UserSchema, VehicleSchema } from '../Database/mySchema';
-import { useRealm } from '@realm/react';
-import UseUserStore from '../ZustandStore/ZuStore';
 import RNFS from 'react-native-fs';
 
-const AddVehicleDB = async (realm, userId, name, type, cc,uri) => {
+const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
   try {
     const existingUser = realm.objectForPrimaryKey('User', userId);
-   let fileContent = "";
-    if(uri){
-       fileContent = await RNFS.readFile(uri, 'base64');
-    } 
-
-    console.log("File content =  ",fileContent.length)
+    
     if (!existingUser) {
       console.error(`User with ID ${userId} does not exist.`);
-      return {msg : "User Not exists"};
+      return { msg: "User Not exists" };
     }
-    const geniD = generateUniqueId();
-    let status  = 0;
+    
+    let fileContent = "";
+    if (uri) {
+      fileContent = await RNFS.readFile(uri, 'base64');
+    }
+    console.log("File content =  ", fileContent.length)
+
+    const vehicleId = new Realm.BSON.ObjectId();
+    let status = 0;
+    
+    const uid = userId.toString();
+    console.log("user id = ",  uid,typeof(uid));
+
     realm.write(() => {
       const newVehicle = {
-        id: geniD,
+        id: vehicleId,
+        userId: uid,
         name: name,
         vehicleType: type,
         engineCC: parseInt(cc, 10),
-        vehicleImage : fileContent,
-        user: existingUser, // Use the existing user object
+        vehicleImage: fileContent,
       };
 
-      if(!newVehicle.vehicleImage){
+      if (!newVehicle.vehicleImage) {
         console.log("No image exists")
-        return {msg : "Failed to add"};
+        return { msg: "Failed to add" };
       }
-      else{
+      else {
         realm.create('Vehicle', newVehicle);
         status = 1;
       }
 
-      // Add the new vehicle to the Vehicle schema
     });
 
-    // const numVehicles = realm.objects('Vehicle').length;
-    // console.log('Veh len = ',numVehicles)
+    const vehicles = realm.objects('Vehicle').filtered('userId = $0', userId.toString())
 
-    // return geniD;
-    const vehicles = realm.objects('Vehicle').filtered('user.id = $0', userId);
+    if (status == 1) {
+      mystore.setRefuelSelectedVehicle(name)
+      mystore.setRefuelSelectedVehicleId(vehicleId) 
+      mystore.setVehicleLength(vehicles.length) 
 
-    if(status == 1){
-      return { msg : "Added Successfully" , id : geniD,len : vehicles.length};
+      return { msg: "Added Successfully", id: (vehicleId).toString, len: vehicles.length };
     }
-    return {msg : "Failed to add"};
+    return { msg: "Failed to add" };
 
     // console.log('Vehicle added to database:', { userId, name, type, cc });
   } catch (error) {

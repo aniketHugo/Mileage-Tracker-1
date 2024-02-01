@@ -6,17 +6,13 @@ import FetchRefuelData from "../../API/FetchRefuelData";
 import UseUserStore from "../../ZustandStore/ZuStore";
 
 const MileageGraph = (props) => {
-    const [refuelData, setRefuelData] = useState([]);
-    const realm = useRealm();
 
-    useEffect(()=>{
-        if(props.refuelData){
-          setRefuelData(props.refuelData)
-        }
-      },[props])
+    const mystore = UseUserStore();
+
+ 
 
     // Group data by months and calculate average mileage for each month
-    const groupedData = refuelData.reduce((acc, data) => {
+    const groupedData = mystore.refuelData.reduce((acc, data) => {
         const refuelDate = new Date(data.refuelDate);
         const monthKey = refuelDate.getMonth();
 

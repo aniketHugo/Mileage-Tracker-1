@@ -14,8 +14,10 @@ const VehiclesData = () => {
   useFocusEffect(
     useCallback(() => {
       if (mystore.selectedUserId) {
-        const vehicles = realm.objects('Vehicle').filtered('user.id = $0', mystore.selectedUserId);
+        console.log("Vehicle selected user = ",typeof(mystore.selectedUserId), " | ",mystore.selectedUserId)
+        const vehicles = realm.objects('Vehicle').filtered('userId = $0', (mystore.selectedUserId).toString());
         setUserVehicles(Array.from(vehicles));
+        // console.log("VehicleData" , vehicles)
       }
     }, [mystore.selectedUserId])
   );
@@ -52,6 +54,9 @@ const VehiclesData = () => {
               </View>
               <Text style={{ ...styles.text, fontSize: 18, fontWeight: 'bold' }}>{vehicle.name}</Text>
               <Text style={styles.text}>{vehicle.engineCC} CC</Text>
+              <Text style={styles.text}>USER iD {vehicle.userId}</Text>
+              <Text style={styles.text}>Vehicle iD {(vehicle.id).toString()}</Text>
+              
             </View>
           ))}
         </ScrollView>

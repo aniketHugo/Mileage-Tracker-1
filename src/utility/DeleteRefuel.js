@@ -1,31 +1,32 @@
 
 
-const DeleteRefuel = async (realm,refuelId, vehicleId) => {
+const DeleteRefuel = async (realm, refuelId, vehicleId,mystore) => {
   try {
-    console.log("here ",refuelId, vehicleId);
-  
-    realm.write(() => {
-      // Find the specific Vehicle
-      const vehicle = realm.objectForPrimaryKey('Vehicle', vehicleId);
+    console.log("here ", refuelId, vehicleId);
 
-      if (vehicle) {
-        // Find the RefuelData entry in the vehicle's refuelData linkingObjects
-        const refuelDataToDelete = vehicle.refuelData.find((refuelData) => refuelData.id === refuelId);
+    
+    // Find the RefuelData entry in the vehicle's refuelData linkingObjects
+    const refuelDataToDelete = realm.objectForPrimaryKey('Refuel', refuelId);
+    
+    if (refuelDataToDelete) {
+      // Delete the RefuelData entry
+      realm.write(() => {
+        realm.delete(refuelDataToDelete);
+      });
+      const refuel = realm
+        .objects('Refuel')
+        .filtered('vehicleId == $0', (refuelId).toString());
 
-        if (refuelDataToDelete) {
-          // Delete the RefuelData entry
-          realm.delete(refuelDataToDelete);
-          console.log(`RefuelData with id ${refuelId} deleted successfully.`);
-        } else {
-          console.log(`RefuelData with id ${refuelId} not found for vehicle with id ${vehicleId}.`);
-        }
+        mystore.setRefuelData(refuel)
+        return refuel;
       } else {
-        console.log(`Vehicle with id ${vehicleId} not found.`);
+        console.log(`RefuelData with id ${refuelId} not found for vehicle with id ${vehicleId}.`);
+        return [];
       }
-    });
+
   }
-  catch (err){
-    console.error("PP ",err)
+  catch (err) {
+    console.error("PP ", err)
   }
 };
 

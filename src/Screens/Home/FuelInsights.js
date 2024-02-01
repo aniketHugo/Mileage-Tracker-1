@@ -6,14 +6,10 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
 
-const FuelInsights = (props) => {
-    const [refuelData, setRefuelData] = useState([]);
+const FuelInsights = () => {
     const [avg, setAvg] = useState();
     const [lastAvg, setLastAvg] = useState();
     const mystore = UseUserStore();
-    const realm = useRealm()
-    const navigation = useNavigation();
-    const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
     useEffect(
         () => {
@@ -21,7 +17,7 @@ const FuelInsights = (props) => {
                 try {
                     // const data = FetchRefuelData(realm, mystore.selectedUserId, ref_id);
                     // setRefuelData(data)
-                    const data = props.refuelData;
+                    const data = mystore.refuelData;
                     let totalfuel = 0;
                     let totalDist = 0;
                     data.forEach((e) => {
@@ -39,7 +35,7 @@ const FuelInsights = (props) => {
                 }
             };
             fetchRefuelData();
-        }, [props.refuelData])
+        }, [mystore.refuelData])
 
         
     return (

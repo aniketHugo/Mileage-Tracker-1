@@ -3,9 +3,11 @@ import { View, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import VehicleList from './VehicleList';
 import FuelData from './FuelData';
-import { useRealm } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
+import { Refuel } from '../../Database/mySchema';
+import DeleteRefuel from '../../utility/DeleteRefuel';
 
 const NoVehicle = () => {
   const Navigation = useNavigation();
@@ -14,7 +16,7 @@ const NoVehicle = () => {
       {/* No vehicle exists :- */}
       <Image source={require('../../assets/Maskgroup.png')} style={styles.image2} />
       <Text style={styles.heading2} > Add a vehicle to start tracking its {'\n'} refuelling & performance </Text>
-  <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn3} >
+      <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn3} >
         <Text style={styles.btnName}>
           Add Vehicle
         </Text>
@@ -22,7 +24,6 @@ const NoVehicle = () => {
     </View>
   )
 }
-
 const EmptyData = () => {
   const Navigation = useNavigation();
   return (
@@ -42,44 +43,55 @@ const EmptyData = () => {
   )
 }
 
-const VehicleExists = () => {
-
-  return (
-    <View style={styles.container2}>
-      {/* Vehicle Exists */}
-      <VehicleList />
-      <FuelData data={refuelData} />
-      <View style={styles.btn2}>
-
-        <Pressable onPress={() => Navigation.navigate('addRefuel')} style={styles.btn} >
-          <Image source={require('../../assets/Large.png')}></Image>
-        </Pressable>
-      </View>
-    </View>
-  )
-}
-
-
-const Refuel = () => {
+const Refueling = () => {
   const Navigation = useNavigation();
   const realm = useRealm();
   const mystore = UseUserStore();
   const [refuelData, setRefuelData] = useState([]);
+  const [status, setStatus] = useState(0);
+  const navigation = useNavigation();
+  const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
-  useFocusEffect(
-    useCallback(() => {
-      const fetchRefuelData = async () => {
-        try {
-          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
-          setRefuelData(data);
-          console.log("refuel data fetched");
-        } catch (error) {
-          console.log('Error fetching refuel data:', error);
-        }
-      };
-      fetchRefuelData();
-    }, [mystore.refuelSelectedVehicleId])
-  ); 
+
+  const rfd = useQuery(Refuel)
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const fetchRefuelData = async () => {
+  //       try {
+  //         const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
+  //         setRefuelData(data);
+  //         console.log("refuel data fetched in");
+  //       } catch (error) {
+  //         console.log('Error fetching refuel data:', error);
+  //       }
+  //     };
+  //     fetchRefuelData();
+  //   }, [mystore.refuelSelectedVehicleId,rfd])
+  // ); 
+  
+  useEffect(() => {
+    const fetchRefuelData = () => {
+      try {
+        const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId,mystore);
+        // setRefuelData(data);
+        // console.log("Sel = ",mystore.selectedUserId,mystore.refuelSelectedVehicleId)
+        // console.log("refuel data fetched in");
+      } catch (error) {
+        console.log('Error fetching refuel data:', error);
+      }
+    };
+    fetchRefuelData();
+    setStatus(0);
+  }, [mystore.refuelSelectedVehicleId, rfd])
+
+  const handleDelete = async (rid, vid) => {
+    // Find the RefuelData entry in the vehicle's refuelData linkingObjects
+    
+    const res = await DeleteRefuel(realm, rid, vid);
+    // setStatus(1);
+    setRefuelData(res);
+    // navigation.navigate('PerformanceStack');
+} 
 
   return (
     <View style={styles.container}>
@@ -89,7 +101,7 @@ const Refuel = () => {
           NoVehicle()
         ) : (
 
-          (refuelData.length == 0) ? (
+          ( mystore.refuelData.length == 0) ? (
             EmptyData()
           )
             :
@@ -97,7 +109,8 @@ const Refuel = () => {
               <View style={styles.container2}>
                 {/* Vehicle Exists */}
                 <VehicleList />
-                <FuelData refuelData={refuelData} />
+                <FuelData  refuelData={ mystore.refuelData}  />
+               
                 <View style={styles.btn2}>
 
                   <Pressable onPress={() => Navigation.navigate('addRefuel')} style={styles.btn} >
@@ -114,13 +127,73 @@ const Refuel = () => {
 };
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    flexDirection: 'row',
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    elevation: 3,
+  },
+  iconContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconImage: {
+    width: 40,
+    height: 40,
+  },
+  textContainer: {
+    flex: 2,
+    paddingLeft: 10,
+  },
+  mainHeading: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  subHeading: {
+    fontSize: 14,
+    color: '#555',
+  },
+  priceContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  fuelData: {
+    // flexGrow: 1,
+    flexDirection: 'column', // Arrange items horizontally
+    justifyContent: 'space-around', // Adjust spacing between cards
+    alignItems: 'center', // Align items vertically
+    marginTop: 50, // Adjust margin as needed
+  },
+  rowCard: {
+    backgroundColor: '#ffffff', // Card background color
+    padding: 20,
+    marginBottom: 20,
+    borderRadius: 10,
+    minWidth: 370, // Card width
+  },
+  text: {
+    fontSize: 16,
+    marginBottom: 10, // Spacing between texts
+  },
+
+
   container: {
     flex: 1,
   },
-  content : {
-    flex : 1,
-    justifyContent : 'center',
-    alignItems : 'center',
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container2: {
     flex: 1,
@@ -201,4 +274,4 @@ const styles = StyleSheet.create({
     borderRadius: 180
   },
 });
-export default Refuel;
+export default Refueling;

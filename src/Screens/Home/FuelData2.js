@@ -1,41 +1,42 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Image,StyleSheet, ScrollView, Pressable } from 'react-native';
-import { useRealm } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
+import { Refuel } from '../../Database/mySchema';
+
 
 const FuelData2 = (props) => {
+  const rfd = useQuery(Refuel)
   const [refuelData, setRefuelData] = useState([]);
   const mystore =  UseUserStore();
   const realm = useRealm()
   const navigation = useNavigation();
   const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const fetchRefuelData = async () => {
-  //       try {
-  //         const data  = FetchRefuelData(realm,selectedUserId,refuelSelectedVehicleId);
-  //         setRefuelData(data);
-  //       } catch (error) {
-  //         console.log('Error fetching refuel data:', error);
-  //       }
-  //     };
-  //     fetchRefuelData();
-  //   }, [refuelSelectedVehicleId])
-  // );
-  useEffect(()=>{
-    if(props.refuelData){
-      setRefuelData(props.refuelData)
-    }
-  },[props])
+  // useEffect(() => {
+  //   // if (props.refuelData) {
+  //   //   setRefuelData(props.refuelData);
+  //   // }
+  //   const fetchRefuelData = () => {
+  //     try {
+  //       const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
+  //       // setRefuelData(data);
+  //       // console.log(data);
+  //     } catch (error) {
+  //       console.log('Error fetching refuel data:', error);
+  //     }
+  //   };
+  //   fetchRefuelData();
+  // }, [mystore.refuelSelectedVehicleId,rfd]);
+
   return  (
 
     <View style={styles.fuelContainer}>
  
-        {refuelData.map((item,index) => (
+        {mystore.refuelData.length > 0 && mystore.refuelData.map((item,index) => (
           <View key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
             <View style={styles.iconContainer}>
               <Image source={require('../../assets/refuelimg.png')} ></Image>

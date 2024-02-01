@@ -1,30 +1,30 @@
 const SwitchUser = async (realm, navigation, userId, mystore) => {
     try {
         const user = realm.objectForPrimaryKey('User', userId);
+        console.log("User = ",user)
         if (user) {
             if (user.passCode == "") {
-                //mystore.set auth
+                // set auth
                 const auth = realm.objects('Authentication')[0];
                 realm.write(() => {
                     if (auth) {
                         auth.name = user.name;
                         auth.userId = user.id;
                         auth.email = user.email;
-                        auth.isLoggedIn = user.isLoggedIn;
                         auth.nickName = user.nickName;
                         auth.passCode = user.passCode;
 
                         console.log(`User with ID ${userId} LoggedIn (updated)`);
                         console.log('Auth updated')
                     } else {
+                        const AuthId = new Realm.BSON.ObjectId();
                         const newAuth = {
-                            id: generateUniqueId(),
+                            id: AuthId,
                             name: user.name,
                             userId: user.id,
                             email: user.email,
-                            isLoggedIn: user.isLoggedIn,
                             nickName: user.nickName,
-                            passCode: '2222',
+                            passCode: user.passCode,
                         };
                         // Add the new vehicle to the Vehicle schema
                         realm.create('Authentication', newAuth);
@@ -35,7 +35,8 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
                 mystore.setSelectedUserId(user.id);
                 mystore.setSelectedUserName(user.name);
 
-          const vehicles = user.vehicles;
+                const vehicles = realm.objects('Vehicle').filtered('userId == $0', (userId).toString());
+
 
 
                 if(vehicles.length > 0){

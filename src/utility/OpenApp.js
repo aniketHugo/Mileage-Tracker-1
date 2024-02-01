@@ -9,10 +9,9 @@ const OpenApp = async (realm, navigation, mystore) => {
     if (user) {
       console.log("User found")
       if (user.passCode == "") {
-        const temp = user.vehicles;
-        console.log("Mytemp = ", temp.length)
-        const vehicles = user.vehicles;
-        console.log("User passcode empty")
+        console.log("User passcode empty ",(user.id).toString())
+        const vehicles = realm.objects('Vehicle').filtered('userId == $0',(user.id).toString());
+
         mystore.setSelectedUserId(AuthUser.userId);
         mystore.setSelectedUserName(AuthUser.name);
         if (vehicles.length > 0) {

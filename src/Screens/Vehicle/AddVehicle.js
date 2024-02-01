@@ -60,14 +60,11 @@ const AddVehicle = () => {
       return;
     }
 
-    const data = await AddVehicleDB(realm, mystore.selectedUserId, vehicleName, vehicleType, engineCC, selectedImage);
+    const data = await AddVehicleDB(realm, mystore.selectedUserId, vehicleName, vehicleType, engineCC, selectedImage,mystore);
     console.log("ret = ", data);
 
     if (data.msg == "Added Successfully") {
       console.log("veh added resp = ", data)
-      mystore.setRefuelSelectedVehicle(vehicleName)
-      mystore.setRefuelSelectedVehicleId(data.id)
-      mystore.setVehicleLength(data.len) 
       setSelectedImage(`data:image/png;base64,${selectedImage}`);
       console.log('Vehicle added successfully id = ', data.id)
       navigation.goBack();
@@ -85,10 +82,10 @@ const AddVehicle = () => {
       <Text style={styles.heading1}>Add Vehicle</Text>
       <View style={styles.container2}>
 
-      <Text>mystore.selectedUserId = {mystore.selectedUserId} </Text>
+      <Text>mystore.selectedUserId = {toString(mystore.selectedUserId)} </Text>
       <Text>mystore.selectedUserName = {mystore.selectedUserName} </Text>
+      <Text>mystore.refuelSelectedVehicleId = {toString(mystore.refuelSelectedVehicleId)} </Text>
       <Text>mystore.refuelSelectedVehicle = {mystore.refuelSelectedVehicle} </Text>
-      <Text>mystore.refuelSelectedVehicleId = {mystore.refuelSelectedVehicleId} </Text>
       <Text>mystore.vehicleLength = {mystore.vehicleLength} </Text>
       {/* <Text>mystore.selectedVehicleImage = {mystore.selectedVehicleImage.length} </Text> */}
 
