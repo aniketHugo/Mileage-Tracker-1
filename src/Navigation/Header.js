@@ -38,7 +38,10 @@ const Header = () => {
 
       {/* Sidebar */}
       {sidebarVisible && (
-        <View style={styles.sidebar}>
+          <View style={styles.sidebar}>
+            <Pressable onPress={() => navigation.closeDrawer()} >
+            <Image source={require('../assets/userIcon2.png')}></Image>
+          </Pressable>
           <Button title="Switch Profile" onPress={() => navigation.navigate('SignInStack')} />
           <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
         </View>

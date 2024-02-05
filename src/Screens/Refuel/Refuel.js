@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { View, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable, SafeAreaView } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import VehicleList from './VehicleList';
 import FuelData from './FuelData';
@@ -20,7 +20,7 @@ const NoVehicle = () => {
         <Text style={styles.btnName}>
           Add Vehicle
         </Text>
-      </Pressable>
+      </Pressable> 
     </View>
   )
 }
@@ -81,21 +81,13 @@ const Refueling = () => {
       }
     };
     fetchRefuelData();
-    setStatus(0);
+    // setStatus(0);
   }, [mystore.refuelSelectedVehicleId, rfd])
 
-  const handleDelete = async (rid, vid) => {
-    // Find the RefuelData entry in the vehicle's refuelData linkingObjects
-    
-    const res = await DeleteRefuel(realm, rid, vid);
-    // setStatus(1);
-    setRefuelData(res);
-    // navigation.navigate('PerformanceStack');
-} 
 
   return (
-    <View style={styles.container}>
-
+    <SafeAreaView style={styles.container}>
+        <Text style={styles.mainHeading}>Refueling</Text>
       {
         mystore.vehicleLength == 0 ? (
           NoVehicle()
@@ -108,6 +100,7 @@ const Refueling = () => {
             (
               <View style={styles.container2}>
                 {/* Vehicle Exists */}
+                {/* <Text style={styles.mainHeading}>Refueling</Text> */}
                 <VehicleList />
                 <FuelData  refuelData={ mystore.refuelData}  />
                
@@ -122,11 +115,15 @@ const Refueling = () => {
         )
       }
 
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+
+  container: {
+    flexGrow: 1,
+  },
   cardContainer: {
     flexDirection: 'row',
     width: '90%',
@@ -151,8 +148,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
   },
   mainHeading: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 30,
+    alignSelf : 'center',
+    marginTop : 20,
+    color : '#0B3C58',
   },
   subHeading: {
     fontSize: 14,
@@ -187,9 +186,6 @@ const styles = StyleSheet.create({
   },
 
 
-  container: {
-    flex: 1,
-  },
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -200,7 +196,12 @@ const styles = StyleSheet.create({
   },
   btn2: {
     alignItems: 'flex-end',
-    margin: 10
+    margin: 20,
+    // backgroundColor : 'red',
+    position : 'absolute',
+    bottom : 0,
+    right: 0,
+
   },
   heading1: {
     textAlign: 'center',
@@ -261,12 +262,14 @@ const styles = StyleSheet.create({
     // height : '100%',
     flexDirection: 'column',
     paddingHorizontal: 20,
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
   },
   content4: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop : 20,
+    flex : 1,
   },
 
   image2: {

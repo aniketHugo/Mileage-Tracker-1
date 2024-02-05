@@ -11,10 +11,10 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
     }
     
     let fileContent = "";
-    if (uri) {
+    if (uri && uri.length > 3) {
       fileContent = await RNFS.readFile(uri, 'base64');
     }
-    console.log("File content =  ", fileContent.length)
+    // console.log("File content =  ", fileContent , fileContent.length)
 
     const vehicleId = new Realm.BSON.ObjectId();
     let status = 0;
@@ -32,14 +32,14 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
         vehicleImage: fileContent,
       };
 
-      if (!newVehicle.vehicleImage) {
-        console.log("No image exists")
-        return { msg: "Failed to add" };
-      }
-      else {
+      // if (!newVehicle.vehicleImage) {
+      //   console.log("No image exists")
+      //   return { msg: "Failed to add" };
+      // }
+      // else {
         realm.create('Vehicle', newVehicle);
         status = 1;
-      }
+      // }
 
     });
 
@@ -48,7 +48,8 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
     if (status == 1) {
       mystore.setRefuelSelectedVehicle(name)
       mystore.setRefuelSelectedVehicleId(vehicleId) 
-      mystore.setVehicleLength(vehicles.length) 
+      mystore.setVehicleLength(vehicles.length)  
+      mystore.setSelectedVehicleImage(fileContent);
 
       return { msg: "Added Successfully", id: (vehicleId).toString, len: vehicles.length };
     }

@@ -1,26 +1,33 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Image, Text, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
-import { useRealm } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import FetchVehicleData from '../../API/FetchVehicleList';
+import FetchRefuelData from '../../API/FetchRefuelData';
+import { Refuel, Vehicle } from '../../Database/mySchema';
 
 const VehiclesData = () => {
   const realm = useRealm();
   const navigation = useNavigation();
 
   const mystore = UseUserStore();
-  const [userVehicles, setUserVehicles] = useState([]);
+  const vd = useQuery(Vehicle)
 
-  useFocusEffect(
-    useCallback(() => {
-      if (mystore.selectedUserId) {
-        console.log("Vehicle selected user = ",typeof(mystore.selectedUserId), " | ",mystore.selectedUserId)
-        const vehicles = realm.objects('Vehicle').filtered('userId = $0', (mystore.selectedUserId).toString());
-        setUserVehicles(Array.from(vehicles));
-        // console.log("VehicleData" , vehicles)
+  useEffect(() => {
+    const fetchRefuelData = () => {
+      try {
+        const data = FetchVehicleData(realm, mystore);
+        // setRefuelData(data);
+        console.log("Vehicles Fetched in vehicle data")
+        // console.log("Sel = ",mystore.selectedUserId,mystore.refuelSelectedVehicleId)
+        // console.log("refuel data fetched in");
+      } catch (error) {
+        console.log('Error fetching refuel data:', error);
       }
-    }, [mystore.selectedUserId])
-  );
+    };
+    fetchRefuelData();
+  }, [mystore.refuelSelectedVehicleId, vd])
 
   const getUri = (image) => {
     const uri = `data:image/png;base64,${image}`;
@@ -29,7 +36,7 @@ const VehiclesData = () => {
 
 
   {/* No vehicle exists :- */ }
-  if (userVehicles.length == 0) {
+  if (mystore.vehicleData.length == 0) {
     return (
       <View style={styles.content}>
         <Image source={require('../../assets/Maskgroup.png')} style={styles.image3} />
@@ -43,23 +50,39 @@ const VehiclesData = () => {
     )
   }
   else {
+    const renderItem = ({ item }) => (
+      <View style={styles.rowCard} key={item.id}>
+        {item.vehicleImage === "" ? (
+          <View style={styles.imgView}>
+            <Image source={require('../../assets/NoVehicle.png')} style={styles.image2} />
+          </View>
+        ) : (
+          <View style={styles.imgView}>
+            <Image source={{ uri: getUri(item.vehicleImage) }} style={styles.image2} />
+          </View>
+        )}
+        <View style={styles.mainBox}>
+
+          <View style={styles.box1}>
+            <Text style={{ ...styles.text, fontSize: 18, fontWeight: 'bold' }}>{item.name}</Text>
+            <Text style={styles.text}>{item.vehicleType}</Text>
+          </View>
+          <View style={styles.box2}>
+            <Text style={styles.text}>{item.engineCC} CC</Text>
+          </View>
+        </View>
+
+      </View>
+    );
+
     return (
       <View style={styles.container2}>
-        <ScrollView contentContainerStyle={styles.fuelData}>
-          {userVehicles.map((vehicle) => (
-            <View style={styles.rowCard} key={vehicle.id}>
-              {/* Replace the source with your actual image */}
-              <View style={styles.imgView} >
-                <Image source={{ uri: getUri(vehicle.vehicleImage) }} style={styles.image2} />
-              </View>
-              <Text style={{ ...styles.text, fontSize: 18, fontWeight: 'bold' }}>{vehicle.name}</Text>
-              <Text style={styles.text}>{vehicle.engineCC} CC</Text>
-              <Text style={styles.text}>USER iD {vehicle.userId}</Text>
-              <Text style={styles.text}>Vehicle iD {(vehicle.id).toString()}</Text>
-              
-            </View>
-          ))}
-        </ScrollView>
+        <FlatList style={styles.dd}
+          data={mystore.vehicleData}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={renderItem}
+          contentContainerStyle={styles.fuelData}
+        />
       </View>
     )
   }
@@ -71,6 +94,23 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  mainBox: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom : 10,
+
+  },
+  box1: {
+    width: '60%',
+    // backgroundColor : 'pink',
+
+  },
+  box2: {
+    width: '40%',
+    justifyContent : 'center',
+    alignItems : 'flex-end',
+    // backgroundColor : 'red',
+  },
   fuelData: {
     flexGrow: 1,
     width: '100%',
@@ -81,33 +121,36 @@ const styles = StyleSheet.create({
   },
   rowCard: {
     backgroundColor: '#ffffff',
-    padding: 20,
-    marginBottom: 20,
-    width: '100%',
+    marginHorizontal : 10,
+    marginBottom: 30,
     borderRadius: 10,
+    elevation : 5,
   },
   text: {
     fontSize: 16,
-    marginBottom: 10,
   },
   image2: {
-    width: 300,
+    width: '100%',
     height: 200,
     marginBottom: 10,
+    overflow : 'hidden',
   },
   image3: {
     backgroundColor: '#95C3BB',
     borderRadius: 180
   },
   imgView: {
-    alignItems: 'center'
+    alignItems: 'center',
+    overflow : 'hidden',
+    borderTopLeftRadius : 10,
+    borderTopRightRadius : 10,
+    // backgroundColor : 'red'
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   heading: {
     textAlign: 'center',

@@ -45,6 +45,7 @@ const CreateUser = async (realm, name, nickname, passCode, email,mystore) => {
       mystore.setSelectedUserName(name)
       mystore.setRefuelSelectedVehicleId(null)
       mystore.setRefuelSelectedVehicle('select')
+      mystore.setSelectedVehicleImage(null)
       mystore.setVehicleLength(0);
 
     console.log("User created")

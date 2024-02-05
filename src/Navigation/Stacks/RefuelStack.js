@@ -35,9 +35,9 @@ const RefuelStack = () => {
   return (
     // <NavigationContainer>
       <Mystack.Navigator initialRouteName="refuel">
-        <Mystack.Screen name="Refuel" component={Refuel} />
-        <Mystack.Screen name="addRefuel" component={AddRefuel} />
-        <Mystack.Screen name="editRefuel" component={EditRefuel} />
+        <Mystack.Screen options={{ headerShown: false }}   name="Refuel" component={Refuel} />
+        <Mystack.Screen options={{ headerShown: false }} name="addRefuel" component={AddRefuel} />
+        <Mystack.Screen options={{ headerShown: false }} name="editRefuel" component={EditRefuel} />
         <Mystack.Screen options={{ headerShown: false }}   name="RefuelDetails" component={RefuelDetails} />
       </Mystack.Navigator>
     // </NavigationContainer>  ads

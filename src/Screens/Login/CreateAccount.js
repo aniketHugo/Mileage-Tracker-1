@@ -20,7 +20,7 @@ const CreateAccount = () => {
   const [checked, setChecked] = useState(false);
 
   const handleCheckboxToggle = () => {
-    if (name && email && /^[a-zA-Z]+$/.test(name) && (/^[a-zA-Z]+$/.test(nickname) || nickname.length === 0) && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (name && email && /^[a-zA-Z]+$/.test(name) && (/^[a-zA-Z]+$/.test(nickname) || nickname.length === 0) ) {
       setChecked(true);
     }
     else {
@@ -47,7 +47,7 @@ const CreateAccount = () => {
     }
 
     const validDomain = 'a';
-    const isValid = email.toLowerCase().endsWith(validDomain);
+    const isValid = 1;
 
     if (!isValid) {
       setErrorMessage3('Invalid Mail');
@@ -128,7 +128,7 @@ const CreateAccount = () => {
             </TouchableOpacity>
           </View>
 
-
+ 
         </View>
       </ScrollView>
     </LinearGradient>

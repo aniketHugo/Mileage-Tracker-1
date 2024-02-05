@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
+import { View, Button, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import VehiclesData from './VehiclesData';
 
@@ -7,7 +7,8 @@ const Vehicle = () => {
   const Navigation = useNavigation();
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.mainHeading}>Vehicles</Text>
       <View style={styles.content}>
             <VehiclesData/>       
           <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn} >
@@ -16,7 +17,7 @@ const Vehicle = () => {
           </View>
          <View style={styles.btn2}>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -24,6 +25,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F0F2F2',
+  },
+  mainHeading: {
+    fontSize: 30,
+    alignSelf : 'center',
+    marginTop : 20,
+    color : '#0B3C58',
   },
   btn2: {
     alignItems: 'flex-end',
@@ -56,8 +63,11 @@ const styles = StyleSheet.create({
     // width : 100,
     color: 'blue',
     borderRadius: 100,
-    marginTop: 10,
-    alignItems: 'center'
+    margin: 20,
+    alignItems: 'center',
+    position : 'absolute',
+    bottom : 0,
+    right : 0,
   },
   btn3: {
     backgroundColor: '#0B3C58',
@@ -74,7 +84,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },

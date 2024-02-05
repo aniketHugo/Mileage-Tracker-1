@@ -1,7 +1,9 @@
 import React, { useState ,useEffect} from 'react';
 import { View,Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
-import { useRealm } from '@realm/react';
+import { useQuery, useRealm } from '@realm/react';
+import FetchVehicleData from '../../API/FetchVehicleList';
+import { Vehicle } from '../../Database/mySchema';
 
 const VehicleList = () => {
   const realm = useRealm();
@@ -12,7 +14,9 @@ const VehicleList = () => {
     setRefuelSelectedVehicleId,
     setSelectedVehicleImage,
     setVehicleLength
-  } = UseUserStore();
+  } = UseUserStore(); 
+
+  const mystore = UseUserStore();
   
   const [userVehicles, setUserVehicles] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -21,21 +25,28 @@ const VehicleList = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
+  const vd = useQuery(Vehicle)
+
   useEffect(() => {
-    if (selectedUserId) {
-      const vehicles = realm.objects('Vehicle').filtered('userId = $0', (selectedUserId).toString());
-      setUserVehicles(Array.from(vehicles)); 
-      // if(vehicles.length > 0) setRefuelSelectedVehicleId(vehicles[0].id)
-      // console.log(vehicles.length)
-      // setVehicleLength(vehicles.length)
-    }
-  }, [selectedUserId,refuelSelectedVehicle,dropdownVisible]);
-  
+    const fetchRefuelData = () => {
+      try {
+        const data = FetchVehicleData(realm, mystore);
+        // setRefuelData(data);
+        console.log("Vehicles list fetched")
+        // console.log("Sel = ",mystore.selectedUserId,mystore.refuelSelectedVehicleId)
+        // console.log("refuel data fetched in");
+      } catch (error) {
+        console.log('Error fetching refuel data:', error);
+      }
+    };
+    fetchRefuelData();
+  }, [mystore.refuelSelectedVehicleId, vd])
+
   const handleOptionSelect = (id,name,img) => {
     console.log('Selected:', name);
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
-    setSelectedVehicleImage(`data:image/png;base64,${img}`)
+    setSelectedVehicleImage(img)
     setDropdownVisible(false); // Close the dropdown after selection
   };
 
@@ -49,7 +60,7 @@ const VehicleList = () => {
 
       {dropdownVisible && (
         <View style={styles.dropdown}>
-          {userVehicles.map((vehicle, index) => (
+          {mystore.vehicleData.map((vehicle, index) => (
         <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id,vehicle.name,vehicle.vehicleImage)}>
           <Text style={styles.dropdownText}>{vehicle.name}</Text>
         </TouchableOpacity>
@@ -63,12 +74,11 @@ const VehicleList = () => {
 const styles = StyleSheet.create({
   container3: {
     alignItems: 'center',
-    marginVertical: 20,
+    marginTop: 10,
     // backgroundColor : 'red',
     color : 'black',
     borderRadius : 10,
-    zIndex : 1,
-    
+    zIndex : 10,
   },
   dropdownButton: {
     // borderColor : 'black',

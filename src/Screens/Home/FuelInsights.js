@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        elevation: 3,
+        // elevation: 3,
         backgroundColor: '#F0F2F2',
         width: '100%',
         paddingVertical: 20,

@@ -12,7 +12,7 @@ const MileageGraph = (props) => {
  
 
     // Group data by months and calculate average mileage for each month
-    const groupedData = mystore.refuelData.reduce((acc, data) => {
+    const groupedData = mystore.refuelData.reduce((acc, data) => {  
         const refuelDate = new Date(data.refuelDate);
         const monthKey = refuelDate.getMonth();
 
@@ -25,6 +25,9 @@ const MileageGraph = (props) => {
         acc[monthKey].totalDistance += distance;
         acc[monthKey].totalFuel += data.consumed;
 
+
+
+        // console.log("acc = ",acc)
         return acc;
     }, {});
 
@@ -34,6 +37,7 @@ const MileageGraph = (props) => {
     });
 
     const chartData = Object.values(groupedData);
+    console.log("chartData = ",chartData)
 
     return (
         <View style={styles.graphView}>

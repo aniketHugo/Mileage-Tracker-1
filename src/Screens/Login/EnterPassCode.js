@@ -28,7 +28,7 @@ const EnterPasscode = ({route}) => {
   }, [route.params]);
 
   const handleSubmit = async () => {
-    console.log(pinCode1,data);
+    console.log( pinCode1,data);
     console.log("Param = ",data.userId, typeof(data.userId))
     const res = await LoginUser(realm, navigation, data.userId,pinCode1,mystore);
     console.log("enter passcode res :- ",res)
@@ -49,6 +49,7 @@ const EnterPasscode = ({route}) => {
   };
   const handlePinCodeComplete1 =  async (code) => {
     setPinCode1(code);
+    // handleSubmit
     console.log('Pin code entered:', code);
   };
 
@@ -69,6 +70,7 @@ const EnterPasscode = ({route}) => {
       <SmoothPinCodeInput
         // password
         // mask="*"
+        autoFocus={true}
         cellStyle={styles.cellStyle}
         cellStyleFocused={styles.cellStyleFocused}
         textStyle={styles.textStyle}

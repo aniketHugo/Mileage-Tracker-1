@@ -1,32 +1,38 @@
-import Realm from 'realm';
-import UseUserStore from '../ZustandStore/ZuStore';
-import { PerformanceDataSchema, RefuelDataSchema, UserSchema, VehicleSchema } from '../Database/mySchema';
-const LogoutUser = async (realm) => {
+
+const LogoutUser = async (realm, navigation, mystore) => {
     try {
-        const selectedUserId = UseUserStore((state) => state.selectedUserId);
-        const user = await realm.objectForPrimaryKey('User', selectedUserId);
+        const auth = realm.objects('Authentication')[0];
 
-        // const selectedUserName = UseUserStore((state) => state.selectedUserName);
-        const setSelectedUserId = UseUserStore((state) => state.setSelectedUserId);
-        const setSelectedUserName = UseUserStore((state) => state.setSelectedUserName);
-        realm.write(() => {
-            if (user) {
-                user.isLoggedIn = false;
-                console.log(`User with ID ${selectedUserId} logged out (updated)`);
+        if (auth) {
+            realm.write(() => {
+                realm.delete(auth);
+            });
+            console.log("Auth deleted");
+        }
+        else {
+            console.log("Auth does not exist")
+        }
+        console.log("Logged Out ", mystore.selectedUserId);
 
-            } else {
-                console.error(`User with ID ${userId} not found.`);
-            }
-        });
-        setSelectedUserId(null);
-        setSelectedUserName(null);
-        return 1;
+        mystore.setSelectedUserId(null)
+        mystore.setSelectedUserName(null)
+        mystore.setRefuelSelectedVehicleId(null)
+        mystore.setRefuelSelectedVehicle('select')
+        mystore.setRefuelData([]);
+        mystore.setVehicleData([]);
+        mystore.setVehicleLength(0);
+        mystore.setRefuelLength(0);
+        mystore.setSelectedVehicleImage(null);
+
+        navigation.replace("LoginStack", { screen: "SignIn" })
+
+        return { msg: "Logged Out" }
 
     } catch (error) {
-        console.error('Error updating user logout status:', error);
-        return 0;
+        console.error('Error Logging out user data:', error);
+        return { msg: "Not Logged Out" }
+
     }
 };
-
 
 export default LogoutUser;

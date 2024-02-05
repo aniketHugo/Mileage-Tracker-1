@@ -47,7 +47,7 @@ const RefuelDetails = ({ route }) => {
                             <Image source={require('../../assets/BackIcon.png')} ></Image>
                         </Pressable>
                         <Text style={styles.bigHeading}>{refuelItem.refuelDate.toLocaleString('en-US', options)}</Text>
-                        <Pressable onPress={() => toggleModal()}>
+                        <Pressable onPress={() => handleDelete(refuelItem.id, refuelItem.vehicleId)}>
                             <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
                             </Image>
                         </Pressable>

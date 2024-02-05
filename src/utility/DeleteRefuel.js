@@ -18,7 +18,7 @@ const DeleteRefuel = async (realm, refuelId, vehicleId,mystore) => {
         .filtered('vehicleId == $0', (refuelId).toString());
 
         mystore.setRefuelData(refuel)
-        return refuel;
+        return "";
       } else {
         console.log(`RefuelData with id ${refuelId} not found for vehicle with id ${vehicleId}.`);
         return [];

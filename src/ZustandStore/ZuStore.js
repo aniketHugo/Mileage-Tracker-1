@@ -5,6 +5,7 @@ const UseUserStore = create((set) => ({
   selectedUserId: null,
   selectedUserName : null,
   refuelData : [],
+  vehicleData : [],
   
   refuelSelectedVehicle : 'select',
   refuelSelectedVehicleId : null,
@@ -15,6 +16,8 @@ const UseUserStore = create((set) => ({
 //////////////////////////////////////////////////////
   setSelectedUserId: (userId) => set({ selectedUserId: userId }),
   setRefuelData: (data) => set({ refuelData: data }),
+  setVehicleData: (data) => set({ vehicleData: data }),
+  
   setSelectedUserName: (name) => set({ selectedUserName: name }),
 
   setRefuelSelectedVehicle: (name) => set({ refuelSelectedVehicle: name }),

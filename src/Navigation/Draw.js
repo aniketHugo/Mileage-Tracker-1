@@ -2,65 +2,26 @@ import React, { useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { View, Text, StyleSheet, Modal, Image,Pressable } from 'react-native';
 import Home from '../Screens/Home/Home';
-import LoginStack from './Stacks/LoginStack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DeleteAccount from '../utility/DeleteAccount';
 import { useRealm } from '@realm/react';
 const Drawer = createDrawerNavigator();
 import UseUserStore from '../ZustandStore/ZuStore';
+import LogoutUser from '../utility/LogoutUser';
 const DrawerContent = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const realm = useRealm();
-  const {selectedUserName} = UseUserStore();
 
   const mystore =  UseUserStore();
   const handleDelete = async () =>{
-    // const res = await DeleteAccount(realm,mystore);
-    const user = realm.objectForPrimaryKey('User', mystore.selectedUserId);
-    const vehicles = realm.objects('Vehicle').filtered('userId = $0', (mystore.selectedUserId).toString());
-    const refuel = realm.objects('Refuel').filtered('userId = $0', (mystore.selectedUserId).toString());
-    const auth = realm.objects('Authentication')[0];
+    const res = await DeleteAccount(realm,navigation, mystore);
+  }
 
-    if (user) {
-      console.log("$$$ user found")
-        realm.write(() => {
-            realm.delete(vehicles);
-            realm.delete(user);
-            realm.delete(refuel);
-        });
-      console.log("$$$ user del")
-
-        if (auth) {
-          realm.write(() => {
-            realm.delete(auth);
-          });
-            console.log("Auth deleted");
-        }
-        else {
-            console.log("Auth does not exist")
-        }
-        console.log("Deleted ", mystore.selectedUserId);
-        mystore.setSelectedUserId(null)
-        mystore.setSelectedUserName(null)
-        mystore.setRefuelSelectedVehicleId(null)
-        mystore.setRefuelSelectedVehicle('select')
-
-    }
-    console.log("Delete Account resp :-  ");
-      navigation.navigate('LoginStack')
-
-    // if(res.msg == "Deleted"){
-    //   console.log("Account Deleted Successfully")
-    //   // setSelectedUserId(null)
-    //   // setSelectedUserName(null)
-    //   // setRefuelSelectedVehicleId(null)
-    //   // setSelectedVehicleImage(null)
-    //   // setRefuelSelectedVehicle('select')
-    //   navigation.navigate('LoginStack')
-    // }
+  const handleLogOut = async () =>{
+    const res = await LogoutUser(realm,navigation, mystore);
   }
 
   return (
@@ -68,7 +29,7 @@ const DrawerContent = ({ navigation }) => {
       <View style={styles.content}>
         <View style={styles.DrawerButttonBox}>
         <Image source={require('../assets/userIcon2.png')} style={styles.userIcon}></Image>
-          <Text style={styles.username}> {selectedUserName} </Text>
+          <Text style={styles.username}> {mystore.selectedUserName} </Text>
           <Pressable style={styles.DrawerButttons} onPress={() => navigation.navigate('LoginStack')}>
             <Text style={styles.DrawerText}>Switch Account</Text>
           </Pressable>
@@ -77,7 +38,7 @@ const DrawerContent = ({ navigation }) => {
           </Pressable>
         </View>
 
-        <Pressable style={styles.logoutBtn} onPress={toggleModal}>
+        <Pressable style={styles.logoutBtn} onPress={() => handleLogOut()}>
           <Text style={styles.logoutBtnTxt}>Logout</Text>
         </Pressable>
       </View>

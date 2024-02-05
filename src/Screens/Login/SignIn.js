@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { useRealm, useUser } from '@realm/react';
 
 import UseUserStore from '../../ZustandStore/ZuStore';
-import FetchUsers from '../../utility/FetchUsers';
 import LinearGradient from 'react-native-linear-gradient';
 import SwitchUser from '../../utility/SwitchUser';
 
@@ -22,7 +21,7 @@ const SignIn = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const users = await realm.objects('User');
+      const users = realm.objects('User');
       setUsers(users);
       setLoading(false);
     };
@@ -35,6 +34,9 @@ const SignIn = () => {
     console.log(res);
     
   };
+
+  const colors = ['#FF5733', '#5733FF','#33A1FF',  '#FF33A1', '#FF3361', '#3361FF'];
+  const getColor = (index) => colors[index % colors.length];
 
   return (
     <LinearGradient
@@ -59,9 +61,12 @@ const SignIn = () => {
           <View>
             <Text style={styles.heading}>Who are you?</Text>
             <ScrollView contentContainerStyle={styles.usersStyle}>
-              {users.map((user) => (
+              {users.map((user,index) => (
                 <Pressable style={styles.userPressable} key={user.id} onPress={() => handleUserPress(user.id, user.name)}>
-                  <Image source={require('../../assets/userImg2.png')} style={styles.image3} />
+                  {/* <Image source={require('../../assets/userImg2.png')} style={styles.image3} /> */}
+                  <View style={{ ...styles.userInitials, backgroundColor: getColor(index) }}>
+                    <Text style={styles.userInitialsText}>{user.name[0].toUpperCase()}</Text>
+                  </View>
                   <Text style={styles.pressableText} >{user.name} </Text>
                 </Pressable>
               ))}
@@ -110,6 +115,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center',
   },
+  userInitials : {
+    backgroundColor : 'red',
+    borderRadius  :30,
+    width : 50,
+    height : 50,
+    justifyContent : 'center',
+    alignItems : 'center',
+
+  },
+  userInitialsText : {
+    fontSize : 20,
+    color : 'white',
+  },
   addBtn: {
     backgroundColor: '#0B3C58',
     padding: 10,
@@ -125,11 +143,12 @@ const styles = StyleSheet.create({
   usersStyle: {
     // flex: 1,
     alignSelf: 'center',
+    // alignItems : 'center',
     flexDirection: 'row',
     margin: 20,
     width: '60%',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
   },
   image2: {
     width: '100%'

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image } from 'react-native';
 import { VictoryChart, VictoryBar, VictoryAxis } from 'victory-native';
-import { useRealm } from "@realm/react";
-import FetchRefuelData from "../../API/FetchRefuelData";
 import UseUserStore from "../../ZustandStore/ZuStore";
 const MoneyGraph = () => {
+
     const mystore = UseUserStore();
+
     // Group data by months and calculate total money spent for each month
     const groupedData = mystore.refuelData.reduce((acc, data) => {
         const refuelDate = new Date(data.refuelDate);

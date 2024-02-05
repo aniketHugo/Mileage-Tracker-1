@@ -11,51 +11,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const SignIn = () => {
   const navigation = useNavigation();
-  const realm = useRealm();
-
-  //zustand
-  const {
-    setRefuelSelectedVehicleId,
-    setRefuelSelectedVehicle,
-    setSelectedUserId,
-    setSelectedUserName,
-    selectedUserId
-  } = UseUserStore();
-  
-  //states
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const allUsers = await FetchUsers(realm);
-      // console.log("All datas :- ", allUsers);
-      setUsers(allUsers);
-      setLoading(false);
-    };
-    fetchUsers();
-  }, [selectedUserId]);
-
-  const handleUserPress = async (userId, userName) => {
-    const res = await LoginUser(realm, navigation, userId, "", "signIn");
-    // console.log(res);
-    if (res == "Navigate to enter Passcode") {
-      navigation.navigate('EnterPassCode', {
-        data: {
-          userId: userId,
-          userName: userName
-        }
-      });
-      return;
-    }
-    else {
-      setSelectedUserId(userId)
-      setSelectedUserName(userName)
-      setRefuelSelectedVehicleId(null)
-      setRefuelSelectedVehicle('select')
-      navigation.navigate('Home')
-    }
-  };
 
   return (
     <LinearGradient
@@ -64,45 +19,54 @@ const SignIn = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
-      <SafeAreaView>
-
-        <View style={styles.container}>
-          <Image resizeMode="contain" source={require('../../assets/logo.png')} style={styles.image1} />
-          <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
-          <View style={styles.content}>
-            <ReusableButton destination="CreateAccount" navigation={navigation} Heading='Sign Up' />
+        <View style={styles.Page}>
+          <View style={styles.Top}>
+            <Image resizeMode="contain" source={require('../../assets/logo.png')} style={styles.image1} />
+            <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
+            <Text style={styles.secHeading}>Create an account to get started</Text>
+            <View style={styles.content}>
+              <ReusableButton destination="CreateAccount" navigation={navigation} Heading='Sign Up' />
+            </View>
           </View>
 
-          {loading ?
-            <View>
-              <Text>Loading</Text>
-            </View>
-            :
-            <ScrollView contentContainerStyle={styles.usersStyle}>
-
-              {users.map((user) => (
-                <Pressable style={styles.userPressable} key={user.id} onPress={() => handleUserPress(user.id, user.name)}>
-                  <Image source={require('../../assets/userImg2.png')} style={styles.image3} />
-                  <Text style={styles.pressableText} >{user.name} </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          }
-
-          <Image source={require('../../assets/img3.png')} style={styles.image2} />
+          <View style={styles.Bottom}>
+            <Image source={require('../../assets/img3.png')} style={styles.image2} />
+            <Text style={styles.text}>Track your miles towards a {'\n'} prosperous financial journey!</Text>
+          </View>
         </View>
-      </SafeAreaView>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // backgroundColor: '#C5E3DC',
-    justifyContent: 'center',
+  Page: {
+    flex: 1,
     alignItems: 'center',
-    paddingTop: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    paddingTop: 40,
+  },
+  Bottom : {
+    position : 'relative',
+  },
+  Top : {
+    alignItems : 'center',
+
+  },
+  text: {
+    color: '#0B3C58',
+    position : 'absolute',
+    fontSize: 20,
+    zIndex : 1,
+    alignSelf : 'center',
+    textAlign : 'center',
+    bottom : 80,
+  },
+
+  secHeading : {
+    marginVertical : 10,
+    fontSize : 18,
+    color : '#0B3C58',
   },
   userPressable: {
     margin: 10,
@@ -122,14 +86,11 @@ const styles = StyleSheet.create({
   btnName: {
     color: 'white',
   },
-  usersStyle: {
-    flexDirection: 'row',
-    marginTop: 20,
-    flexWrap: 'wrap', 
-    justifyContent: 'space-between', 
-  },
+
   image2: {
-    width: '100%'
+    width: 430,
+    height: 380,
+    flexShrink: 0,
   }
 });
 

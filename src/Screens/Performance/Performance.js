@@ -17,9 +17,10 @@ const FuelGraph = () => {
     useCallback(() => {
       const fetchRefuelData = async () => {
         try {
-          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
-         
+          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId,mystore);
+
           // console.log("refuel data fetched");
+          console.log("Perf fetched")
         } catch (error) {
           console.log('Error fetching refuel data:', error);
         }
@@ -27,24 +28,41 @@ const FuelGraph = () => {
       fetchRefuelData();
     }, [mystore.refuelSelectedVehicleId])
   );
- 
+  const getUri = (image) => {
+    const uri = `data:image/png;base64,${image}`;
+    return uri;
+  }
   return (
     <SafeAreaView>
       <ScrollView vertical>
 
 
         <View style={styles.container}>
-          <Text>Choose the vehicle:</Text>
+          <Text style={styles.mainHeading}>Choose the vehicle:</Text>
           <VehicleList />
           {mystore.selectedVehicleImage != null &&
-            <View style={styles.vehicleImage}>
-              <Image source={{ uri: mystore.selectedVehicleImage }} style={styles.image4} />
-            </View>
+            (
+              mystore.selectedVehicleImage == "" ?
+                <View style={styles.vehicleImage}>
+                  <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
+                </View>
+                :
+                <View style={styles.vehicleImage}>
+                  <Image source={{ uri: getUri(mystore.selectedVehicleImage) }} style={styles.image4} />
+                </View>
+            )
           }
           <View style={styles.content}>
-              <MoneyGraph  />
-              <MileageGraph />
-            
+            <View style={styles.heading}>
+              <Text style={styles.fuelText}>Money spend on fuel</Text>
+            </View>
+            <MoneyGraph />
+
+            <View style={styles.heading}>
+              <Text style={styles.fuelText}>Vehicle mileage performance</Text>
+            </View>
+            <MileageGraph />
+
           </View>
         </View>
       </ScrollView>
@@ -57,6 +75,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F2F2',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  fuelText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color :'#0B3C58'
+  },
+  heading: {
+    // backgroundColor : 'red',
+    alignSelf: 'flex-start',
+    marginHorizontal: 10,
+    marginTop: 20,
+    // marginBottom: 10,
+  },
+  mainHeading: {
+    marginTop: 20,
+    color: '#0B3C58',
   },
   content: {
     backgroundColor: '#F0F2F2',

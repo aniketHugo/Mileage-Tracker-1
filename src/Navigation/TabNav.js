@@ -98,11 +98,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    height: 50,
+    height: 60,
     backgroundColor: 'white', // Adjust the color as needed
+    borderTopWidth : 1,
+    // borderColor : '#E4EBEF',
+
   },
   btn: {
     alignItems: 'center',
+    paddingTop : 10,
   },
   name: {
     marginTop: 5, // Adjust the spacing as needed

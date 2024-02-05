@@ -36,7 +36,7 @@ const FuelData2 = (props) => {
 
     <View style={styles.fuelContainer}>
  
-        {mystore.refuelData.length > 0 && mystore.refuelData.map((item,index) => (
+        {mystore.refuelData.length > 0 && mystore.refuelData.slice(0, 5).map((item,index) => (
           <View key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
             <View style={styles.iconContainer}>
               <Image source={require('../../assets/refuelimg.png')} ></Image>
