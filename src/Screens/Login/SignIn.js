@@ -6,6 +6,8 @@ import { useRealm, useUser } from '@realm/react';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import LinearGradient from 'react-native-linear-gradient';
 import SwitchUser from '../../utility/SwitchUser';
+import { SvgXml } from 'react-native-svg';
+import { AddIcon, MilageTrackerSignInIcon } from '../../assets/IconsSvg';
 
 const SignIn = () => {
   const navigation = useNavigation();
@@ -29,9 +31,9 @@ const SignIn = () => {
   }, []);
 
   const handleUserPress = async (userId, userName) => {
-    console.log("Swith : - ",userId,typeof(userId))
+    // console.log("Swith : - ",userId,typeof(userId))
     const res = await SwitchUser(realm, navigation, userId,mystore);
-    console.log(res);
+    // console.log(res);
     
   };
 
@@ -42,13 +44,11 @@ const SignIn = () => {
     <LinearGradient
       colors={['#C5E3DC', '#F6F6EC']}
       style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
     >
 
       <View style={styles.container2}>
         <SafeAreaView style={styles.upper}>
-          <Image resizeMode="contain" source={require('../../assets/logo.png')} style={styles.image1} />
+          <SvgXml xml={MilageTrackerSignInIcon}/>
           <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
         </SafeAreaView>
 
@@ -58,7 +58,7 @@ const SignIn = () => {
             <Text>Loading</Text>
           </View>
           :
-          <View>
+          <View style={styles.bottom}>
             <Text style={styles.heading}>Who are you?</Text>
             <ScrollView contentContainerStyle={styles.usersStyle}>
               {users.map((user,index) => (
@@ -70,11 +70,14 @@ const SignIn = () => {
                   <Text style={styles.pressableText} >{user.name} </Text>
                 </Pressable>
               ))}
+              <View style={styles.addView}>
 
-                <Pressable onPress={() => navigation.navigate('CreateAccount')}>
-                  <Image source={require('../../assets/FABs.png')} />
-                <  Text style={styles.pressableText} > Add User </Text>
+                <Pressable onPress={() => navigation.navigate('CreateAccount')} style={styles.btn2}>
+                 
+                  <SvgXml xml={AddIcon} width="32" height="32" />
                 </Pressable>
+                <  Text style={styles.pressableText} > Add User </Text>
+              </View>
             </ScrollView>
           </View>
         }
@@ -91,10 +94,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginVertical : 20,
   },
+  addView  :{
+    alignItems : 'center',
+  },
+  bottom : {
+    marginBottom : 20,
+  },
   heading : {
     alignSelf : 'center',
     fontSize : 20,
     fontWeight : 'bold',
+    color: '#0B3C58',
   },
   upper: {
     alignItems: 'center',
@@ -105,15 +115,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pressableText: {
-    alignItems: 'center'
-  },
-  btn: {
-    backgroundColor: '#0B3C58',
-    padding: 10,
-    width: 250,
-    borderRadius: 10,
-    marginTop: 10,
     alignItems: 'center',
+    color: '#0B3C58',
+    color: '#0B3C58',
   },
   userInitials : {
     backgroundColor : 'red',
@@ -128,18 +132,6 @@ const styles = StyleSheet.create({
     fontSize : 20,
     color : 'white',
   },
-  addBtn: {
-    backgroundColor: '#0B3C58',
-    padding: 10,
-    // width : 100,
-    color: 'blue',
-    borderRadius: 100,
-    marginTop: 10,
-    alignItems: 'center'
-  },
-  btnName: {
-    color: 'white',
-  },
   usersStyle: {
     // flex: 1,
     alignSelf: 'center',
@@ -152,7 +144,18 @@ const styles = StyleSheet.create({
   },
   image2: {
     width: '100%'
-  }
+  },
+
+  btn2: {
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width : 50,
+    height : 50,
+    color: 'blue',
+    borderRadius: 100,
+    marginTop: 10,
+    alignItems: 'center'
+  },
 });
 
 export default SignIn;

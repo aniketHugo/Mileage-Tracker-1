@@ -1,7 +1,8 @@
 import Realm from "realm";
 const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
     try {
-        console.log("login  = ",userId, typeof(userId))
+        // console.log("login  = ",userId, typeof(userId))
+        console.log("Login User :- called")
         const user = realm.objectForPrimaryKey('User', userId);
         const auth = realm.objects('Authentication')[0];
 
@@ -11,7 +12,7 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
             return "wrong passcode entered";
         }
         else[
-            console.log("correct")
+            // console.log("correct")
         ]
 
 
@@ -23,8 +24,8 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
                 auth.nickName = user.nickName;
                 auth.passCode = user.passCode;
 
-                console.log(`User with ID ${userId} LoggedIn (updated)`);
-                console.log('Auth updated')
+                // console.log(`User with ID ${userId} LoggedIn (updated)`);
+                // console.log('Auth updated')
             } else {
                 const AuthId = new Realm.BSON.ObjectId();
                 const newAuth = {
@@ -37,7 +38,7 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
                 };
                 // Add the new vehicle to the Vehicle schema
                 realm.create('Authentication', newAuth);
-                console.log('Auth created')
+                // console.log('Auth created')
             }
         });
         mystore.setSelectedUserId(user.id);
@@ -61,7 +62,7 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
           }
 
 
-        navigation.navigate('TabNav');
+        navigation.replace('TabNav');
 
     } catch (error) {
         console.error('Error updating user login status:', error);

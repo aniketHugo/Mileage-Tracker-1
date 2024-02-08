@@ -5,6 +5,8 @@ import { useRealm } from '@realm/react';
 
 import LinearGradient from 'react-native-linear-gradient';
 import BackHeader from '../../Navigation/BackHeader'
+import { SvgXml } from 'react-native-svg';
+import { CheckedBox, UncheckedBox } from '../../assets/IconsSvg';
 
 const CreateAccount = () => {
   const navigation = useNavigation();
@@ -20,42 +22,40 @@ const CreateAccount = () => {
   const [checked, setChecked] = useState(false);
 
   const handleCheckboxToggle = () => {
-    if (name && email && /^[a-zA-Z]+$/.test(name) && (/^[a-zA-Z]+$/.test(nickname) || nickname.length === 0) ) {
+    let valid = 1;
+    if(name.length == 0){
+      setErrorMessage1('Name cannot be empty');
+      valid = 0;
+    }
+    if(/^[a-zA-Z\s]*$/.test(name) == false){
+      setErrorMessage1('You cannot include symbols or numbers');
+      valid = 0;
+    }
+
+    if(/^[a-zA-Z\s]*$/.test(nickname) == false){
+      setErrorMessage2('You cannot include symbols or numbers');
+      valid = 0;
+    }
+    if(email == ""){
+      setErrorMessage3('Email cannot be empty');
+      valid = 0;
+    }
+    if (/^[a-z]+@[a-z]+\.com$/.test(email) == false) {
+      setErrorMessage3('Invalid email');
+      valid = 0;
+    }
+
+    if(valid){
       setChecked(true);
     }
-    else {
+    else{
       setChecked(false);
     }
+    
   };
 
   const handleCreateAccount = () => {
-    if (name.trim() === '') {
-      setErrorMessage1('Name cannot be empty');
-      return;
-    }
-    const regex = /^[a-zA-Z ]+$/;
-    let nameStatus = regex.test(name);
-    if (!nameStatus) {
-      setErrorMessage1('You cannot include symbols or numbers');
-      return;
-    }
-
-    let nicknameStatus = regex.test(nickname);
-    if (!nicknameStatus) {
-      setErrorMessage2('You cannot include symbols or numbers');
-      return;
-    }
-
-    const validDomain = 'a';
-    const isValid = 1;
-
-    if (!isValid) {
-      setErrorMessage3('Invalid Mail');
-      return;
-    } else {
-      // console.log('Valid email address:', email);
-    }
-
+    
     navigation.navigate('SetPassCode', { data: { name: name, nickname: nickname, email: email } })
     return;
   };
@@ -67,36 +67,38 @@ const CreateAccount = () => {
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 1 }}
     >
+      <SafeAreaView  style={{ flex: 1 }}>
+
       <ScrollView contentContainerStyle={styles.mainPage}>
         <View style={styles.container2}>
           <BackHeader />
           <Text style={styles.mainHeading}> Create Account </Text>
-          <Text style={styles.headings}> Name * </Text>
+          <Text style={styles.headings}> Name <Text style={{color : '#EB655F'}}>*</Text> </Text>
           <TextInput
             style={styles.input}
-            placeholder="Name"
+            // placeholder="Name"
             value={name}
             requi
-            onChangeText={(text) => setName(text)}
-          />
+            onChangeText={(text) => {setName(text); setErrorMessage1("");  setChecked(false)}}
+            />
           <Text style={styles.errorHeading}>    {errorMessage1}</Text>
           <Text style={styles.headings}> NickName</Text>
           <TextInput
             style={styles.input}
-            placeholder="Nickname"
+            // placeholder="Nickname"
             value={nickname}
-            onChangeText={(text) => setNickname(text)}
-          />
+            onChangeText={(text) => {setNickname(text); setErrorMessage2("");  setChecked(false)}}
+            />
           <Text style={styles.errorHeading}>    {errorMessage2}</Text>
-          <Text style={styles.headings}> Email Address *</Text>
+          <Text style={styles.headings}> Email Address <Text style={{color : '#EB655F'}}>*</Text></Text>
           <TextInput
             style={styles.input}
-            placeholder="Email Address"
+            // placeholder="Email Address"
             value={email}
-            onChangeText={(text) => setEmail(text)}
+            onChangeText={(text) => {setEmail(text); setErrorMessage3("");  setChecked(false)}}
             keyboardType="email-address"
             autoCapitalize="none"
-          />
+            />
           <Text style={styles.errorHeading}>    {errorMessage3}</Text>
         </View>
 
@@ -104,14 +106,14 @@ const CreateAccount = () => {
           <View style={styles.checkBox}>
             <TouchableOpacity onPress={handleCheckboxToggle} style={styles.Text}>
               {checked ? (
-                <Image source={require('../../assets/Checkboxes.png')} />
-              ) : (
-                <Image source={require('../../assets/UncheckedBox.png')} />
-              )}
-              <Text>
+                <SvgXml xml={CheckedBox} style={styles.image1} />
+                ) : (
+                  <SvgXml xml={UncheckedBox} style={styles.image1} />
+                  )}
+              <Text style={styles.bannerText}>
                 {' '}
                 Tick this box to confirm you are at least 18 years old and agree
-                to our terms & conditions{' '}
+                to our <Text style={{color : '#EB655F'}}>terms & conditions</Text> {' '}
               </Text>
             </TouchableOpacity>
           </View>
@@ -123,7 +125,7 @@ const CreateAccount = () => {
                 checked ? styles.buttonEnable : styles.buttonDisable
               }
               onPress={handleCreateAccount}
-            >
+              >
               <Text style={styles.btnName}>Continue</Text>
             </TouchableOpacity>
           </View>
@@ -131,6 +133,7 @@ const CreateAccount = () => {
  
         </View>
       </ScrollView>
+</SafeAreaView>
     </LinearGradient>
   );
 };
@@ -154,12 +157,14 @@ const styles = StyleSheet.create({
   },
   headings: {
     fontSize: 20,
-    marginVertical: 20,
+    marginVertical: 10,
+    color: '#0B3C58',
   },
   mainHeading: {
     fontSize: 25,
     marginVertical: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#0B3C58',
   },
   check: {
     backgroundColor: 'white',
@@ -186,6 +191,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 4,
     width: '100%',
+    color: '#0B3C58',
+    fontSize : 16,
+  },
+  bannerText : {
+    color: '#0B3C58',
   },
   buttonEnable: {
     backgroundColor: '#0B3C58',

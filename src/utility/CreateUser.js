@@ -1,11 +1,11 @@
 import Realm from "realm";
 const CreateUser = async (realm, name, nickname, passCode, email,mystore) => {
   try {
-    console.log("Craete user fun props", name, nickname, passCode, email)
+    // console.log("Craete user fun props", name, nickname, passCode, email)
     const auth = realm.objects('Authentication')[0];
     const userId = new Realm.BSON.ObjectId();
 
-    console.log(typeof(userId))
+    // console.log(typeof(userId))
 
     realm.write(() => {
       realm.create('User', {
@@ -22,8 +22,8 @@ const CreateUser = async (realm, name, nickname, passCode, email,mystore) => {
         auth.email = email;
         auth.nickName = nickname;
         auth.passCode = passCode;
-        console.log(`User with ID ${userId} LoggedIn (updated)`);
-        console.log('Auth updated')
+        // console.log(`User with ID ${userId} LoggedIn (updated)`);
+        // console.log('Auth updated')
       } else {
         const AuthId = new Realm.BSON.ObjectId();
         const newAuth = {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, ScrollView, Pressable, RefreshControl } from 'react-native';
 import { useQuery, useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import UseUserStore from '../../ZustandStore/ZuStore';
@@ -8,6 +8,8 @@ import { Refuel } from '../../Database/mySchema';
 import DeleteRefuel from '../../utility/DeleteRefuel';
 import DropDownPicker from 'react-native-dropdown-picker';
 import moment from 'moment';
+import { SvgXml } from 'react-native-svg';
+import { RefuelFlowerIcon } from '../../assets/IconsSvg';
 
 const FuelData = () => {
   const [refuelData, setRefuelData] = useState([]);
@@ -47,15 +49,26 @@ const FuelData = () => {
     setFromDate(date)
     setRefuelData(newData)
   }
+ 
+  const [refreshing, setRefreshing] = useState(false);
 
+  const onRefresh = useCallback(() => {
+    setTimeout(() => {
+      setRefreshing(false);
+      // const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
+    }, 1000);
+  }, []);
 
   useEffect(() => {
     const dt = filterData(value);
-    console.log("Refuel Data comp ")
+    // console.log("Refuel Data comp ")
   }, [value, rfd, mystore.refuelData]);
 
 
   ///////
+  const Days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  const Months=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sep','Oct','Nov','Dec']
+
   const renderItem = ({ item }) => (
     <Pressable
       style={styles.cardContainer}
@@ -64,22 +77,25 @@ const FuelData = () => {
           refuelItem: {
             id: item.id,
             refuelDate: item.refuelDate,
+            refuelAddDate: item.refuelAddDate,
             startReading: item.startReading,
             endReading: item.endReading,
             consumed: item.consumed,
             price: item.price,
             vehicleId: item.vehicleId,
-            vehicleName: "item.vehicle.name", // Note the correction here
+            vehicleName: item.vehicleName // Note the correction here
           },
         })
       }>
       <View style={styles.iconContainer}>
-        <Image source={require('../../assets/refuelimg.png')} />
+        <SvgXml xml={RefuelFlowerIcon} width="32" height="32" />
       </View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text>
-        <Text style={styles.subHeading}>{item.consumed}</Text>
+        {/* <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text> */}
+        <Text style={styles.mainHeading}>{Days[item.refuelDate.getDay()]}, {item.refuelDate.getDate()} {Months[item.refuelDate.getMonth()]}'{item.refuelDate.getFullYear()%100} </Text>
+        
+        <Text style={styles.subHeading}>{item.consumed}L</Text>
       </View>
 
       <View style={styles.priceContainer}>
@@ -108,14 +124,21 @@ const FuelData = () => {
 
         containerStyle={styles.dropdownContainer}
         style={{
-          backgroundColor: "#C6E8E9",
+          // backgroundColor: "#C6E8E9",
+          padding : 0,
           borderWidth: 0,
         }}
 
       />
-      <Text style={styles.filterText}>{`${len} records  |  ${fromDate.toLocaleString('en-US', options2)}  -  Today`}</Text>
+      <Text style={styles.filterText}>{`${len} records  |  ${fromDate.toLocaleString('en-GB', options2)}  -  Today`}</Text>
 
       <FlatList
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
         data={refuelData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
@@ -159,8 +182,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     zIndex: 5,
     borderColor: 'white',
-
-
   },
   iconContainer: {
     flex: 1,
@@ -177,11 +198,12 @@ const styles = StyleSheet.create({
   },
   mainHeading: {
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    color: '#0B3C58',
   },
   subHeading: {
     fontSize: 14,
-    color: '#555',
+    color: '#0B3C58',
   },
   priceContainer: {
     flex: 1,
@@ -190,7 +212,8 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    color: '#0B3C58',
   },
   fuelData: {
     // flexGrow: 1,

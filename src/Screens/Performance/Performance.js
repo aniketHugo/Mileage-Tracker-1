@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image, Pressable } from 'react-native';
 import { VictoryChart, VictoryBar, VictoryAxis } from 'victory-native';
 import { useRealm } from "@realm/react";
 import FetchRefuelData from "../../API/FetchRefuelData";
@@ -7,20 +7,22 @@ import UseUserStore from "../../ZustandStore/ZuStore";
 import VehicleList from '../Refuel/VehicleList';
 import MoneyGraph from './MoneyGraph';
 import MileageGraph from './MilageGraph';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import NoVehicles from '../Home/Novehicles';
+import { SvgXml } from 'react-native-svg';
+import { ClowdImg } from '../../assets/IconsSvg';
+import Temp from './Temp';
 const FuelGraph = () => {
   const mystore = UseUserStore();
   const realm = useRealm();
   const [refuelData, setRefuelData] = useState([]);
-
+  const navigation = useNavigation();
   useFocusEffect(
     useCallback(() => {
       const fetchRefuelData = async () => {
         try {
-          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId,mystore);
-
-          // console.log("refuel data fetched");
-          console.log("Perf fetched")
+          const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
+          console.log("Performance:- FetchRefuelData Called")
         } catch (error) {
           console.log('Error fetching refuel data:', error);
         }
@@ -33,12 +35,25 @@ const FuelGraph = () => {
     return uri;
   }
   return (
-    <SafeAreaView>
-      <ScrollView vertical>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.HeadingBox}>
+        <Text style={styles.mainHeading}>Performance</Text>
+      </View>
+      {mystore.vehicleLength == 0 ? (
+        <View style={styles.noVehicleContent}>
+          <Image source={require('../../assets/Maskgroup.png')} style={styles.image3} />
+          <Text style={styles.heading} > Add a vehicle to start tracking its refuelling & performance </Text>
+          <Pressable onPress={() => navigation.navigate('VehicleStack', { screen: 'addVehicle' })} style={styles.btn3} >
+            <Text style={styles.btnName}>
+              Add Vehicle
+            </Text>
+          </Pressable>
+        </View>
+      ) : (
 
+        <ScrollView vertical contentContainerStyle={styles.second}>
 
-        <View style={styles.container}>
-          <Text style={styles.mainHeading}>Choose the vehicle:</Text>
+          <Text style={styles.mainHeading2}>Choose the vehicle:</Text>
           <VehicleList />
           {mystore.selectedVehicleImage != null &&
             (
@@ -52,20 +67,35 @@ const FuelGraph = () => {
                 </View>
             )
           }
-          <View style={styles.content}>
-            <View style={styles.heading}>
-              <Text style={styles.fuelText}>Money spend on fuel</Text>
+          {mystore.refuelData.length == 0 ? (
+            <View style={styles.noData}>
+              <View style={styles.content3}>
+                <SvgXml xml={ClowdImg} style={styles.image1} />
+                <Text style={styles.heading}>It’s time to add the refuelling details to get more insights</Text>
+              </View>
+              <View style={styles.btn2}>
+                <Pressable onPress={() => navigation.navigate('RefuelStack', { screen: 'addRefuel' })} style={styles.btn} >
+                  <Text style={styles.btnName}>Add Refuelling</Text>
+                </Pressable>
+              </View>
             </View>
-            <MoneyGraph />
+          ) : (
 
-            <View style={styles.heading}>
-              <Text style={styles.fuelText}>Vehicle mileage performance</Text>
+            <View style={styles.content}>
+              <View style={styles.heading}>
+                <Text style={styles.fuelText}>Money spend on fuel</Text>
+              </View>
+              <MoneyGraph />
+
+              <View style={styles.heading}>
+                <Text style={styles.fuelText}>Vehicle mileage performance</Text>
+              </View>
+              <MileageGraph />
+              {/* <Temp/> */}
             </View>
-            <MileageGraph />
-
-          </View>
-        </View>
-      </ScrollView>
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
@@ -75,27 +105,65 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F2F2',
     justifyContent: 'center',
     alignItems: 'center',
+    flexGrow: 1,
+    flexDirection: 'column',
+    // justifyContent : 'space-between',
+    paddingBottom: 80,
+  },
+  second: {
+    alignItems: 'center',
+    marginBottom: 20,
+
+  },
+  content3: {
+    alignItems: 'center',
+  },
+  mainHeading: {
+    fontSize: 25,
+    alignSelf: 'center',
+    marginTop: 20,
+    color: '#0B3C58',
   },
   fuelText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color :'#0B3C58'
+    color: '#0B3C58'
   },
   heading: {
-    // backgroundColor : 'red',
     alignSelf: 'flex-start',
     marginHorizontal: 10,
     marginTop: 20,
-    // marginBottom: 10,
   },
-  mainHeading: {
+  HeadingBox: {
+    width : '100%',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#CED8DE'
+  },
+  mainHeading2: {
     marginTop: 20,
     color: '#0B3C58',
+    fontSize: 18,
   },
   content: {
     backgroundColor: '#F0F2F2',
     borderRadius: 10,
     marginTop: 20,
+  },
+  noVehicleContent: {
+    flexGrow: 1,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image3: {
+    backgroundColor: '#95C3BB',
+    borderRadius: 180
+  },
+  noData: {
+    marginTop: '20%',
   },
   image4: {
     width: 300,
@@ -107,6 +175,32 @@ const styles = StyleSheet.create({
     borderWidth: 8,
     borderColor: 'white',
     borderRadius: 10,
+  },
+  heading: {
+    textAlign: 'center',
+    margin: 20,
+  },
+  btn3: {
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width: 100,
+    color: 'blue',
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center'
+  },
+  btn: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    margin: 10,
+    backgroundColor: '#0B3C58',
+    padding: 10,
+    width: 250,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  btnName: {
+    color: 'white',
   },
 
 });

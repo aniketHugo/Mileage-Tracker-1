@@ -1,18 +1,19 @@
 
 const LogoutUser = async (realm, navigation, mystore) => {
     try {
+        console.log("Logout User Called")
         const auth = realm.objects('Authentication')[0];
 
         if (auth) {
             realm.write(() => {
                 realm.delete(auth);
             });
-            console.log("Auth deleted");
+            // console.log("Auth deleted");
         }
         else {
-            console.log("Auth does not exist")
+            // console.log("Auth does not exist")
         }
-        console.log("Logged Out ", mystore.selectedUserId);
+        // console.log("Logged Out ", mystore.selectedUserId);
 
         mystore.setSelectedUserId(null)
         mystore.setSelectedUserName(null)

@@ -29,14 +29,14 @@ const SetPassCode = ({ route }) => {
   }, [route.params]);
 
   const handleSubmit = async () => {
-    console.log(pinCode1, pinCode2)
+    // console.log(pinCode1, pinCode2)
     if (pinCode1 != pinCode2) {
       setErrorMsg('The passcodes do not match')
     }
     else {
       setErrorMsg('')
       const datas = CreateUser(realm, data.name, data.nickname, pinCode1, data.email, mystore);
-      console.log("create user resp = ", datas)
+      // console.log("create user resp = ", datas)
       navigation.replace('TabNav')
     }
   };
@@ -44,25 +44,26 @@ const SetPassCode = ({ route }) => {
   const handlePinCodeChange1 = (code) => {
     setPinCode1(code);
     setPinCode2('')
+    setErrorMsg("")
     setChecked(false);
-
   };
   const handlePinCodeComplete1 = (code) => {
     setPinCode1(code);
-    console.log('Pin code entered:', code);
+    // console.log('Pin code entered:', code);
   };
   const handlePinCodeChange2 = (code) => {
     setPinCode2(code);
-    if (pinCode1 != code) {
-      setChecked(false);
-    }
+    setErrorMsg("")
+    // if (pinCode1 != code) {
+    //   setChecked(false);
+    // }
   };
   const handlePinCodeComplete2 = (code) => {
     setPinCode2(code);
-    console.log('Pin code entered:', code);
-    if (pinCode1 == code) {
+    // console.log('Pin code entered:', code);
+    // if (pinCode1 == code) {
       setChecked(true);
-    }
+    // }
   };
 
   return (
@@ -77,13 +78,14 @@ const SetPassCode = ({ route }) => {
           <BackHeader />
 
           <Text style={styles.mainHeading}> Set a Passcode </Text>
-          <Text style={styles.headings}> Enter a 4-Digit Passcode * </Text>
+          <Text style={styles.headings}> Enter a 4-Digit Passcode <Text style={{color : '#EB655F'}}>*</Text> </Text>
           <Text style={styles.secondHeadings}> You will need to enter at every app launch </Text>
           <View style={styles.inputBox}>
 
             <SmoothPinCodeInput
-              // password
-              // mask="*"
+              password
+              mask="X"
+              autoFocus={true}
               cellStyle={styles.cellStyle}
               cellStyleFocused={styles.cellStyleFocused}
               textStyle={styles.textStyle}
@@ -93,14 +95,14 @@ const SetPassCode = ({ route }) => {
             />
           </View>
 
-          <Text style={styles.headings}>Confirm Passcode * </Text>
+          <Text style={styles.headings}>Confirm Passcode <Text style={{color : '#EB655F'}}>*</Text> </Text>
           <View style={styles.inputBox}>
 
             <SmoothPinCodeInput
-              // password
-              // mask="*"
+              password
+              mask="X"
               cellStyle={styles.cellStyle}
-              // cellStyleFocused={styles.cellStyleFocused}
+              cellStyleFocused={styles.cellStyleFocused}
               textStyle={styles.textStyle}
               value={pinCode2}
               onTextChange={handlePinCodeChange2}
@@ -122,7 +124,7 @@ const SetPassCode = ({ route }) => {
               Continue
             </Text></TouchableOpacity>
           <Pressable onPress={handleSubmit} style={styles.btn2} >
-            <Text >
+            <Text style={{color: '#0B3C58',}}>
               Skip
             </Text>
           </Pressable>
@@ -192,14 +194,17 @@ const styles = StyleSheet.create({
   headings: {
     fontSize: 20,
     marginTop: 20,
+    color: '#0B3C58',
   },
   secondHeadings: {
     marginBottom: 10,
+    color: '#0B3C58',
   },
   mainHeading: {
     fontSize: 25,
     marginVertical: 20,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: '#0B3C58',
   },
   input: {
     borderWidth: 1,
@@ -210,6 +215,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '20%',
     marginEnd: 20,
+    color: '#0B3C58',
   },
   btn: {
     backgroundColor: '#0B3C58',

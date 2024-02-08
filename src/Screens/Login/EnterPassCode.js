@@ -27,18 +27,18 @@ const EnterPasscode = ({route}) => {
     }
   }, [route.params]);
 
-  const handleSubmit = async () => {
-    console.log( pinCode1,data);
-    console.log("Param = ",data.userId, typeof(data.userId))
-    const res = await LoginUser(realm, navigation, data.userId,pinCode1,mystore);
-    console.log("enter passcode res :- ",res)
+  const handleSubmit = async (code) => {
+    // console.log( pinCode1,data);
+    // console.log("Param = ",data.userId, typeof(data.userId))
+    const res = await LoginUser(realm, navigation, data.userId,code,mystore);
+    // console.log("enter passcode res :- ",res)
     if(res == "wrong passcode entered"){
       setErrorMsg('Wrong Passcode')
     }
     else{
-      console.log("Enterpasscode data = ",data)
+      // console.log("Enterpasscode data = ",data)
 
-      navigation.navigate('TabNav');
+      // navigation.replace('TabNav');
     }
   };
 
@@ -46,30 +46,30 @@ const EnterPasscode = ({route}) => {
 
   const handlePinCodeChange1 = (code) => {
     setPinCode1(code);
+    setErrorMsg("")
   };
   const handlePinCodeComplete1 =  async (code) => {
     setPinCode1(code);
-    // handleSubmit
-    console.log('Pin code entered:', code);
+    handleSubmit(code)
+    // console.log('Pin code entered:', code);
   };
 
   return (
     <LinearGradient
       colors={['#C5E3DC', '#F6F6EC']}
       style={{ flex: 1 }}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
+
     >
       <SafeAreaView style={styles.container}>
       <BackHeader/>
       <Text style={styles.mainHeading}> Welcome Back! </Text>
-      <Text style={styles.headings}> Enter a 4-Digit Passcode * </Text>
+      <Text style={styles.headings}> Enter a 4-Digit Passcode <Text style={{color : '#EB655F'}}>*</Text> </Text>
       <Text style={styles.secondHeadings}> Just checking it’s really you!</Text>
       <View  style = {styles.inputBox}>
 
       <SmoothPinCodeInput
-        // password
-        // mask="*"
+        password
+        mask="X"
         autoFocus={true}
         cellStyle={styles.cellStyle}
         cellStyleFocused={styles.cellStyleFocused}
@@ -81,11 +81,11 @@ const EnterPasscode = ({route}) => {
 
         </View>
       <Text style={styles.errMsg}>{errorMsg} </Text>
-      <Pressable onPress={handleSubmit} style={styles.btn} >
+      {/* <Pressable onPress={() => handleSubmit(pinCode1)} style={styles.btn} >
         <Text style={styles.btnName}>
           Continue
         </Text>
-      </Pressable>
+      </Pressable> */}
     </SafeAreaView> 
     </LinearGradient>
 
@@ -96,8 +96,8 @@ const EnterPasscode = ({route}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
     paddingVertical : 20,
+    marginHorizontal : 20,
   },
   errMsg : {
     margin : 10,
@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
   headings :{
     fontSize : 20,
     marginTop: 20,
+    color: '#0B3C58',
   },
   secondHeadings : {
     marginBottom: 10,
@@ -149,7 +150,8 @@ const styles = StyleSheet.create({
   mainHeading :{
     fontSize : 25,
     marginVertical : 20,
-    fontWeight : 'bold'
+    fontWeight : 'bold',
+    color: '#0B3C58',
   },
 
 });

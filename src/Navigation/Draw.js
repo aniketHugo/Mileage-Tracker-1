@@ -8,6 +8,8 @@ import { useRealm } from '@realm/react';
 const Drawer = createDrawerNavigator();
 import UseUserStore from '../ZustandStore/ZuStore';
 import LogoutUser from '../utility/LogoutUser';
+import { SvgXml } from 'react-native-svg';
+import { DeleteAccountiCON, DrawerIcon, LeftArrow } from '../assets/IconsSvg';
 const DrawerContent = ({ navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const toggleModal = () => {
@@ -28,13 +30,19 @@ const DrawerContent = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.DrawerButttonBox}>
-        <Image source={require('../assets/userIcon2.png')} style={styles.userIcon}></Image>
+        <SvgXml xml={DrawerIcon} width="32" height="32" style={styles.userIcon} />
+
           <Text style={styles.username}> {mystore.selectedUserName} </Text>
+          
           <Pressable style={styles.DrawerButttons} onPress={() => navigation.navigate('LoginStack')}>
+           <SvgXml xml={DrawerIcon} style={styles.drawerBtnIcon} />
             <Text style={styles.DrawerText}>Switch Account</Text>
+            <SvgXml xml={LeftArrow} style={styles.drawerBtnIcon} />
           </Pressable>
           <Pressable style={styles.DrawerButttons} onPress={toggleModal}>
+            <SvgXml xml={DeleteAccountiCON} style={styles.drawerBtnIcon} />
             <Text style={styles.DrawerText}>Delete Account</Text>
+            <SvgXml xml={LeftArrow} style={styles.drawerBtnIcon} />
           </Pressable>
         </View>
 
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
     fontWeight : 'bold',
     fontSize : 20,
     color : '#0B3C58',
+    marginBottom : 30,
   },
   userIcon : {
     marginHorizontal : 15,
@@ -109,6 +118,8 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderRadius: 5,
     padding: 10,
+    flexDirection : 'row',
+    alignItems : 'center'
   },
   bottomText: {
     backgroundColor: '#58798C',
@@ -122,9 +133,13 @@ const styles = StyleSheet.create({
   secondHeading : {
     color : '#58798C'
   },
+  drawerBtnIcon : {
+    marginHorizontal : 10,
+  },
   DrawerText: {
     // fontSize: 20,
     color: 'black',
+    justifyContent : 'center'
   },
   DrawerButttonBox: {
     marginVertical: 20,

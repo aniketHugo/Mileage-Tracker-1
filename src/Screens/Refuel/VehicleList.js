@@ -1,10 +1,14 @@
-import React, { useState ,useEffect} from 'react';
-import { View,Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Image, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { useQuery, useRealm } from '@realm/react';
 import FetchVehicleData from '../../API/FetchVehicleList';
 import { Vehicle } from '../../Database/mySchema';
-
+import { SvgXml } from 'react-native-svg';
+import { DropDown } from '../../assets/IconsSvg';
+import DropDownComp from '../../Components/Buttons/DropDown';
+import SelectDropdown from 'react-native-select-dropdown';
+import { ScrollView } from 'react-native-gesture-handler';
 const VehicleList = () => {
   const realm = useRealm();
   const {
@@ -14,14 +18,14 @@ const VehicleList = () => {
     setRefuelSelectedVehicleId,
     setSelectedVehicleImage,
     setVehicleLength
-  } = UseUserStore(); 
+  } = UseUserStore();
 
   const mystore = UseUserStore();
-  
+
   const [userVehicles, setUserVehicles] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const toggleDropdown = () => { 
+  const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
   };
 
@@ -31,41 +35,42 @@ const VehicleList = () => {
     const fetchRefuelData = () => {
       try {
         const data = FetchVehicleData(realm, mystore);
-        // setRefuelData(data);
-        console.log("Vehicles list fetched")
-        // console.log("Sel = ",mystore.selectedUserId,mystore.refuelSelectedVehicleId)
-        // console.log("refuel data fetched in");
+        console.log("Vehicle List:- $FetchVehicleData$ Called")
       } catch (error) {
         console.log('Error fetching refuel data:', error);
       }
     };
     fetchRefuelData();
-  }, [mystore.refuelSelectedVehicleId, vd])
+  }, [vd])
 
-  const handleOptionSelect = (id,name,img) => {
-    console.log('Selected:', name);
+  const handleOptionSelect = (id, name, img) => {
+    // console.log('Selected:', name);
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
     setSelectedVehicleImage(img)
     setDropdownVisible(false); // Close the dropdown after selection
   };
 
-  
+  const vehiclenames=(mystore.vehicleData.map((vehicle)=>{return vehicle.name}))
+
   return (
     <View style={styles.container3}>
       <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-        <Text>{refuelSelectedVehicle}</Text>
-        <Image source={require('../../assets/DropdownIcon1.png')} ></Image>
+        <Text style={styles.vehicleName}>{refuelSelectedVehicle}</Text>
+        <SvgXml xml={DropDown} />
       </TouchableOpacity>
-
       {dropdownVisible && (
-        <View style={styles.dropdown}>
-          {mystore.vehicleData.map((vehicle, index) => (
-        <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id,vehicle.name,vehicle.vehicleImage)}>
-          <Text style={styles.dropdownText}>{vehicle.name}</Text>
-        </TouchableOpacity>
-      ))}
-        </View>
+       <View style={styles.dropdownContainer}>
+       <ScrollView contentContainerStyle={styles.dropdownScrollView}>
+         <View style={styles.dropdown}>
+           {mystore.vehicleData.map((vehicle, index) => (
+             <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id, vehicle.name, vehicle.vehicleImage)}>
+               <Text style={styles.dropdownText}>{vehicle.name}</Text>
+             </TouchableOpacity>
+           ))}
+         </View>
+       </ScrollView>
+     </View>
       )}
     </View>
   );
@@ -76,36 +81,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
     // backgroundColor : 'red',
-    color : 'black',
-    borderRadius : 10,
-    zIndex : 10,
+    color: 'black',
+    borderRadius: 10,
+    zIndex: 10,
   },
+  vehicleName: {
+    color: '#0B3C58',
+  },
+
+
   dropdownButton: {
-    // borderColor : 'black',
-    flexDirection : 'row',
-    justifyContent : 'space-evenly',
-    backgroundColor : '#ffffff',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    backgroundColor: '#ffffff',
     padding: 10,
-    borderRadius: 8,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8,
+    borderRadius : 8,
     width: 200,
     alignItems: 'center',
-    // zIndex : 2,
-    elevation : 3,
+    elevation: 3,
+  },
+  dropdownContainer: {
+    position: 'absolute',
+    width :200,
+    top : 38,
+    maxHeight : 300,
+    zIndex: 3,
+    backgroundColor : 'white',
+    // borderRadius: 8,
+  },
+  dropdownScrollView: {
+    flex: 1,
+    // alignItems : 'center'
   },
   dropdown: {
-    position: 'absolute',
-    top: 40,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    width : '50%',
-    padding: 10,
-    zIndex: 3,
-    alignItems : 'center'
+    backgroundColor: 'white',
+    // borderRadius: 8,
+    elevation: 3,
+    padding: 8,
+    alignItems : 'center',
+
   },
-  dropdownText : {
-    padding : 5,
-    fontSize : 15,
-  }
+  dropdownText: {
+    fontSize: 16,
+    paddingVertical: 8,
+  },
 });
 
 export default VehicleList;

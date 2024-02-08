@@ -3,7 +3,9 @@ const AddRefuelDB = async (
   realm,
   userId,
   vehicleId,
+  vehicleName,
   refuelDate,
+  addDate,
   startReading,
   endReading,
   consumed,
@@ -29,11 +31,13 @@ const AddRefuelDB = async (
       realm.create('Refuel', {
         id: refuelId,
         refuelDate: refuelDate,
+        refuelAddDate: addDate,
         startReading: parseFloat(startReading),
         endReading: parseFloat(endReading),
         consumed: parseFloat(consumed),
         price: parseFloat(price),
         vehicleId: vid,
+        vehicleName : vehicleName,
         userId : uid
       });
     });

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, Text, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native';
+import { View, Image, Text, ScrollView, StyleSheet, Pressable, FlatList, RefreshControl } from 'react-native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import { useQuery, useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -14,20 +14,26 @@ const VehiclesData = () => {
   const mystore = UseUserStore();
   const vd = useQuery(Vehicle)
 
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setTimeout(() => {
+      setRefreshing(false);
+      const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
+    }, 1000);
+  }, []);
+
   useEffect(() => {
     const fetchRefuelData = () => {
       try {
         const data = FetchVehicleData(realm, mystore);
-        // setRefuelData(data);
-        console.log("Vehicles Fetched in vehicle data")
-        // console.log("Sel = ",mystore.selectedUserId,mystore.refuelSelectedVehicleId)
-        // console.log("refuel data fetched in");
+        console.log("VehicleData :- FetchVehicleData Called")
       } catch (error) {
         console.log('Error fetching refuel data:', error);
       }
     };
     fetchRefuelData();
-  }, [mystore.refuelSelectedVehicleId, vd])
+  }, [vd])
 
   const getUri = (image) => {
     const uri = `data:image/png;base64,${image}`;
@@ -82,6 +88,13 @@ const VehiclesData = () => {
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
           contentContainerStyle={styles.fuelData}
+
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
         />
       </View>
     )
@@ -128,6 +141,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    color: '#0B3C58',
   },
   image2: {
     width: '100%',

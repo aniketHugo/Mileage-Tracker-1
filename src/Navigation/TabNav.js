@@ -2,115 +2,98 @@
 
 import React, { useState } from 'react';
 import { View, Text, Button, Image, StyleSheet, Pressable } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+// import {hr, wr} from '../Utils/WidthHeightRatioUtil';
 import Draw from './Draw';
 import RefuelStack from './Stacks/RefuelStack';
 import VehicleStack from './Stacks/VehicleStack';
-import LoginStack from './Stacks/LoginStack';
 import Performance from '../Screens/Performance/Performance';
-import EnterPasscode from '../Screens/Login/EnterPassCode';
-import LandingPage from '../Screens/LandingPage.js';
+import {
+  HomeUnfilledSVG,
+  PerformanceUnfilledSVG,
+  VehicleUnfilledSVG,
+  RefuelUnfilledSVG,
+  HomeFilledSVG,
+  PerformanceFilledSVG,
+  VehicleFilledSVG,
+  RefuelFilledSVG
+} from '../assets/TabBarIconsSVG'
+import { SvgXml } from 'react-native-svg';
 
 const Tab = createBottomTabNavigator();
 
-const Footer = ({ navigation, state }) => {
-  const [focusedTab, setFocusedTab] = useState(state.routes[state.index].name);
-
-  const handleTabPress = (tabName) => {
-    setFocusedTab(tabName);
-    navigation.navigate(tabName);
-  };
-
-  const tabImages = {
-    Homes: {
-      Filled: require('../assets/HomeFilled.png'),
-      Unfilled: require('../assets/HomeUnfilled.png'),
-    },
-    RefuelStack: {
-      Filled: require('../assets/RefuelFilled.png'),
-      Unfilled: require('../assets/RefuelUnfilled.png'),
-    },
-    Performance: {
-      Filled: require('../assets/PerformanceFilled.png'),
-      Unfilled: require('../assets/PerformanceUnfilled.png'),
-    },
-    VehicleStack: {
-      Filled: require('../assets/VehicleFilled.png'),
-      Unfilled: require('../assets/VehicleUnfilled.png'),
-    },
-  };
-  const getTabImage = (tabName) => {
-    return focusedTab === tabName ? tabImages[tabName].Filled : tabImages[tabName].Unfilled;
-  };
-  return (
-    <View style={styles.footer}>
-      <Pressable style={styles.btn} onPress={() => handleTabPress('Homes')}>
-        <Image source={getTabImage('Homes')} />
-        <Text style={styles.name}> Home </Text>
-      </Pressable>
-
-      <Pressable style={styles.btn} onPress={() => handleTabPress('RefuelStack')}>
-        <Image source={getTabImage('RefuelStack')} />
-        <Text style={styles.name}> Refuel </Text>
-      </Pressable>
-
-      <Pressable style={styles.btn} onPress={() => handleTabPress('Performance')}>
-        <Image source={getTabImage('Performance')} />
-        <Text style={styles.name}> Performance </Text>
-      </Pressable>
-
-      <Pressable style={styles.btn} onPress={() => handleTabPress('VehicleStack')}>
-        <Image source={getTabImage('VehicleStack')} />
-        <Text style={styles.name}> Vehicle </Text>
-      </Pressable>
-    </View>
-  );
-};
-
 const TabNav = () => {
   return (
-      <Tab.Navigator tabBar={(props) => <Footer {...props} />}>
+    // <SafeAreaView style={{flexGrow : 1,height : 40,}}>
 
-        <Tab.Screen options={{ headerShown: false }}
-          name="Homes" component={Draw} />
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
 
-        <Tab.Screen options={{ headerShown: false }}
-          name="RefuelStack" component={RefuelStack} />
+            if (route.name === 'Homes') {
+              iconName = focused
+                ? HomeFilledSVG
+                : HomeUnfilledSVG;
+            } else if (route.name === 'Performance') {
+              iconName = focused
+                ? PerformanceFilledSVG
+                : PerformanceUnfilledSVG;
+            } else if (route.name === 'RefuelStack') {
+              iconName = focused
+                ? RefuelFilledSVG
+                : RefuelUnfilledSVG;
+            } else if (route.name === 'VehicleStack') {
+              iconName = focused
+                ? VehicleFilledSVG
+                : VehicleUnfilledSVG;
+            }
 
-        <Tab.Screen name="Performance" component={Performance} />
+            return (
+              // <Image
+              //   source={iconName}
+              //   style={{height: 20, width: 20}}
+              // />
+              <SvgXml xml={iconName} width="32" height="32" />
+            );
+          },
+          headerShown: false,
 
-        <Tab.Screen options={{ headerShown: false }}
-          name="VehicleStack" component={VehicleStack} />
+          tabBarActiveTintColor: '#0B3C58',
+          tabBarInactiveTintColor: '#6D8A9B',
+          tabBarStyle: [
+            {
+              display: 'flex',
+              height: 60,
+              paddingTop: 10,
+              borderTopWidth: 1,
+              borderTopColor: 'grey',
+              // backgroundColor : 'red',
+              // justifyContent :'flex-start',
+              // alignItems : 'center',
+              paddingBottom : 0,
 
-        </Tab.Navigator>
+            },
+            null,
+          ],
+          tabBarLabelStyle: {
+            fontSize: 14, // Adjust the font size as needed
+            paddingTop: 10,
+          },
+        })}>
+        <Tab.Screen name="Homes" component={Draw}></Tab.Screen>
+        <Tab.Screen name="RefuelStack" component={RefuelStack}></Tab.Screen>
+        <Tab.Screen name="Performance" component={Performance}></Tab.Screen>
+        <Tab.Screen name="VehicleStack" component={VehicleStack}></Tab.Screen>
+      </Tab.Navigator>
+  
+
+
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 60,
-    backgroundColor: 'white', // Adjust the color as needed
-    borderTopWidth : 1,
-    // borderColor : '#E4EBEF',
 
-  },
-  btn: {
-    alignItems: 'center',
-    paddingTop : 10,
-  },
-  name: {
-    marginTop: 5, // Adjust the spacing as needed
-  },
 });
 
 export default TabNav;

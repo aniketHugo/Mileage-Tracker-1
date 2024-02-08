@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Image, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { SvgXml } from 'react-native-svg';
+import { BlackBackArrow, WhiteBackArrow } from '../assets/IconsSvg';
 
 
 const BackHeader = () => {
@@ -11,7 +13,7 @@ const BackHeader = () => {
     return (
         <View style={styles.header1}>
             <Pressable onPress={() => navigation.goBack()} >
-                <Image source={require('../assets/BackArrow2.png')} style={styles.back}></Image>
+                <SvgXml xml={BlackBackArrow} width="32" height="32" />
             </Pressable>
         </View>
     );

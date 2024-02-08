@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Button, StyleSheet } from 'react-native';
+import { View, Button, StyleSheet, SafeAreaView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -34,12 +34,14 @@ const RefuelStack = () => {
 
   return (
     // <NavigationContainer>
+    <SafeAreaView style={{flex :1}}>
       <Mystack.Navigator initialRouteName="refuel">
         <Mystack.Screen options={{ headerShown: false }}   name="Refuel" component={Refuel} />
-        <Mystack.Screen options={{ headerShown: false }} name="addRefuel" component={AddRefuel} />
+        <Mystack.Screen options={{ headerShown: false , tabBarVisible: false  }}  name="addRefuel" component={AddRefuel} />
         <Mystack.Screen options={{ headerShown: false }} name="editRefuel" component={EditRefuel} />
         <Mystack.Screen options={{ headerShown: false }}   name="RefuelDetails" component={RefuelDetails} />
       </Mystack.Navigator>
+    </SafeAreaView>
     // </NavigationContainer>  ads
   );
 };

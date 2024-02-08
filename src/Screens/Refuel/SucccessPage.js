@@ -5,7 +5,7 @@ import { useRealm } from '@realm/react';
 import { useNavigation } from '@react-navigation/native';
 import DeleteRefuel from '../../utility/DeleteRefuel';
 
-
+ 
 
 const RefuelDetails = ({ route }) => {
 

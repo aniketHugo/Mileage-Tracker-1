@@ -20,7 +20,6 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
     let status = 0;
     
     const uid = userId.toString();
-    console.log("user id = ",  uid,typeof(uid));
 
     realm.write(() => {
       const newVehicle = {
@@ -32,14 +31,10 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
         vehicleImage: fileContent,
       };
 
-      // if (!newVehicle.vehicleImage) {
-      //   console.log("No image exists")
-      //   return { msg: "Failed to add" };
-      // }
-      // else {
+
         realm.create('Vehicle', newVehicle);
         status = 1;
-      // }
+
 
     });
 

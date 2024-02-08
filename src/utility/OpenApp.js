@@ -1,15 +1,15 @@
 import LoginUser from "./LoginUser";
 
 const OpenApp = async (realm, navigation, mystore) => {
-  console.log("In open app")
+  console.log("Open App :- called")
   const AuthUser = realm.objects('Authentication')[0];
   if (AuthUser) {
-    console.log("Auth found")
+    // console.log("Auth found")
     const user = realm.objectForPrimaryKey('User', AuthUser.userId);
     if (user) {
-      console.log("User found")
+      // console.log("User found")
       if (user.passCode == "") {
-        console.log("User passcode empty ",(user.id).toString())
+        // console.log("User passcode empty ",(user.id).toString())
         const vehicles = realm.objects('Vehicle').filtered('userId == $0',(user.id).toString());
 
         mystore.setSelectedUserId(AuthUser.userId);
@@ -29,8 +29,8 @@ const OpenApp = async (realm, navigation, mystore) => {
         navigation.replace('TabNav');
       }
       else {
-        console.log("User has passcode")
-        navigation.navigate('EnterPassCode', {
+        // console.log("User has passcode")
+        navigation.replace('EnterPassCode', {
           data: {
             userId: AuthUser.userId,
             userName: AuthUser.name
@@ -39,17 +39,17 @@ const OpenApp = async (realm, navigation, mystore) => {
       }
     }
     else {
-      navigation.navigate('LoginStack')
+      navigation.replace('LoginStack')
     }
     return;
   }
   else {
     const user = realm.objects('User');
     if(user.length == 0){
-      navigation.navigate('LoginStack' ,{screen : 'SignUp'})
+      navigation.replace('LoginStack' ,{screen : 'SignUp'})
     }
     else{
-      navigation.navigate('LoginStack')
+      navigation.replace('LoginStack')
     }
     return;
   }

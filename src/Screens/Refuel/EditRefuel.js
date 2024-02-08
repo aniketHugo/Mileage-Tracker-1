@@ -12,7 +12,8 @@ import UseUserStore from '../../ZustandStore/ZuStore';
 import AddRefuelDB from '../../utility/AddRefuelDB';
 import DatePicker from 'react-native-date-picker';
 import EditRefuelDB from '../../utility/EditRefuelDB';
-import BackHeader from '../../Navigation/BackHeader';
+import { SvgXml } from 'react-native-svg';
+import { CalendarIcon, WhiteBackArrow } from '../../assets/IconsSvg';
 
 const EditRefuel = ({ route }) => {
   const options = {
@@ -39,44 +40,54 @@ const EditRefuel = ({ route }) => {
 
   const handleSubmit = async () => {
     if (!selectedUserId) {
-      console.log('No user selected.');
+      // console.log('No user selected.');
       return;
     }
 
+    if(isNaN(startReading) || isNaN(endReading) || isNaN(price) || isNaN(consumed)){
+      setError("Enter a valid number")
+      return;
+    }
+    else if(parseFloat(startReading) >parseFloat(endReading)){
+      setError("Odometer Start reading should be smaller than End Reading")
+      return;
+    }
+    if((startReading) == "" || (endReading) == "" || (price) == "" || (consumed) == ""){
+      setError("Enter mandatory fields!")
+      return;
+    }
+    else{
+      // console.log("Is a number")
+    }
 
-    console.log("data = = = ",
-      realm,
-      refuelId,
-      refuelDate,
-      startReading,
-      endReading,
-      consumed,
-      price);
-
+    let currDate = new Date();
     const res = await EditRefuelDB(
       realm,
       refuelId,
       refuelDate,
+      currDate,
       startReading,
       endReading,
       consumed,
       price)
-    console.log('Edit Refuel successfully')
+    // console.log('Edit Refuel successfully')
     navigation.navigate('Refuel');
   };
+  const [error, setError] = useState('');
+  const [checked, setChecked] = useState(true);
 
 
   useEffect(() => {
     // if (route.params && route.params.data) {
-    console.log('parans ', route.params.data)
+    // console.log('parans ', route.params.data)
     setrefuelId(route.params.data.id)
-    console.log( "Here2 type = ",typeof(route.params.data.id))
+    // console.log( "Here2 type = ",typeof(route.params.data.id))
     setStartReading(route.params.data.startReading);
     setEndReading(route.params.data.endReading);
     setConsumed(route.params.data.consumed);
     setPrice(route.params.data.price);
     setRefuelDate(new Date(route.params.data.refuelDate))
-    console.log("Typ = ",typeof(new Date(route.params.data.refuelDate)),route.params.data.refuelDate)
+    // console.log("Typ = ",typeof(new Date(route.params.data.refuelDate)),route.params.data.refuelDate)
     // }
   }, []);
 
@@ -96,12 +107,12 @@ const EditRefuel = ({ route }) => {
           <View style={styles.inBox}>
 
             <Text style={styles.heading1}>Edit Refueling Record</Text>
-            <Text style={styles.heading}>Select Vehicle:</Text>
-            <VehicleList />
+            {/* <Text style={styles.heading}>Select Vehicle:</Text>
+            <VehicleList /> */}
             <Text style={styles.heading}>Refueling Date:</Text>
-            <Pressable style={styles.dateBox} onPress={() => { setOpen(true) }} >
-              <Text> {refuelDate.toLocaleString('en-US', options)} </Text>
-              <Image style={styles.calendarImg} source={require('../../assets/Calendar.png')} ></Image>
+            <Pressable disabled={true} style={styles.dateBox} onPress={() => { setOpen(true) }} >
+              <Text style={{color: '#0B3C58',}}> {refuelDate.toLocaleDateString('en-GB')} </Text>
+             <SvgXml xml={CalendarIcon} style={styles.calendarImg} />
             </Pressable>
             <DatePicker
               modal
@@ -125,17 +136,16 @@ const EditRefuel = ({ route }) => {
                   keyboardType="numeric"
                   value={startReading.toString()}
                   placeholder='Start Reading'
-                  onChangeText={(text) => setStartReading(text)}
+                  onChangeText={(text) => {setStartReading(text);setError("")}}
                 />
               </View>
-
               <View style={styles.inputWrapper}>
                 <TextInput
                   style={styles.input}
                   keyboardType="numeric"
                   value={endReading.toString()}
                   placeholder='End Reading'
-                  onChangeText={(text) => setEndReading(text)}
+                  onChangeText={(text) => {setEndReading(text); setError("")}}
                 />
               </View>
             </View>
@@ -148,7 +158,7 @@ const EditRefuel = ({ route }) => {
                   keyboardType="numeric"
                   value={consumed.toString()}
                   placeholder='Consumed'
-                  onChangeText={(text) => setConsumed(text)}
+                  onChangeText={(text) => {setConsumed(text); setError("")}}
                 />
               </View>
 
@@ -158,11 +168,12 @@ const EditRefuel = ({ route }) => {
                   keyboardType="numeric"
                   value={price.toString()}
                   placeholder='Price'
-                  onChangeText={(text) => setPrice(text)}
+                  onChangeText={(text) => {setPrice(text); setError("")}}
                 />
               </View>
             </View>
           </View>
+          <Text style={styles.errorHeading}>{error}</Text>
         </View>
 
 
@@ -171,22 +182,29 @@ const EditRefuel = ({ route }) => {
             <Text style={styles.buttonText2}>Cancel</Text>
           </Pressable>
 
-          <Pressable style={[styles.button, styles.yesButton]} onPress={handleSubmit}>
+          <Pressable
+            // style={[styles.button, styles.yesButton]}
+            disabled={!checked}
+            style={[styles.button,
+            checked ? styles.buttonEnable : styles.buttonDisable]
+            }
+            onPress={handleSubmit}>
             <Text style={styles.buttonText}>Save</Text>
           </Pressable>
 
         </View>
       </View>
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()} >
-            <Image source={require('../../assets/BackArrow2.png')} />
+        {/* <Image source={require('../../assets/BackArrow2.png')} /> */}
+        <SvgXml xml={WhiteBackArrow} width="32" height="32" color={'black'} />
       </Pressable>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  page : {
-    flex : 1,
+  page: {
+    flex: 1,
   },
   container3: {
     flexGrow: 1,
@@ -247,7 +265,10 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
 
-
+  errorHeading: {
+    color: '#F93333',
+    marginVertical: 10,
+  },
   dateBox: {
     height: 40,
     borderColor: '#ccc',
@@ -265,11 +286,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 5,
     alignSelf: 'flex-start',
+    color: '#0B3C58',
   },
   heading1: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#0B3C58',
   },
   datePicker: {
     width: '100%',
@@ -285,6 +308,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 10,
+    
   },
   inputWrapper: {
     flex: 1,
@@ -298,8 +322,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     paddingHorizontal: 10,
-    width: '100%'
+    width: '100%',
+    color: '#0B3C58',
   },
+
+  buttonEnable: {
+    backgroundColor: '#0B3C58',
+  },
+  buttonDisable: {
+    backgroundColor: '#B0B0B0',
+  },
+  buttonText2 : {
+    color: '#0B3C58',
+  }
 });
 
 export default EditRefuel;

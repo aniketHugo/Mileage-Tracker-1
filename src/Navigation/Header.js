@@ -8,17 +8,6 @@ const Header = () => {
 
   const [sidebarVisible, setSidebarVisible] = useState(false);
 
-  const toggleSidebar = () => {
-    setSidebarVisible(!sidebarVisible);
-  };
-
-  const handleButton1 = () => {
-    console.log('Button 1 pressed');
-  };
-
-  const handleButton2 = () => {
-    console.log('Button 2 pressed');
-  };
 
   const navigation = useNavigation();
 
@@ -37,15 +26,6 @@ const Header = () => {
       </View>
 
       {/* Sidebar */}
-      {sidebarVisible && (
-          <View style={styles.sidebar}>
-            <Pressable onPress={() => navigation.closeDrawer()} >
-            <Image source={require('../assets/userIcon2.png')}></Image>
-          </Pressable>
-          <Button title="Switch Profile" onPress={() => navigation.navigate('SignInStack')} />
-          <Button title="Create Account" onPress={() => navigation.navigate('CreateAccount')} />
-        </View>
-      )}
     </View>
   );
 };

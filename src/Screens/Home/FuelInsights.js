@@ -11,8 +11,7 @@ const FuelInsights = () => {
     const [lastAvg, setLastAvg] = useState();
     const mystore = UseUserStore();
 
-    useEffect(
-        () => {
+    useEffect(() => {
             const fetchRefuelData = async () => {
                 try {
                     // const data = FetchRefuelData(realm, mystore.selectedUserId, ref_id);
@@ -21,7 +20,7 @@ const FuelInsights = () => {
                     let totalfuel = 0;
                     let totalDist = 0;
                     data.forEach((e) => {
-                        console.log(e.endReading - e.startReading);
+                        // console.log(e.endReading - e.startReading);
                         totalfuel += e.consumed;
                         totalDist += e.endReading - e.startReading;
                     })
@@ -29,7 +28,7 @@ const FuelInsights = () => {
                     setAvg((totalDist / totalfuel).toFixed(2));
                     const lastRefuelData = data.length > 0 ? ((data[data.length - 1].endReading -  data[data.length - 1].startReading) / data[data.length - 1].consumed ) : 0;
                     setLastAvg(lastRefuelData.toFixed(2))
-                    console.log(" val = ", totalDist, totalfuel)
+                    // console.log(" val = ", totalDist, totalfuel)
                 } catch (error) {
                     console.log('Error fetching refuel data:', error);
                 }
@@ -75,7 +74,8 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 16,
         marginBottom: 10,
-        fontWeight: 'bold'
+        // fontWeight: 'bold',
+        color : '#0B3C58',
     },
 
 });

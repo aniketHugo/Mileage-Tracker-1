@@ -9,55 +9,83 @@ const MileageGraph = (props) => {
 
     const mystore = UseUserStore();
 
- 
-
-    // Group data by months and calculate average mileage for each month
-    const groupedData = mystore.refuelData.reduce((acc, data) => {  
+    const today = new Date(); // Current date
+    const fiveMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 4, today.getDate()); // Date 5 months ago
+    const groupedData = mystore.refuelData.reduce((acc, data) => {
         const refuelDate = new Date(data.refuelDate);
-        const monthKey = refuelDate.getMonth();
 
-        if (!acc[monthKey]) {
-            acc[monthKey] = { month: monthKey + 1, totalDistance: 0, totalFuel: 0, averageMileage: 0 };
+        if (refuelDate >= fiveMonthsAgo && refuelDate < new Date()) {
+            const monthDiff = (today.getMonth() - refuelDate.getMonth() + 60) % 12; // Calculate the month difference and ensure it's positive
+            const monthKey = monthDiff === 0 ? 0 : monthDiff; // If monthDiff is 0, set monthKey to 12
+
+            if (!acc[6 - (monthKey + 1)]) {
+                acc[6 - (monthKey + 1)] = { month: 6 - (monthKey + 1), totalDistance: 0, totalFuel: 0, averageMileage: 0 };
+            }
+
+                const distance = data.endReading - data.startReading;
+                acc[6 - (monthKey + 1)].totalDistance += distance;
+                acc[6 - (monthKey + 1)].totalFuel += data.consumed;
         }
 
-        // Assuming 'startReading' and 'endReading' represent odometer readings
-        const distance = data.endReading - data.startReading;
-        acc[monthKey].totalDistance += distance;
-        acc[monthKey].totalFuel += data.consumed;
-
-
-
-        // console.log("acc = ",acc)
         return acc;
     }, {});
+
+
+    const fillMissingMonths = (data) => {
+        const filledData = [];
+        const monthsPresent = data.map(item => item.month);
+        for (let month = 0; month <= 5; month++) {
+          if (monthsPresent.includes(month)) {
+            filledData.push(data.find(item => item.month === month));
+          } else {
+            if(month == 0)
+            filledData.push({
+              averageMileage: 0,
+              month,
+              totalDistance: 0,
+              totalFuel: 0
+            });
+          }
+        }
+        return filledData;
+      };
 
     // Calculate average mileage for each month
     Object.values(groupedData).forEach((monthData) => {
         monthData.averageMileage = monthData.totalDistance / monthData.totalFuel;
     });
 
-    const chartData = Object.values(groupedData);
-    console.log("chartData = ",chartData)
+    const chartArrayData = Object.values(groupedData);
+    const chartData = fillMissingMonths(chartArrayData);
+    // console.log("chartArrayData = ", chartArrayData)
+    // console.log("chartData = ", chartData)
+
+
 
     return (
-        <View style={styles.graphView}>
+        <View style={styles.graphView2}>
 
-            <ScrollView horizontal >
-                <VictoryChart>
-                    <VictoryAxis
+            <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 80 }}
+                domainPadding={20} width= {370} >
+                <VictoryAxis
                         style={{
-                            axisLabel: { padding: 50 },
-                            tickLabels: { angle: -45, fontSize: 12, padding: 20 },
+                            tickLabels: {fontSize: 15, padding: 20 },
                         }}
-                        tickValues={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+                        tickValues={[0,1,2,3,4,5]}
                         tickFormat={(tick) => {
                             const monthNames = [
-                                '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+                                '',
+                                getMonthName(today.getMonth() - 4), 
+                                getMonthName(today.getMonth() -3), 
+                                getMonthName(today.getMonth() -2), 
+                                getMonthName(today.getMonth() -1), 
+                                getMonthName(today.getMonth()), 
                             ];
                             return monthNames[tick];
                         }}
                     />
                     <VictoryAxis dependentAxis
+                    domain={{ "averageMileage": [0, 'max'] }}
                         style={{
                             grid: { stroke: '#CED8DE' },
                         }}
@@ -67,7 +95,7 @@ const MileageGraph = (props) => {
                         data={chartData}
                         x="month"
                         y="averageMileage"
-                        interpolation="natural"
+                        interpolation="cardinal"
                     />
                     <VictoryScatter
                         style={{ data: { fill: '#EB655F' } }}
@@ -77,20 +105,22 @@ const MileageGraph = (props) => {
                         y="averageMileage"
                     />
                 </VictoryChart>
-            </ScrollView>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    graphView: {
-        marginVertical: 10,
-        backgroundColor: 'white',
+    graphView2: {
+        // marginHorizontal : 20,
+        backgroundColor : 'white',
         elevation: 5,
         borderRadius: 10,
-        width: '90%',
-
     }
 });
+const getMonthName = (monthIndex) => {
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return monthNames[(monthIndex + 12) % 12];
+}
+
 
 export default MileageGraph;

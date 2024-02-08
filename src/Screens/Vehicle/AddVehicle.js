@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
+import { SvgXml } from 'react-native-svg';
+import { CameraLogo, WhiteBackArrow } from '../../assets/IconsSvg';
 
 const AddVehicle = () => {
   const realm = useRealm();
@@ -14,18 +16,14 @@ const AddVehicle = () => {
 
 
   const [vehicleName, setVehicleName] = useState('');
-  const [vehicleType, setVehicleType] = useState('option1');
+  const [vehicleType, setVehicleType] = useState('4 Wheeler');
   const [engineCC, setEngineCC] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [error, setError] = useState('');
 
 
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const getUri = async (image) => {
-    fileContent = await RNFS.readFile(image, 'base64');
-    const uri = `data:image/png;base64,${fileContent}`;
-    return uri;
-  }
   const openImagePicker = async () => {
     try {
       const result = await launchImageLibrary();
@@ -61,7 +59,15 @@ const AddVehicle = () => {
 
   const handleSubmit = async () => {
     if (!mystore.selectedUserId) {
-      console.log('No user selected.');
+      // console.log('No user selected.');
+      return;
+    }
+    if (isNaN(engineCC) || engineCC == "") {
+      setError("Enter a valid engine CC");
+      return;
+    }
+    if (vehicleName == "") {
+      setError("Enter a Vehicle Name");
       return;
     }
 
@@ -69,12 +75,12 @@ const AddVehicle = () => {
     // console.log("ret = ", data);
 
     if (data.msg == "Added Successfully") {
-      console.log("veh added resp = ", data)
+      // console.log("veh added resp = ", data)
       // setSelectedImage(`data:image/png;base64,${selectedImage}`);
       // mystore.setSelectedImage(selectedImage);
       console.log('Vehicle added successfully id = ', data.id)
-      navigation.navigate("VehicleSuccessPage" , {img : selectedImage , name : vehicleName}); 
-    
+      // navigation.navigate("VehicleSuccessPage", { img: selectedImage, name: vehicleName });
+
     }
     else {
       console.warn("Vehicle Not added !!!!! ", data._j.msg)
@@ -100,8 +106,7 @@ const AddVehicle = () => {
 
                 <Image resizeMode="contain" source={{ uri: selectedImage }} style={styles.image1} />
                 :
-                <Image resizeMode="contain" source={require('../../assets/CameraLogo.png')} style={styles.image1} />
-
+                <SvgXml xml={CameraLogo} style={styles.image1} />
               }
             </Pressable>
             <TextInput
@@ -143,9 +148,9 @@ const AddVehicle = () => {
               onChangeText={(text) => setEngineCC(text)}
             />
           </View>
+          <Text style={styles.errorHeading}>{error}</Text>
         </View>
 
-        {/* <Button title="Add" onPress={handleSubmit} /> */}
         <View style={styles.buttonContainer}>
           <Pressable style={[styles.button, styles.noButton]} onPress={() => navigation.navigate("Vehicle")}>
             <Text style={styles.buttonText2}>Cancel</Text>
@@ -158,8 +163,8 @@ const AddVehicle = () => {
 
 
         <Pressable style={styles.backButton} onPress={() => navigation.navigate("Vehicle")} >
-            <Image source={require('../../assets/BackArrow2.png')} />
-      </Pressable>
+          <SvgXml xml={WhiteBackArrow} width="32" height="32" />
+        </Pressable>
       </View>
     </View>
 
@@ -167,8 +172,8 @@ const AddVehicle = () => {
 };
 
 const styles = StyleSheet.create({
-  page2 : {
-    height : '100%'
+  page2: {
+    height: '100%'
   },
   container6: {
     flexGrow: 1,
@@ -189,7 +194,7 @@ const styles = StyleSheet.create({
     borderRadius: 1000,
     alignSelf: 'center',
   },
-  TopBox :{
+  TopBox: {
     alignItems: 'center',
   },
   InBox: {
@@ -229,6 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#0B3C58',
   },
   input: {
     height: 60,
@@ -238,6 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     width: '100%',
+    color: '#0B3C58',
   },
   dropdownButton: {
     borderColor: '#ccc',
@@ -263,11 +270,11 @@ const styles = StyleSheet.create({
   imgBox: {
     borderRadius: 100,
     backgroundColor: '#45A9BF',
-    overflow : 'hidden',
+    overflow: 'hidden',
     height: 120,
     width: 120,
-    justifyContent : 'center',
-    alignItems : 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dropdownText: {
     padding: 5,
@@ -277,6 +284,13 @@ const styles = StyleSheet.create({
     height: 180,
     width: 180,
     borderRadius: 100,
+  },
+  errorHeading: {
+    color: '#F93333',
+    marginVertical: 10,
+  },
+  buttonText2 : {
+    color: '#0B3C58',
   }
 });
 

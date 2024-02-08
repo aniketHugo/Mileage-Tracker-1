@@ -2,17 +2,21 @@ import React from 'react';
 import { View, Button, Image, ScrollView, Text, StyleSheet, TouchableOpacity, Pressable, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import VehiclesData from './VehiclesData';
+import { AddIcon } from '../../assets/IconsSvg';
+import { SvgXml } from 'react-native-svg';
 
 const Vehicle = () => {
   const Navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.mainHeading}>Vehicles</Text>
+      <View style={styles.HeadingBox}>
+        <Text style={styles.mainHeading}>Vehicles</Text>
+      </View>
       <View style={styles.content}>
             <VehiclesData/>       
           <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn} >
-            <Image source={require('../../assets/Large.png')}></Image>
+            <SvgXml xml={AddIcon} width="32" height="32" />
           </Pressable>
           </View>
          <View style={styles.btn2}>
@@ -27,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F2F2',
   },
   mainHeading: {
-    fontSize: 30,
+    fontSize: 25,
     alignSelf : 'center',
     marginTop : 20,
     color : '#0B3C58',
@@ -35,6 +39,13 @@ const styles = StyleSheet.create({
   btn2: {
     alignItems: 'flex-end',
     margin: 10
+  },
+  HeadingBox : {
+    backgroundColor : '#fff',
+    justifyContent : 'center',
+    paddingBottom : 10,
+    borderBottomWidth : 2,
+    borderBottomColor : '#CED8DE'
   },
   heading: {
     textAlign: 'center',
@@ -60,10 +71,9 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: '#0B3C58',
     padding: 10,
-    // width : 100,
     color: 'blue',
     borderRadius: 100,
-    margin: 20,
+    marginHorizontal: 20,
     alignItems: 'center',
     position : 'absolute',
     bottom : 0,

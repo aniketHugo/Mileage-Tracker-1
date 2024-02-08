@@ -1,7 +1,8 @@
 const SwitchUser = async (realm, navigation, userId, mystore) => {
     try {
         const user = realm.objectForPrimaryKey('User', userId);
-        console.log("User = ",user)
+        console.log("Switch User Called")
+
         if (user) {
             if (user.passCode == "") {
                 // set auth
@@ -14,8 +15,8 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
                         auth.nickName = user.nickName;
                         auth.passCode = user.passCode;
 
-                        console.log(`User with ID ${userId} LoggedIn (updated)`);
-                        console.log('Auth updated')
+                        // console.log(`User with ID ${userId} LoggedIn (updated)`);
+                        console.log('Switch User :-  Auth updated')
                     } else {
                         const AuthId = new Realm.BSON.ObjectId();
                         const newAuth = {
@@ -28,7 +29,7 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
                         };
                         // Add the new vehicle to the Vehicle schema
                         realm.create('Authentication', newAuth);
-                        console.log('Auth created')
+                        console.log('Switch User :- Auth created')
                     }
                 });
                 // go to homes
@@ -51,7 +52,7 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
                     mystore.setSelectedVehicleImage(null)
                     mystore.setRefuelSelectedVehicle(null)
                   }
-                navigation.navigate("TabNav")
+                navigation.replace("TabNav")
             }
             else {
                 navigation.navigate('EnterPassCode', {
@@ -64,7 +65,7 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
             }
         }
         else {
-            console.warn("This user does not exist")
+            console.warn("Switch User :- This user does not exist")
             return;
         }
 

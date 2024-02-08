@@ -1,79 +1,50 @@
-import React, { useState } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet } from 'react-native';
+import SelectDropdown from 'react-native-select-dropdown'
+import { SvgXml } from 'react-native-svg';
+import { DeleteIcon, DropDown } from '../../assets/IconsSvg';
+import UseUserStore from '../../ZustandStore/ZuStore';
+import { useQuery, useRealm } from '@realm/react';
+import { Vehicle } from '../../Database/mySchema';
+import FetchVehicleData from '../../API/FetchVehicleList';
+import FetchVehicleNames from '../../API/FetchVehicleNames';
+import RNPickerSelect from 'react-native-picker-select';
 
-const DropDown = () => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [vehicleType,setVehicleType] = useState('Vehicle Type')
+// import textStyle from '../../Text'
+const DropDownComp = (props) => {
+  const mystore = UseUserStore();
+  const realm = useRealm();
+  const vehiclenames = FetchVehicleNames(realm, mystore);
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
-
-  const handleOptionSelect = (option) => {
-    // Handle the selection of an option here
-    console.log('Selected:', option);
-    setSelectedVehicle(option)
-    setDropdownVisible(false); // Close the dropdown after selection
-  };
 
   return (
-    <View style={styles.container1}>
-      <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-        <Text>{vehicleType}</Text>
-      </TouchableOpacity>
-
-      {dropdownVisible && (
-        <View style={styles.dropdown}>
-          <TouchableOpacity onPress={() => handleOptionSelect('Yamaha R15')}>
-            <Text style={styles.dropdownText}>Yamaha R15</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleOptionSelect('Honda City')}>
-            <Text style={styles.dropdownText}>Honda City</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleOptionSelect('Yamaha FZ')}>
-            <Text style={styles.dropdownText}>Yamaha FZ</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handleOptionSelect('Creta')}>
-            <Text style={styles.dropdownText}>Creta</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
+    <SelectDropdown
+      data={vehiclenames}
+      onSelect={props.onSelect}
+      // buttonText = {mystore.refuelSelectedVehicle}
+      defaultButtonText={mystore.refuelSelectedVehicle}
+      buttonStyle={styles.btnStyle}
+      dropdownStyle = {styles.dd}
+      // renderDropdownIcon={Icon}
+      // defaultValue={props.default}
+      buttonTextStyle={styles.btnTextStyle}
+      selectedRowStyle = {{backgroundColor : '#D9F0F1'}}
+    />
   );
 };
 
 const styles = StyleSheet.create({
-  container1: {
-    alignItems: 'center',
-    backgroundColor : 'white',
-    color : 'black',
-    borderRadius : 10,
-    zIndex : 1,
-    width : '100%',
-    
+  btnStyle: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    elevation: 5,
   },
-  dropdownButton: {
-    borderColor : 'white',
-    padding: 10,
-    width: '100%',
-    zIndex : 2,
-    height : 60,
-    justifyContent : 'center'
+  btnTextStyle: {
+    color: '#0B3C58'
   },
-  dropdown: {
-    position: 'absolute',
-    top: 40,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    width : 150,
-    padding: 10,
-    zIndex: 3,
-    alignItems : 'center',
-  },
-  dropdownText : {
-    padding : 5,
-    fontSize : 15,
+  dd: {
+    borderRadius: 10,
+    borderWidth: 0,
   }
-});
-
-export default DropDown;
+})
+export default DropDownComp;

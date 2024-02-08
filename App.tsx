@@ -7,7 +7,7 @@ import Realm from 'realm';
 import { User , Refuel , Vehicle,Authentication} from './src/Database/mySchema'
 
 const SCHEMA_VERSION = 1; // Increment the schema version
-
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 const migrationFunction = (oldRealm, newRealm) => {
   // if (oldRealm.schemaVersion <= 2) {
   //   // Add the new field 'isLoggedIn' to the User schema
@@ -43,12 +43,15 @@ const migrationFunction = (oldRealm, newRealm) => {
 
 const App = () => {
   return (
+
     <RealmProvider
       schema={[ User , Refuel , Vehicle,Authentication]}
       schemaVersion={SCHEMA_VERSION}
       // migration={migrationFunction}
     >
+      <SafeAreaProvider>
       <Footer />
+      </SafeAreaProvider>
     </RealmProvider>
   );
 };

@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import DeleteRefuel from '../../utility/DeleteRefuel';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import MyModal from '../../Components/Buttons/MyModal';
+import { SvgXml } from 'react-native-svg';
+import { BlackBackArrow, DeleteIcon } from '../../assets/IconsSvg';
 
 
 
@@ -16,10 +18,10 @@ const RefuelDetails = ({ route }) => {
     const mystore = UseUserStore();
     const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
-    useEffect(() => {
-        console.log("Here type = ", typeof (refuelItem.id))
-        console.log('RefuelDetails component mounted with refuelItem:', refuelItem);
-    }, [refuelItem]);
+    // useEffect(() => {
+    //     console.log("Here type = ", typeof (refuelItem.id))
+    //     console.log('RefuelDetails component mounted with refuelItem:', refuelItem);
+    // }, [refuelItem]);
 
     const [isModalVisible, setModalVisible] = useState(false);
     const toggleModal = () => {
@@ -44,15 +46,16 @@ const RefuelDetails = ({ route }) => {
 
                     <View style={styles.subHeadingContainer}>
                         <Pressable onPress={() => navigation.goBack()}>
-                            <Image source={require('../../assets/BackIcon.png')} ></Image>
+                            {/* <Image source={require('../../assets/BackIcon.png')} ></Image> */}
+                            <SvgXml xml={BlackBackArrow} width="32" height="32" />
                         </Pressable>
                         <Text style={styles.bigHeading}>{refuelItem.refuelDate.toLocaleString('en-US', options)}</Text>
                         <Pressable onPress={() => toggleModal()}>
-                            <Image style={styles.img} source={require('../../assets/DeleteIcon.png')} >
-                            </Image>
+                            <SvgXml xml={DeleteIcon} style={styles.img}/>
                         </Pressable>
                     </View>
                     <Text style={styles.smallHeading}>{refuelItem.vehicleName}</Text>
+                    <Text style={styles.xsmallHeading}>Added on  {refuelItem.refuelAddDate.toLocaleString('en-US', options)}</Text>
                     <View style={styles.circle}>
 
                     </View>
@@ -82,19 +85,19 @@ const RefuelDetails = ({ route }) => {
 
                         <View style={styles.rowContainer}>
                             <Text style={styles.heading}>Start Reading</Text>
-                            <Text style={styles.value}>{refuelItem.startReading}</Text>
+                            <Text style={styles.value}>{refuelItem.startReading} kms</Text>
                         </View>
                         <View style={styles.rowContainer}>
                             <Text style={styles.heading}>End Reading</Text>
-                            <Text style={styles.value}>{refuelItem.endReading}</Text>
+                            <Text style={styles.value}>{refuelItem.endReading} kms</Text>
                         </View>
                         <View style={styles.rowContainer}>
                             <Text style={styles.heading}>Consumed</Text>
-                            <Text style={styles.value}>{refuelItem.consumed}</Text>
+                            <Text style={styles.value}>{refuelItem.consumed}L</Text>
                         </View>
                         <View style={styles.rowContainer}>
                             <Text style={styles.heading}>Price</Text>
-                            <Text style={styles.value}>{refuelItem.price}</Text>
+                            <Text style={styles.value}>S$ {refuelItem.price}</Text>
                         </View>
                     </View>
                 </View>
@@ -123,6 +126,9 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: 20,
     },
+    firstHeading : {
+        color: '#0B3C58',
+    },
     headingContainer: {
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -131,7 +137,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderRadius: 0,
         overflow: 'hidden',
-        height: 170,
+        height: 200,
     },
     secBox: {
         borderTopLeftRadius: 30,
@@ -139,7 +145,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     bottom: {
-        borderWidth: 2,
+        borderWidth: 1,
         padding: 10,
         alignItems: 'center',
         margin: 10,
@@ -149,7 +155,7 @@ const styles = StyleSheet.create({
         borderColor: '#0B3C58',
     },
     bottomText: {
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         color: '#0B3C58'
     },
     cardContainer: {
@@ -170,6 +176,7 @@ const styles = StyleSheet.create({
     bigHeading: {
         fontWeight: 'bold',
         fontSize: 20,
+        color: '#0B3C58',
         // backgroundColor : 'white',
     },
 
@@ -181,19 +188,28 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         marginBottom: 10,
+        color: '#0B3C58',
+    },
+    xsmallHeading : {
+        color : '#58798C',
+        textAlign : 'center',
+
     },
     rowContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 5,
+        marginHorizontal : 10,
     },
     heading: {
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
         fontSize: 16,
+        color : '#0B3C58'
     },
     value: {
         fontSize: 16,
         color: '#555',
+        color : '#0B3C58'
     },
 
 
@@ -242,5 +258,8 @@ const styles = StyleSheet.create({
       buttonText: {
         color: 'white',
       },
+      buttonText2 : {
+        color: '#0B3C58',
+      }
 });
 export default RefuelDetails;

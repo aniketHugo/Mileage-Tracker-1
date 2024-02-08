@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Image, Button, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { View, TextInput, Image, Button, Text, StyleSheet, Pressable, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
 
@@ -7,7 +7,8 @@ import VehicleList from './VehicleList';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import AddRefuelDB from '../../utility/AddRefuelDB';
 import DatePicker from 'react-native-date-picker';
-import BackHeader from '../../Navigation/BackHeader';
+import { SvgXml, err } from 'react-native-svg';
+import { CalendarIcon, WhiteBackArrow } from '../../assets/IconsSvg';
 
 const AddRefuel = () => {
   const [vehicleName, setVehicleName] = useState('');
@@ -16,6 +17,9 @@ const AddRefuel = () => {
   const [endReading, setEndReading] = useState('');
   const [consumed, setConsumed] = useState('');
   const [price, setPrice] = useState('');
+  const [error, setError] = useState('');
+  const [checked, setChecked] = useState(true);
+
   const options = {
     month: 'numeric',
     day: '2-digit',
@@ -32,22 +36,43 @@ const AddRefuel = () => {
   const realm = useRealm();
 
   const handleSubmit = () => {
+
     if (!mystore.selectedUserId) {
-      console.log('No user selected.');
+      // console.log('No user selected.');
       return;
     }
+    if(isNaN(startReading) || isNaN(endReading) || isNaN(price) || isNaN(consumed)){
+      setError("Enter a valid number")
+      return;
+    }
+    else if(parseFloat(startReading) >parseFloat(endReading)){
+      setError("Odometer Start reading should be smaller than End Reading")
+      return;
+    }
+    if((startReading) == "" || (endReading) == "" || (price) == "" || (consumed) == ""){
+      setError("Enter mandatory fields!")
+      return;
+    }
+    else{
+      // console.log("Is a number")
+    }
+    // console.log(parseFloat(startReading),typeof(parseFloat(startReading)))
+    let currDate = new Date();
+    
     AddRefuelDB(
       realm,
       mystore.selectedUserId,
       mystore.refuelSelectedVehicleId,
+      mystore.refuelSelectedVehicle,
       refuelDate,
+      currDate,
       startReading,
       endReading,
       consumed,
       price);
-    console.log('Refueled successfully')
+    // console.log('Refueled successfully')
     // navigation.goBack();
-    navigation.navigate('Refuel')
+    // navigation.navigate('Refuel')
   };
 
   return (
@@ -70,8 +95,8 @@ const AddRefuel = () => {
             <VehicleList />
             <Text style={styles.heading}>Refueling Date:</Text>
             <Pressable style={styles.dateBox} onPress={() => { setOpen(true) }} >
-              <Text> {refuelDate.toLocaleString('en-US', options)} </Text>
-              <Image style={styles.calendarImg} source={require('../../assets/Calendar.png')} ></Image>
+              <Text style={{color: '#0B3C58',}}> {refuelDate.toLocaleDateString('en-GB')} </Text>
+              <SvgXml xml={CalendarIcon} style={styles.calendarImg} />
             </Pressable>
             <DatePicker
               modal
@@ -95,7 +120,7 @@ const AddRefuel = () => {
                   keyboardType="numeric"
                   value={startReading}
                   placeholder='Start Reading'
-                  onChangeText={(text) => setStartReading(text)}
+                  onChangeText={(text) => {setStartReading(text);setError("")}}
                 />
               </View>
 
@@ -105,7 +130,7 @@ const AddRefuel = () => {
                   keyboardType="numeric"
                   value={endReading}
                   placeholder='End Reading'
-                  onChangeText={(text) => setEndReading(text)}
+                  onChangeText={(text) => {setEndReading(text); setError("")}}
                 />
               </View>
             </View>
@@ -118,7 +143,7 @@ const AddRefuel = () => {
                   keyboardType="numeric"
                   value={consumed}
                   placeholder='Consumed'
-                  onChangeText={(text) => setConsumed(text)}
+                  onChangeText={(text) => {setConsumed(text); setError("")}}
                 />
               </View>
 
@@ -128,11 +153,12 @@ const AddRefuel = () => {
                   keyboardType="numeric"
                   value={price}
                   placeholder='Price'
-                  onChangeText={(text) => setPrice(text)}
+                  onChangeText={(text) => {setPrice(text); setError("")}}
                 />
               </View>
             </View>
           </View>
+          <Text style={styles.errorHeading}>{error}</Text>
         </View>
 
 
@@ -141,23 +167,29 @@ const AddRefuel = () => {
             <Text style={styles.buttonText2}>Cancel</Text>
           </Pressable>
 
-          <Pressable style={[styles.button, styles.yesButton]} onPress={handleSubmit}>
+          <Pressable
+            // style={[styles.button, styles.yesButton]}
+            disabled={!checked}
+            style={[styles.button,
+            checked ? styles.buttonEnable : styles.buttonDisable]
+            }
+            onPress={handleSubmit}>
             <Text style={styles.buttonText}>Save</Text>
           </Pressable>
 
         </View>
       </View>
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()} >
-            <Image source={require('../../assets/BackArrow2.png')} />
+        <SvgXml xml={WhiteBackArrow} width="32" height="32" />
       </Pressable>
     </View>
 
   );
 };
- 
+
 const styles = StyleSheet.create({
-  page : {
-    flex : 1,
+  page: {
+    flex: 1,
   },
   container3: {
     flexGrow: 1,
@@ -218,7 +250,10 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
 
-
+  errorHeading: {
+    color: '#F93333',
+    marginVertical: 10,
+  },
   dateBox: {
     height: 40,
     borderColor: '#ccc',
@@ -236,11 +271,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 5,
     alignSelf: 'flex-start',
+    color: '#0B3C58',
   },
   heading1: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#0B3C58',
   },
   datePicker: {
     width: '100%',
@@ -256,6 +293,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 10,
+    
   },
   inputWrapper: {
     flex: 1,
@@ -269,8 +307,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 5,
     paddingHorizontal: 10,
-    width: '100%'
+    width: '100%',
+    color: '#0B3C58',
   },
+
+  buttonEnable: {
+    backgroundColor: '#0B3C58',
+  },
+  buttonDisable: {
+    backgroundColor: '#B0B0B0',
+  },
+  buttonText2 : {
+    color: '#0B3C58',
+  }
 });
 
 export default AddRefuel;

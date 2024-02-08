@@ -6,6 +6,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
 import { Refuel } from '../../Database/mySchema';
+import { SvgXml } from 'react-native-svg';
+import { RefuelFlowerIcon } from '../../assets/IconsSvg';
 
 
 const FuelData2 = (props) => {
@@ -16,22 +18,9 @@ const FuelData2 = (props) => {
   const navigation = useNavigation();
   const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
 
-  // useEffect(() => {
-  //   // if (props.refuelData) {
-  //   //   setRefuelData(props.refuelData);
-  //   // }
-  //   const fetchRefuelData = () => {
-  //     try {
-  //       const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId);
-  //       // setRefuelData(data);
-  //       // console.log(data);
-  //     } catch (error) {
-  //       console.log('Error fetching refuel data:', error);
-  //     }
-  //   };
-  //   fetchRefuelData();
-  // }, [mystore.refuelSelectedVehicleId,rfd]);
-
+  const Days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  const Months=['Jan','Feb','Mar','Apr','May','June','July','Aug','Sep','Oct','Nov','Dec']
+  
   return  (
 
     <View style={styles.fuelContainer}>
@@ -39,12 +28,15 @@ const FuelData2 = (props) => {
         {mystore.refuelData.length > 0 && mystore.refuelData.slice(0, 5).map((item,index) => (
           <View key={index} style={styles.cardContainer} onPress={() => navigation.navigate('RefuelDetails')}>
             <View style={styles.iconContainer}>
-              <Image source={require('../../assets/refuelimg.png')} ></Image>
+              {/* <Image source={require('../../assets/refuelimg.png')} ></Image> */}
+              <SvgXml xml={RefuelFlowerIcon} width="32" height="32" />
             </View>
 
             <View style={styles.textContainer}>
-              <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text>
-              <Text style={styles.subHeading}>{item.consumed}</Text>
+              {/* <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text> */}
+        <Text style={styles.mainHeading}>{Days[item.refuelDate.getDay()]}, {item.refuelDate.getDate()} {Months[item.refuelDate.getMonth()]}'{item.refuelDate.getFullYear()%100} </Text>
+
+              <Text style={styles.subHeading}>{item.consumed}L</Text>
             </View>
 
             <View style={styles.priceContainer}>
@@ -87,11 +79,13 @@ const styles = StyleSheet.create({
   },
   mainHeading: {
     fontSize: 18,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    color: '#0B3C58',
   },
   subHeading: {
     fontSize: 14,
     color: '#555',
+    color: '#0B3C58',
   },
   priceContainer: {
     flex: 1,
@@ -100,7 +94,8 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 16,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    color: '#0B3C58',
   },
   fuelData: {
     // flexGrow: 1,
@@ -119,6 +114,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     marginBottom: 10, // Spacing between texts
+    color : '#0B3C58',
   },
 
 });

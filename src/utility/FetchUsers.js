@@ -1,6 +1,6 @@
 const FetchUsers = async (realm) => {
   try {
-
+    console.log("Fetch User :- called")
     const users = await realm.objects('User');
 
     

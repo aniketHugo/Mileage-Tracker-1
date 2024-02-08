@@ -4,12 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import LinearGradient from 'react-native-linear-gradient';
 import UseUserStore from '../../ZustandStore/ZuStore';
+import { SvgXml } from 'react-native-svg';
+import { VehicleCelebration } from '../../assets/IconsSvg';
 
 const VehicleSuccessPage = ({route}) => {
     const navigation = useNavigation();
 
 
-    console.log("Hey == ",route.params.img)
+    // console.log("Hey == ",route.params.img)
     useEffect(()=>{
         const delayNavigation = setTimeout(() => {
           // Replace 'OtherScreen' with the name of the screen you want to navigate to
@@ -25,8 +27,8 @@ const VehicleSuccessPage = ({route}) => {
         >
             <View style={styles.Page}>
                 <View style={styles.Top}>
-                    <Image source={require('../../assets/VehicleSuccess.png')} style={styles.image1} />
-
+                    {/* <Image source={require('../../assets/VehicleSuccess.png')} style={styles.image1} /> */}
+                    <SvgXml xml={VehicleCelebration} style={styles.image1}/>
                     {route.params.img != null && (
                         route.params.img == "" ?
                             <View style={styles.vehicleImage}>
