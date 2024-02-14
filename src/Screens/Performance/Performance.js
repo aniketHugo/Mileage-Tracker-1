@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Image, Pressable } from 'react-native';
+import { View, tEXT, StyleSheet, ScrollView, SafeAreaView, Image, Pressable } from 'react-native';
 import { VictoryChart, VictoryBar, VictoryAxis } from 'victory-native';
 import { useRealm } from "@realm/react";
 import FetchRefuelData from "../../API/FetchRefuelData";
@@ -11,7 +11,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import NoVehicles from '../Home/Novehicles';
 import { SvgXml } from 'react-native-svg';
 import { ClowdImg } from '../../assets/IconsSvg';
-import Temp from './Temp';
+import GoButton from '../../Components/Buttons/GoButton';
+import CustomText from '../../Components/CustomText';
 const FuelGraph = () => {
   const mystore = UseUserStore();
   const realm = useRealm();
@@ -37,58 +38,70 @@ const FuelGraph = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.HeadingBox}>
-        <Text style={styles.mainHeading}>Performance</Text>
+        <CustomText style={styles.mainHeading}>Performance</CustomText>
       </View>
       {mystore.vehicleLength == 0 ? (
         <View style={styles.noVehicleContent}>
           <Image source={require('../../assets/Maskgroup.png')} style={styles.image3} />
-          <Text style={styles.heading} > Add a vehicle to start tracking its refuelling & performance </Text>
-          <Pressable onPress={() => navigation.navigate('VehicleStack', { screen: 'addVehicle' })} style={styles.btn3} >
-            <Text style={styles.btnName}>
-              Add Vehicle
-            </Text>
-          </Pressable>
+          <CustomText style={styles.heading2} > Add a vehicle to start tracking its refuelling & performance </CustomText>
+
+          <GoButton
+            destination="addVehicle"
+            navigation={navigation}
+            Heading="Add Vehicle"
+          />
+
+
         </View>
       ) : (
 
         <ScrollView vertical contentContainerStyle={styles.second}>
 
-          <Text style={styles.mainHeading2}>Choose the vehicle:</Text>
+          <CustomText style={styles.mainHeading2}>Choose the vehicle:</CustomText>
           <VehicleList />
           {mystore.selectedVehicleImage != null &&
-            (
-              mystore.selectedVehicleImage == "" ?
-                <View style={styles.vehicleImage}>
-                  <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
-                </View>
-                :
-                <View style={styles.vehicleImage}>
-                  <Image source={{ uri: getUri(mystore.selectedVehicleImage) }} style={styles.image4} />
-                </View>
-            )
-          }
+                    (
+
+                        mystore.selectedVehicleImage == "" ? (
+                            mystore.vehicleType == "2 Wheeler" ?
+                                <View style={styles.vehicleImage}>
+                                    <Image source={require('../../assets/bikeDefaultImg.png')} style={styles.image4} />
+                                </View>
+                                :
+                                <View style={styles.vehicleImage}>
+                                    <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
+                                </View>)
+                            :
+                            <View style={styles.vehicleImage}>
+                                <Image source={{ uri: getUri(mystore.selectedVehicleImage) }} style={styles.image4} />
+                            </View>
+                    )
+                }
           {mystore.refuelData.length == 0 ? (
             <View style={styles.noData}>
               <View style={styles.content3}>
                 <SvgXml xml={ClowdImg} style={styles.image1} />
-                <Text style={styles.heading}>It’s time to add the refuelling details to get more insights</Text>
+                <CustomText style={styles.heading2}>It’s time to add the refuelling details{'\n'}to get more insights</CustomText>
               </View>
-              <View style={styles.btn2}>
-                <Pressable onPress={() => navigation.navigate('RefuelStack', { screen: 'addRefuel' })} style={styles.btn} >
-                  <Text style={styles.btnName}>Add Refuelling</Text>
-                </Pressable>
-              </View>
+                {/* <Pressable onPress={() => navigation.navigate('RefuelStack', { screen: 'addRefuel' })} style={styles.btn} >
+                  <CustomText style={styles.btnName}>Add Refuelling</CustomText>
+                </Pressable> */}
+                <GoButton
+                  destination="addRefuel"
+                  navigation={navigation}
+                  Heading="Add Refuel"
+                />
             </View>
           ) : (
 
             <View style={styles.content}>
               <View style={styles.heading}>
-                <Text style={styles.fuelText}>Money spend on fuel</Text>
+                <CustomText style={styles.fuelText}>Money spend on fuel</CustomText>
               </View>
               <MoneyGraph />
 
               <View style={styles.heading}>
-                <Text style={styles.fuelText}>Vehicle mileage performance</Text>
+                <CustomText style={styles.fuelText}>Vehicle mileage performance</CustomText>
               </View>
               <MileageGraph />
               {/* <Temp/> */}
@@ -103,12 +116,8 @@ const FuelGraph = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#F0F2F2',
-    justifyContent: 'center',
-    alignItems: 'center',
     flexGrow: 1,
-    flexDirection: 'column',
-    // justifyContent : 'space-between',
-    paddingBottom: 80,
+    // paddingBottom: 80,
   },
   second: {
     alignItems: 'center',
@@ -122,20 +131,26 @@ const styles = StyleSheet.create({
     fontSize: 25,
     alignSelf: 'center',
     marginTop: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   fuelText: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#0B3C58'
+    // color: '#0B3C58'
   },
   heading: {
     alignSelf: 'flex-start',
     marginHorizontal: 10,
     marginTop: 20,
   },
+  heading2: {
+    textAlign: 'center',
+    marginVertical: 20,
+    fontSize: 20,
+    // color: '#0B3C58'
+  },
   HeadingBox: {
-    width : '100%',
+    width: '100%',
     backgroundColor: '#fff',
     justifyContent: 'center',
     paddingBottom: 10,
@@ -144,7 +159,7 @@ const styles = StyleSheet.create({
   },
   mainHeading2: {
     marginTop: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
     fontSize: 18,
   },
   content: {
@@ -164,6 +179,7 @@ const styles = StyleSheet.create({
   },
   noData: {
     marginTop: '20%',
+    alignItems : 'center',
   },
   image4: {
     width: 300,

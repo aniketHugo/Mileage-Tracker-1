@@ -8,6 +8,7 @@ import FetchRefuelData from '../../API/FetchRefuelData';
 import { Refuel } from '../../Database/mySchema';
 import { SvgXml } from 'react-native-svg';
 import { RefuelFlowerIcon } from '../../assets/IconsSvg';
+import CustomText from '../../Components/CustomText';
 
 
 const FuelData2 = (props) => {
@@ -33,14 +34,14 @@ const FuelData2 = (props) => {
             </View>
 
             <View style={styles.textContainer}>
-              {/* <Text style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</Text> */}
-        <Text style={styles.mainHeading}>{Days[item.refuelDate.getDay()]}, {item.refuelDate.getDate()} {Months[item.refuelDate.getMonth()]}'{item.refuelDate.getFullYear()%100} </Text>
+              {/* <CustomText style={styles.mainHeading}>{item.refuelDate.toLocaleString('en-US', options)}</CustomText> */}
+        <CustomText style={styles.mainHeading}>{Days[item.refuelDate.getDay()]}, {item.refuelDate.getDate()} {Months[item.refuelDate.getMonth()]}'{item.refuelDate.getFullYear()%100} </CustomText>
 
-              <Text style={styles.subHeading}>{item.consumed}L</Text>
+              <CustomText style={styles.subHeading}>{item.consumed}L</CustomText>
             </View>
 
             <View style={styles.priceContainer}>
-              <Text style={styles.price}>+S$ {item.price}</Text>
+              <CustomText style={styles.price}>+S$ {item.price}</CustomText>
             </View>
           </View>
         ))}
@@ -80,12 +81,12 @@ const styles = StyleSheet.create({
   mainHeading: {
     fontSize: 18,
     // fontWeight: 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   subHeading: {
     fontSize: 14,
-    color: '#555',
-    color: '#0B3C58',
+    // color: '#555',
+    // color: '#0B3C58',
   },
   priceContainer: {
     flex: 1,
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     // fontWeight: 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   fuelData: {
     // flexGrow: 1,

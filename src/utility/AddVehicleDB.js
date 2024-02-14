@@ -36,7 +36,7 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
         status = 1;
 
 
-    });
+    }); 
 
     const vehicles = realm.objects('Vehicle').filtered('userId = $0', userId.toString())
 
@@ -45,15 +45,16 @@ const AddVehicleDB = async (realm, userId, name, type, cc, uri,mystore) => {
       mystore.setRefuelSelectedVehicleId(vehicleId) 
       mystore.setVehicleLength(vehicles.length)  
       mystore.setSelectedVehicleImage(fileContent);
+      mystore.setVehicleType(type)
 
-      return { msg: "Added Successfully", id: (vehicleId).toString, len: vehicles.length };
+      return { status: 1, id: (vehicleId).toString, len: vehicles.length };
     }
-    return { msg: "Failed to add" };
+    return { status: 0 };
 
     // console.log('Vehicle added to database:', { userId, name, type, cc });
   } catch (error) {
     console.error('Error adding vehicle to database:', error);
-    return -1;
+    return {status : 0};
   }
 };
 

@@ -45,6 +45,7 @@ const SwitchUser = async (realm, navigation, userId, mystore) => {
                     mystore.setVehicleLength(vehicles.length)
                     mystore.setSelectedVehicleImage(vehicles[0].vehicleImage)
                     mystore.setRefuelSelectedVehicle(vehicles[0].name)
+                    mystore.setVehicleType(vehicles[0].vehicleType)
                   }
                   else{
                     mystore.setRefuelSelectedVehicleId(null)

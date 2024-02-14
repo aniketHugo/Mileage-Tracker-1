@@ -38,10 +38,10 @@ const Home = () => {
 
   return (
 
-    // <LinearGradient
-    //   colors={['#C5E3DC', '#F6F6EC']}
-    //   style={{ flexGrow: 1 }}
-    // >
+    <LinearGradient
+      colors={['#C5E3DC', '#F6F6EC']}
+      style={{ flexGrow: 1 }}
+    >
       <SafeAreaView style={{flexGrow: 1,}}>
 
         {mystore.vehicleLength == 0 ? (
@@ -55,7 +55,7 @@ const Home = () => {
             ))
         }
       </SafeAreaView>
-    // </LinearGradient>
+  </LinearGradient>
   );
 };
 

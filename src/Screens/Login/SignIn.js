@@ -8,6 +8,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import SwitchUser from '../../utility/SwitchUser';
 import { SvgXml } from 'react-native-svg';
 import { AddIcon, MilageTrackerSignInIcon } from '../../assets/IconsSvg';
+import CustomText from '../../Components/CustomText';
+import { PrimaryColor } from '../../Components/Theme';
 
 const SignIn = () => {
   const navigation = useNavigation();
@@ -37,7 +39,16 @@ const SignIn = () => {
     
   };
 
-  const colors = ['#FF5733', '#5733FF','#33A1FF',  '#FF33A1', '#FF3361', '#3361FF'];
+  // const colors2 = ['#FF5733', '#5733FF','#33A1FF',  '#FF33A1', '#FF3361', '#3361FF'];
+  const colors = [
+    '#FF6B6B', // Red
+    '#BB6BD9', // Purple
+    '#6B6BFF', // Blue
+    '#FF9393', // Light Red (Shade of Red)
+    '#FF9D6B' // Orange
+  ];
+
+  
   const getColor = (index) => colors[index % colors.length];
 
   return (
@@ -49,25 +60,25 @@ const SignIn = () => {
       <View style={styles.container2}>
         <SafeAreaView style={styles.upper}>
           <SvgXml xml={MilageTrackerSignInIcon}/>
-          <Text style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</Text>
+          <CustomText style={{ fontWeight: 'bold', fontSize: 20, color: '#FF4E4E' }} >  Mileage Tracker</CustomText>
         </SafeAreaView>
 
 
         {loading ?
           <View>
-            <Text>Loading</Text>
+            <CustomText>Loading</CustomText>
           </View>
           :
           <View style={styles.bottom}>
-            <Text style={styles.heading}>Who are you?</Text>
+            <CustomText style={styles.heading}>Who are you?</CustomText>
             <ScrollView contentContainerStyle={styles.usersStyle}>
               {users.map((user,index) => (
                 <Pressable style={styles.userPressable} key={user.id} onPress={() => handleUserPress(user.id, user.name)}>
                   {/* <Image source={require('../../assets/userImg2.png')} style={styles.image3} /> */}
                   <View style={{ ...styles.userInitials, backgroundColor: getColor(index) }}>
-                    <Text style={styles.userInitialsText}>{user.name[0].toUpperCase()}</Text>
+                    <CustomText style={styles.userInitialsText}>{user.name[0].toUpperCase()}</CustomText>
                   </View>
-                  <Text style={styles.pressableText} >{user.name} </Text>
+                  <CustomText style={styles.pressableText} >{user.name} </CustomText>
                 </Pressable>
               ))}
               <View style={styles.addView}>
@@ -76,7 +87,7 @@ const SignIn = () => {
                  
                   <SvgXml xml={AddIcon} width="32" height="32" />
                 </Pressable>
-                <  Text style={styles.pressableText} > Add User </Text>
+                <  CustomText style={styles.pressableText} > Add User </CustomText>
               </View>
             </ScrollView>
           </View>
@@ -104,7 +115,7 @@ const styles = StyleSheet.create({
     alignSelf : 'center',
     fontSize : 20,
     fontWeight : 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   upper: {
     alignItems: 'center',
@@ -116,8 +127,8 @@ const styles = StyleSheet.create({
   },
   pressableText: {
     alignItems: 'center',
-    color: '#0B3C58',
-    color: '#0B3C58',
+    // color: '#0B3C58',
+    // color: '#0B3C58',
   },
   userInitials : {
     backgroundColor : 'red',
@@ -147,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   btn2: {
-    backgroundColor: '#0B3C58',
+    backgroundColor: PrimaryColor,
     padding: 10,
     width : 50,
     height : 50,

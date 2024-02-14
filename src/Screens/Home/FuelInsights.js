@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, tEXT, Image, StyleSheet, ScrollView, Pressable } from 'react-native';
 import { useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import UseUserStore from '../../ZustandStore/ZuStore';
 import FetchRefuelData from '../../API/FetchRefuelData';
+import CustomText from '../../Components/CustomText';
 
 const FuelInsights = () => {
     const [avg, setAvg] = useState();
@@ -41,12 +42,12 @@ const FuelInsights = () => {
 
         <View style={styles.fuelCard2}>
             <View style={styles.card2}>
-                <Text style={styles.text}>Avg Fuel Consumption</Text>
-                <Text style={styles.text}>{avg} km/l</Text>
+                <CustomText style={styles.text}>Avg Fuel Consumption</CustomText>
+                <CustomText style={styles.text}>{avg} km/l</CustomText>
             </View>
             <View style={styles.card2}>
-                <Text style={styles.text}>Last Fuel Consumption</Text>
-                <Text style={styles.text}>{lastAvg} km/l</Text>
+                <CustomText style={styles.text}>Last Fuel Consumption</CustomText>
+                <CustomText style={styles.text}>{lastAvg} km/l</CustomText>
             </View>
         </View>
 
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 10,
         // fontWeight: 'bold',
-        color : '#0B3C58',
+        // color : '#0B3C58',
     },
 
 });

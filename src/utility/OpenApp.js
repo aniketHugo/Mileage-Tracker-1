@@ -1,9 +1,11 @@
+import { Auth } from "realm";
 import LoginUser from "./LoginUser";
 
 const OpenApp = async (realm, navigation, mystore) => {
   console.log("Open App :- called")
-  const AuthUser = realm.objects('Authentication')[0];
-  if (AuthUser) {
+  const authSchema = realm.objects('Authentication');
+  if(authSchema && authSchema.length>0){
+   const AuthUser = authSchema[0];
     // console.log("Auth found")
     const user = realm.objectForPrimaryKey('User', AuthUser.userId);
     if (user) {
@@ -19,7 +21,8 @@ const OpenApp = async (realm, navigation, mystore) => {
           mystore.setVehicleLength(vehicles.length)
           mystore.setSelectedVehicleImage(vehicles[0].vehicleImage)
           mystore.setRefuelSelectedVehicle(vehicles[0].name)
-        }
+          mystore.setVehicleType(vehicles[0].vehicleType)
+        } 
         else {
           mystore.setRefuelSelectedVehicleId(null)
           mystore.setVehicleLength(vehicles.length)
@@ -45,7 +48,7 @@ const OpenApp = async (realm, navigation, mystore) => {
   }
   else {
     const user = realm.objects('User');
-    if(user.length == 0){
+    if(user && user.length == 0){
       navigation.replace('LoginStack' ,{screen : 'SignUp'})
     }
     else{

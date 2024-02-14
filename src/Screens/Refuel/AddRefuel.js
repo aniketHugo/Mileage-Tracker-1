@@ -9,6 +9,7 @@ import AddRefuelDB from '../../utility/AddRefuelDB';
 import DatePicker from 'react-native-date-picker';
 import { SvgXml, err } from 'react-native-svg';
 import { CalendarIcon, WhiteBackArrow } from '../../assets/IconsSvg';
+import CustomText from '../../Components/CustomText';
 
 const AddRefuel = () => {
   const [vehicleName, setVehicleName] = useState('');
@@ -35,7 +36,7 @@ const AddRefuel = () => {
   const navigation = useNavigation();
   const realm = useRealm();
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
 
     if (!mystore.selectedUserId) {
       // console.log('No user selected.');
@@ -45,8 +46,16 @@ const AddRefuel = () => {
       setError("Enter a valid number")
       return;
     }
-    else if(parseFloat(startReading) >parseFloat(endReading)){
+    if(parseFloat(startReading) >parseFloat(endReading)){
       setError("Odometer Start reading should be smaller than End Reading")
+      return;
+    }
+    if((startReading < 0) || (endReading < 0) || (price < 0) || (consumed < 0)){
+      setError("Values cannot be Negative")
+      return;
+    }
+    if(parseFloat(consumed) == 0){
+      setError("Consumned Fuel cannot be 0")
       return;
     }
     if((startReading) == "" || (endReading) == "" || (price) == "" || (consumed) == ""){
@@ -59,7 +68,7 @@ const AddRefuel = () => {
     // console.log(parseFloat(startReading),typeof(parseFloat(startReading)))
     let currDate = new Date();
     
-    AddRefuelDB(
+   const resp = await AddRefuelDB(
       realm,
       mystore.selectedUserId,
       mystore.refuelSelectedVehicleId,
@@ -70,6 +79,14 @@ const AddRefuel = () => {
       endReading,
       consumed,
       price);
+
+      if(resp.status == 1){
+        navigation.navigate('Refuel')
+      }
+      else{
+        console.log("Cannot refuel");
+      }
+      // console.log("resp = ",resp);
     // console.log('Refueled successfully')
     // navigation.goBack();
     // navigation.navigate('Refuel')
@@ -90,12 +107,12 @@ const AddRefuel = () => {
 
           <View style={styles.inBox}>
 
-            <Text style={styles.heading1}>Add Refueling Record</Text>
-            <Text style={styles.heading}>Select Vehicle:</Text>
+            <CustomText style={styles.heading1}>Add Refueling Record</CustomText>
+            <CustomText style={styles.heading}>Select Vehicle:</CustomText>
             <VehicleList />
-            <Text style={styles.heading}>Refueling Date:</Text>
+            <CustomText style={styles.heading}>Refueling Date:</CustomText>
             <Pressable style={styles.dateBox} onPress={() => { setOpen(true) }} >
-              <Text style={{color: '#0B3C58',}}> {refuelDate.toLocaleDateString('en-GB')} </Text>
+              <CustomText> {refuelDate.toLocaleDateString('en-GB')} </CustomText>
               <SvgXml xml={CalendarIcon} style={styles.calendarImg} />
             </Pressable>
             <DatePicker
@@ -112,7 +129,7 @@ const AddRefuel = () => {
               }}
             />
 
-            <Text style={styles.heading}>Odometer</Text>
+            <CustomText style={styles.heading}>Odometer</CustomText>
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -135,7 +152,7 @@ const AddRefuel = () => {
               </View>
             </View>
 
-            <Text style={styles.heading}>Fuel</Text>
+            <CustomText style={styles.heading}>Fuel</CustomText>
             <View style={styles.inputContainer}>
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -158,13 +175,13 @@ const AddRefuel = () => {
               </View>
             </View>
           </View>
-          <Text style={styles.errorHeading}>{error}</Text>
+          <CustomText style={styles.errorHeading}>{error}</CustomText>
         </View>
 
 
         <View style={styles.buttonContainer}>
-          <Pressable style={[styles.button, styles.noButton]} onPress={() => navigation.goBack()}>
-            <Text style={styles.buttonText2}>Cancel</Text>
+          <Pressable style={[styles.button, styles.noButton]} onPress={() => navigation.navigate("Refuel")}>
+            <CustomText style={styles.buttonText2}>Cancel</CustomText>
           </Pressable>
 
           <Pressable
@@ -174,12 +191,12 @@ const AddRefuel = () => {
             checked ? styles.buttonEnable : styles.buttonDisable]
             }
             onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Save</Text>
+            <CustomText style={styles.buttonText}>Save</CustomText>
           </Pressable>
 
         </View>
       </View>
-      <Pressable style={styles.backButton} onPress={() => navigation.goBack()} >
+      <Pressable style={styles.backButton} onPress={() => navigation.navigate("Refuel")} >
         <SvgXml xml={WhiteBackArrow} width="32" height="32" />
       </Pressable>
     </View>
@@ -271,13 +288,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 5,
     alignSelf: 'flex-start',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   heading1: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   datePicker: {
     width: '100%',
@@ -318,7 +335,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#B0B0B0',
   },
   buttonText2 : {
-    color: '#0B3C58',
+    // color: '#0B3C58',
   }
 });
 

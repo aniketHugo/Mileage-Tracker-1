@@ -11,7 +11,7 @@ const VehicleSuccessPage = ({route}) => {
     const navigation = useNavigation();
 
 
-    // console.log("Hey == ",route.params.img)
+    console.log("Hey == ",route.params)
     useEffect(()=>{
         const delayNavigation = setTimeout(() => {
           // Replace 'OtherScreen' with the name of the screen you want to navigate to
@@ -27,18 +27,24 @@ const VehicleSuccessPage = ({route}) => {
         >
             <View style={styles.Page}>
                 <View style={styles.Top}>
-                    {/* <Image source={require('../../assets/VehicleSuccess.png')} style={styles.image1} /> */}
                     <SvgXml xml={VehicleCelebration} style={styles.image1}/>
-                    {route.params.img != null && (
-                        route.params.img == "" ?
+                    {route.params.img == null ?
+
+                        (
+                            route.params.type == "2 Wheeler" ?
+                            <View style={styles.vehicleImage}>
+                                <Image source={require('../../assets/bikeDefaultImg.png')} style={styles.image4} />
+                            </View>
+                            :
                             <View style={styles.vehicleImage}>
                                 <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
                             </View>
+                        )
                             :
                             <View style={styles.vehicleImage}>
                                 <Image source={{ uri: route.params.img }} style={styles.image4} />
                             </View>
-                    )
+                    
                     }
                     <Text style={styles.secHeading}>{route.params.name}</Text>
                     <Text style={styles.mainHeading} >  Vehicle Added!</Text>

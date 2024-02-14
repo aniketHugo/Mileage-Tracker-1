@@ -8,6 +8,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import RNFS from 'react-native-fs';
 import { SvgXml } from 'react-native-svg';
 import { CameraLogo, WhiteBackArrow } from '../../assets/IconsSvg';
+import CustomText from '../../Components/CustomText';
 
 const AddVehicle = () => {
   const realm = useRealm();
@@ -72,18 +73,17 @@ const AddVehicle = () => {
     }
 
     const data = await AddVehicleDB(realm, mystore.selectedUserId, vehicleName, vehicleType, engineCC, selectedImage, mystore);
-    // console.log("ret = ", data);
+    console.log("ret = ", data);
 
-    if (data.msg == "Added Successfully") {
+    if (data.status == 1) {
       // console.log("veh added resp = ", data)
       // setSelectedImage(`data:image/png;base64,${selectedImage}`);
       // mystore.setSelectedImage(selectedImage);
       console.log('Vehicle added successfully id = ', data.id)
-      // navigation.navigate("VehicleSuccessPage", { img: selectedImage, name: vehicleName });
-
+      navigation.navigate("VehicleSuccessPage", { img: selectedImage, name: vehicleName ,type : vehicleType });
     }
     else {
-      console.warn("Vehicle Not added !!!!! ", data._j.msg)
+      console.warn("Vehicle Not added !!!!! ")
     }
 
 
@@ -100,7 +100,7 @@ const AddVehicle = () => {
           </View>
 
           <View style={styles.InBox}>
-            <Text style={styles.heading1}>Add Vehicle</Text>
+            <CustomText style={styles.heading1}>Add Vehicle</CustomText>
             <Pressable onPress={openImagePicker} style={styles.imgBox} >
               {selectedImage != null ?
 
@@ -119,23 +119,23 @@ const AddVehicle = () => {
             {/* <DropDown/> */}
 
             <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-              <Text>{vehicleType}</Text>
+              <CustomText>{vehicleType}</CustomText>
             </TouchableOpacity>
 
 
             {dropdownVisible && (
               <View style={styles.dropdown}>
                 <TouchableOpacity onPress={() => handleOptionSelect('2 Wheeler')}>
-                  <Text style={styles.dropdownText}>2 Wheeler</Text>
+                  <CustomText style={styles.dropdownText}>2 Wheeler</CustomText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleOptionSelect('3 Wheeler')}>
-                  <Text style={styles.dropdownText}>3 Wheeler</Text>
+                  <CustomText style={styles.dropdownText}>3 Wheeler</CustomText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleOptionSelect('4 Wheeler')}>
-                  <Text style={styles.dropdownText}>4 Wheeler</Text>
+                  <CustomText style={styles.dropdownText}>4 Wheeler</CustomText>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleOptionSelect('Other')}>
-                  <Text style={styles.dropdownText}>Other</Text>
+                  <CustomText style={styles.dropdownText}>Other</CustomText>
                 </TouchableOpacity>
               </View>
             )}
@@ -148,16 +148,16 @@ const AddVehicle = () => {
               onChangeText={(text) => setEngineCC(text)}
             />
           </View>
-          <Text style={styles.errorHeading}>{error}</Text>
+          <CustomText style={styles.errorHeading}>{error}</CustomText>
         </View>
 
         <View style={styles.buttonContainer}>
           <Pressable style={[styles.button, styles.noButton]} onPress={() => navigation.navigate("Vehicle")}>
-            <Text style={styles.buttonText2}>Cancel</Text>
+            <CustomText style={styles.buttonText2}>Cancel</CustomText>
           </Pressable>
 
           <Pressable style={[styles.button, styles.yesButton]} onPress={handleSubmit}>
-            <Text style={styles.buttonText}>Save</Text>
+            <CustomText style={styles.buttonText}>Save</CustomText>
           </Pressable>
         </View>
 
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   input: {
     height: 60,
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     width: '100%',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   dropdownButton: {
     borderColor: '#ccc',
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   buttonText2 : {
-    color: '#0B3C58',
+    // color: '#0B3C58',
   }
 });
 

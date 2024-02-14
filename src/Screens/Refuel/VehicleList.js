@@ -9,6 +9,7 @@ import { DropDown } from '../../assets/IconsSvg';
 import DropDownComp from '../../Components/Buttons/DropDown';
 import SelectDropdown from 'react-native-select-dropdown';
 import { ScrollView } from 'react-native-gesture-handler';
+import CustomText from '../../Components/CustomText';
 const VehicleList = () => {
   const realm = useRealm();
   const {
@@ -35,7 +36,7 @@ const VehicleList = () => {
     const fetchRefuelData = () => {
       try {
         const data = FetchVehicleData(realm, mystore);
-        console.log("Vehicle List:- $FetchVehicleData$ Called")
+        // console.log("Vehicle List:- $FetchVehicleData$ Called")
       } catch (error) {
         console.log('Error fetching refuel data:', error);
       }
@@ -43,11 +44,12 @@ const VehicleList = () => {
     fetchRefuelData();
   }, [vd])
 
-  const handleOptionSelect = (id, name, img) => {
+  const handleOptionSelect = (id, name, img,type) => {
     // console.log('Selected:', name);
     setRefuelSelectedVehicleId(id)
     setRefuelSelectedVehicle(name)
     setSelectedVehicleImage(img)
+    mystore.setVehicleType(type)
     setDropdownVisible(false); // Close the dropdown after selection
   };
 
@@ -56,7 +58,7 @@ const VehicleList = () => {
   return (
     <View style={styles.container3}>
       <TouchableOpacity style={styles.dropdownButton} onPress={toggleDropdown}>
-        <Text style={styles.vehicleName}>{refuelSelectedVehicle}</Text>
+        <CustomText style={styles.vehicleName}>{refuelSelectedVehicle}</CustomText>
         <SvgXml xml={DropDown} />
       </TouchableOpacity>
       {dropdownVisible && (
@@ -64,8 +66,8 @@ const VehicleList = () => {
        <ScrollView contentContainerStyle={styles.dropdownScrollView}>
          <View style={styles.dropdown}>
            {mystore.vehicleData.map((vehicle, index) => (
-             <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id, vehicle.name, vehicle.vehicleImage)}>
-               <Text style={styles.dropdownText}>{vehicle.name}</Text>
+             <TouchableOpacity key={index} onPress={() => handleOptionSelect(vehicle.id, vehicle.name, vehicle.vehicleImage,vehicle.vehicleType)}>
+               <CustomText style={styles.dropdownText}>{vehicle.name}</CustomText>
              </TouchableOpacity>
            ))}
          </View>
@@ -86,7 +88,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   vehicleName: {
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
 
 

@@ -4,9 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useRealm } from '@realm/react';
 
 import LinearGradient from 'react-native-linear-gradient';
-import BackHeader from '../../Navigation/BackHeader'
+import BackHeader from '../../Components/BackHeader'
 import { SvgXml } from 'react-native-svg';
 import { CheckedBox, UncheckedBox } from '../../assets/IconsSvg';
+import CustomText from '../../Components/CustomText';
 
 const CreateAccount = () => {
   const navigation = useNavigation();
@@ -72,8 +73,8 @@ const CreateAccount = () => {
       <ScrollView contentContainerStyle={styles.mainPage}>
         <View style={styles.container2}>
           <BackHeader />
-          <Text style={styles.mainHeading}> Create Account </Text>
-          <Text style={styles.headings}> Name <Text style={{color : '#EB655F'}}>*</Text> </Text>
+          <CustomText style={styles.mainHeading}> Create Account </CustomText>
+          <CustomText style={styles.headings}> Name <CustomText style={{color : '#EB655F'}}>*</CustomText> </CustomText>
           <TextInput
             style={styles.input}
             // placeholder="Name"
@@ -81,16 +82,16 @@ const CreateAccount = () => {
             requi
             onChangeText={(text) => {setName(text); setErrorMessage1("");  setChecked(false)}}
             />
-          <Text style={styles.errorHeading}>    {errorMessage1}</Text>
-          <Text style={styles.headings}> NickName</Text>
+          <CustomText style={styles.errorHeading}>    {errorMessage1}</CustomText>
+          <CustomText style={styles.headings}> NickName</CustomText>
           <TextInput
             style={styles.input}
             // placeholder="Nickname"
             value={nickname}
             onChangeText={(text) => {setNickname(text); setErrorMessage2("");  setChecked(false)}}
             />
-          <Text style={styles.errorHeading}>    {errorMessage2}</Text>
-          <Text style={styles.headings}> Email Address <Text style={{color : '#EB655F'}}>*</Text></Text>
+          <CustomText style={styles.errorHeading}>    {errorMessage2}</CustomText>
+          <CustomText style={styles.headings}> Email Address <CustomText style={{color : '#EB655F'}}>*</CustomText></CustomText>
           <TextInput
             style={styles.input}
             // placeholder="Email Address"
@@ -99,22 +100,22 @@ const CreateAccount = () => {
             keyboardType="email-address"
             autoCapitalize="none"
             />
-          <Text style={styles.errorHeading}>    {errorMessage3}</Text>
+          <CustomText style={styles.errorHeading}>    {errorMessage3}</CustomText>
         </View>
 
         <View style={styles.check}>
           <View style={styles.checkBox}>
-            <TouchableOpacity onPress={handleCheckboxToggle} style={styles.Text}>
+            <TouchableOpacity onPress={handleCheckboxToggle} style={styles.CustomText}>
               {checked ? (
                 <SvgXml xml={CheckedBox} style={styles.image1} />
                 ) : (
                   <SvgXml xml={UncheckedBox} style={styles.image1} />
                   )}
-              <Text style={styles.bannerText}>
+              <CustomText style={styles.bannerText}>
                 {' '}
                 Tick this box to confirm you are at least 18 years old and agree
-                to our <Text style={{color : '#EB655F'}}>terms & conditions</Text> {' '}
-              </Text>
+                to our <CustomText style={{color : '#EB655F'}}>terms & conditions</CustomText> {' '}
+              </CustomText>
             </TouchableOpacity>
           </View>
 
@@ -126,7 +127,7 @@ const CreateAccount = () => {
               }
               onPress={handleCreateAccount}
               >
-              <Text style={styles.btnName}>Continue</Text>
+              <CustomText style={styles.btnName}>Continue</CustomText>
             </TouchableOpacity>
           </View>
 
@@ -158,13 +159,13 @@ const styles = StyleSheet.create({
   headings: {
     fontSize: 20,
     marginVertical: 10,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   mainHeading: {
     fontSize: 25,
     marginVertical: 20,
     fontWeight: 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   check: {
     backgroundColor: 'white',
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
   checkBox: {
     padding: 10,
   },
-  Text: {
+  CustomText: {
     padding: 10,
     flexDirection: 'row',
   },
@@ -191,11 +192,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 4,
     width: '100%',
-    color: '#0B3C58',
+    // color: '#0B3C58',
     fontSize : 16,
   },
   bannerText : {
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   buttonEnable: {
     backgroundColor: '#0B3C58',

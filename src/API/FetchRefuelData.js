@@ -6,11 +6,8 @@ const FetchRefuelData = (realm,selectedUserId,refuelSelectedVehicleId,mystore) =
         const refuel = realm
         .objects('Refuel')
         .filtered('vehicleId == $0', (refuelSelectedVehicleId).toString());
-        const refuelDataArray = refuel;
-        // console.log("User aand vehicle ok = ",refuelDataArray)
         
-        // Convert the Realm refuelDataArray to a plain JavaScript array
-        // const refuelDataPlainArray = Array.from(refuelDataArray);
+        const refuelDataArray = refuel;
         mystore.setRefuelData(refuel);
 
         return refuelDataArray;

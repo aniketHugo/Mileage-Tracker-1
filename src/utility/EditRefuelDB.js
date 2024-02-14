@@ -7,6 +7,9 @@ const EditRefuelDB = async (
     endReading,
     consumed,
     price) => {
+
+
+
     try {
         const objectToUpdate = realm.objectForPrimaryKey('Refuel', refuelId);
         console.log("Tp == ",typeof(new Date()))
@@ -19,9 +22,13 @@ const EditRefuelDB = async (
                 objectToUpdate.consumed = parseFloat(consumed);
                 objectToUpdate.price = parseFloat(price);
             });
+
+            return {status : 1};
         }
         else{
             console.log("Not found",objectToUpdate)
+            return {status : 0};
+
         }
 
         console.log('Refuel Updated:');

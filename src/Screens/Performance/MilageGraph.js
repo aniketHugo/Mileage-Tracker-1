@@ -65,11 +65,12 @@ const MileageGraph = (props) => {
     return (
         <View style={styles.graphView2}>
 
-            <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 80 }}
+            <VictoryChart padding={{ top: 20, right: 50, bottom: 50, left: 50 }}
                 domainPadding={20} width= {370} >
                 <VictoryAxis
                         style={{
                             tickLabels: {fontSize: 15, padding: 20 },
+                            axis: { stroke: "transparent" },
                         }}
                         tickValues={[0,1,2,3,4,5]}
                         tickFormat={(tick) => {
@@ -85,9 +86,11 @@ const MileageGraph = (props) => {
                         }}
                     />
                     <VictoryAxis dependentAxis
+                    
                     domain={{ "averageMileage": [0, 'max'] }}
                         style={{
                             grid: { stroke: '#CED8DE' },
+                            axis: { stroke: "transparent" },
                         }}
                     />
                     <VictoryLine

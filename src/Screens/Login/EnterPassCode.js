@@ -7,7 +7,7 @@ import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
 import LoginUser from '../../utility/LoginUser';
 import UseUserStore from '../../ZustandStore/ZuStore';
 import LinearGradient from 'react-native-linear-gradient';
-import BackHeader from '../../Navigation/BackHeader';
+import BackHeader from '../../Components/BackHeader';
 
 
 const EnterPasscode = ({route}) => {

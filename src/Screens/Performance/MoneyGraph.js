@@ -36,11 +36,12 @@ const MoneyGraph = () => {
     return (
         <View style={styles.graphView1}>
             {/* <ScrollView horizontal> */}
-            <VictoryChart padding={{ top: 30, right: 50, bottom: 50, left: 80 }}
+            <VictoryChart padding={{ top: 10, right: 50, bottom: 50, left: 50 }}
                 domainPadding={20} width= {370} >
                     <VictoryAxis
                         style={{
                             tickLabels: {fontSize: 15, padding: 20 },
+                            // axis: { stroke: "transparent" },
                         }}
                         tickValues={[0,1,2,3,4,5]}
                         tickFormat={(tick) => {
@@ -56,8 +57,10 @@ const MoneyGraph = () => {
                         }}
                     />
                     <VictoryAxis dependentAxis
+                        tickFormat={(tick)=>(`${tick/1000}k`)}
                         style={{
                             grid: { stroke: '#CED8DE' },
+                            axis: { stroke: "transparent" },
                         }} />
                     <VictoryBar
                         data={chartData}

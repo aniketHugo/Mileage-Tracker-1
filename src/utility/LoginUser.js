@@ -53,6 +53,7 @@ const LoginUser = async (realm, navigation, userId, passCode, mystore) => {
             mystore.setVehicleLength(vehicles.length)
             mystore.setSelectedVehicleImage(vehicles[0].vehicleImage)
             mystore.setRefuelSelectedVehicle(vehicles[0].name)
+            mystore.setVehicleType(vehicles[0].vehicleType)
           }
           else{
             mystore.setRefuelSelectedVehicleId(null)

@@ -6,6 +6,8 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import FetchVehicleData from '../../API/FetchVehicleList';
 import FetchRefuelData from '../../API/FetchRefuelData';
 import { Refuel, Vehicle } from '../../Database/mySchema';
+import GoButton from '../../Components/Buttons/GoButton';
+import CustomText from '../../Components/CustomText';
 
 const VehiclesData = () => {
   const realm = useRealm();
@@ -19,7 +21,7 @@ const VehiclesData = () => {
   const onRefresh = useCallback(() => {
     setTimeout(() => {
       setRefreshing(false);
-      const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
+      // const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
     }, 1000);
   }, []);
 
@@ -46,12 +48,12 @@ const VehiclesData = () => {
     return (
       <View style={styles.content}>
         <Image source={require('../../assets/Maskgroup.png')} style={styles.image3} />
-        <Text style={styles.heading} > Add a vehicle to start tracking its refuelling & performance </Text>
-        <Pressable onPress={() => navigation.navigate('addVehicle')} style={styles.btn3} >
-          <Text style={styles.btnName}>
-            Add Vehicle
-          </Text>
-        </Pressable>
+        <CustomText style={styles.heading} > Add a vehicle to start tracking its refuelling & performance </CustomText>
+        <GoButton
+        destination="addVehicle"
+        navigation={navigation}
+        Heading="Add Vehicle"
+      />
       </View>
     )
   }
@@ -59,9 +61,14 @@ const VehiclesData = () => {
     const renderItem = ({ item }) => (
       <View style={styles.rowCard} key={item.id}>
         {item.vehicleImage === "" ? (
+          item.vehicleType === "2 Wheeler" ?
           <View style={styles.imgView}>
-            <Image source={require('../../assets/NoVehicle.png')} style={styles.image2} />
+            <Image source={require('../../assets/bikeDefaultImg.png')} style={styles.image2} />
           </View>
+          :
+          <View style={styles.imgView}>
+          <Image source={require('../../assets/NoVehicle.png')} style={styles.image2} />
+        </View>
         ) : (
           <View style={styles.imgView}>
             <Image source={{ uri: getUri(item.vehicleImage) }} style={styles.image2} />
@@ -70,11 +77,11 @@ const VehiclesData = () => {
         <View style={styles.mainBox}>
 
           <View style={styles.box1}>
-            <Text style={{ ...styles.text, fontSize: 18, fontWeight: 'bold' }}>{item.name}</Text>
-            <Text style={styles.text}>{item.vehicleType}</Text>
+            <CustomText style={{ ...styles.text, fontSize: 18, fontWeight: 'bold' }}>{item.name}</CustomText>
+            <CustomText style={styles.text}>{item.vehicleType}</CustomText>
           </View>
           <View style={styles.box2}>
-            <Text style={styles.text}>{item.engineCC} CC</Text>
+            <CustomText style={styles.text}>{item.engineCC} CC</CustomText>
           </View>
         </View>
 
@@ -82,12 +89,11 @@ const VehiclesData = () => {
     );
 
     return (
-      <View style={styles.container2}>
-        <FlatList style={styles.dd}
+        <FlatList contentContainerStyle={styles.flatlist}
           data={mystore.vehicleData}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderItem}
-          contentContainerStyle={styles.fuelData}
+          // contentContainerStyle={styles.fuelData}
 
           refreshControl={
             <RefreshControl
@@ -96,33 +102,31 @@ const VehiclesData = () => {
             />
           }
         />
-      </View>
     )
   }
 
 };
 
 const styles = StyleSheet.create({
-  container2: {
-    flex: 1,
-    width: '100%',
-  },
   mainBox: {
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingBottom : 10,
 
   },
+  flatlist : {
+    marginTop : 20,
+    flexDirection: 'column', // Arrange items horizontally
+    justifyContent: 'space-around', // Adjust spacing between cards
+    alignItems: 'center', // Align items vertically
+  },
   box1: {
     width: '60%',
-    // backgroundColor : 'pink',
-
   },
   box2: {
     width: '40%',
     justifyContent : 'center',
     alignItems : 'flex-end',
-    // backgroundColor : 'red',
   },
   fuelData: {
     flexGrow: 1,
@@ -141,7 +145,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    color: '#0B3C58',
   },
   image2: {
     width: '100%',
@@ -168,7 +171,9 @@ const styles = StyleSheet.create({
   },
   heading: {
     textAlign: 'center',
-    margin: 20,
+    marginVertical: 20,
+    fontSize: 20,
+    // color: '#0B3C58'
   },
   btn3: {
     backgroundColor: '#0B3C58',

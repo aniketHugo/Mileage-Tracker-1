@@ -11,11 +11,14 @@ const HomeStack = createNativeStackNavigator();
 const VehicleStack = () => {
   return (
     // <NavigationContainer>
-    <SafeAreaView style={{flex :1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <HomeStack.Navigator initialRouteName="Vehicle">
         <HomeStack.Screen options={{ headerShown: false }} name="Vehicle" component={Vehicle} />
+
+
         <HomeStack.Screen options={{ headerShown: false }} name="VehicleSuccessPage" component={VehicleSuccessPage} />
         <HomeStack.Screen options={{ headerShown: false }} name="addVehicle" component={AddVehicle} />
+
       </HomeStack.Navigator>
     </SafeAreaView>
     // </NavigationContainer>

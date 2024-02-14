@@ -41,10 +41,12 @@ const AddRefuelDB = async (
         userId : uid
       });
     });
-  
+   
     console.log('Refuel added to database:');
+    return {status : 1}
   } catch (error) {
     console.error('Error adding Refuel to database:', error);
+    
   }
 };
 

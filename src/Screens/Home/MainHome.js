@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Image, Text, StyleSheet, SafeAreaView, ScrollView, RefreshControl, Pressable } from 'react-native';
+import { View, Image, StyleSheet, SafeAreaView, ScrollView, RefreshControl, Pressable } from 'react-native';
 import { useRealm } from '@realm/react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import UseUserStore from '../../ZustandStore/ZuStore';
@@ -12,6 +12,8 @@ import NoVehicles from './Novehicles';
 import { MilageTrackerHomeIcon, DrawerIcon } from '../../assets/IconsSvg';
 import { SvgXml } from 'react-native-svg';
 import NoRefuel from './NoRefuel';
+import LinearGradient from 'react-native-linear-gradient';
+import CustomText from '../../Components/CustomText';
 
 const MainHome = () => {
   const realm = useRealm();
@@ -35,23 +37,42 @@ const MainHome = () => {
 
   return (
     <View style={styles.container2}>
-      <Pressable style={styles.sidebarBtn} onPress={() => { navigation.openDrawer() }} >
+      {/* <Pressable style={styles.sidebarBtn} onPress={() => { navigation.openDrawer() }} >
         <SvgXml xml={DrawerIcon} width="32" height="32" />
-      </Pressable>
+      </Pressable> */}
       <ScrollView
         contentContainerStyle={styles.mainContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <SvgXml xml={MilageTrackerHomeIcon} width="32" height="32" />
-        <Text style={{ color: '#EB655F', fontSize: 20, marginTop: 20 }}> Hi {mystore.selectedUserName}  </Text>
-        <Text style={{ color: '#0B3C58' }}>Here is everything about your</Text>
+        <View style={styles.topBar}>
+
+          <Pressable style={styles.sidebarBtn} onPress={() => { navigation.openDrawer() }} >
+            <SvgXml xml={DrawerIcon} width="32" height="32" />
+          </Pressable>
+
+          <View style={{ width: '100%', alignItems: 'center' }}>
+            <SvgXml xml={MilageTrackerHomeIcon} width="32" height="32" style={styles.img} />
+          </View>
+
+        </View>
+
+
+
+        <CustomText style={{ color: '#EB655F', fontSize: 20, marginTop: 20 }}> Hi {mystore.selectedUserName}  </CustomText>
+        <CustomText >Here is everything about your</CustomText>
         <VehicleList />
         {mystore.selectedVehicleImage != null &&
           (
-            mystore.selectedVehicleImage == "" ?
-              <View style={styles.vehicleImage}>
-                <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
-              </View>
+
+            mystore.selectedVehicleImage == "" ? (
+              mystore.vehicleType == "2 Wheeler" ?
+                <View style={styles.vehicleImage}>
+                  <Image source={require('../../assets/bikeDefaultImg.png')} style={styles.image4} />
+                </View>
+                :
+                <View style={styles.vehicleImage}>
+                  <Image source={require('../../assets/NoVehicle.png')} style={styles.image4} />
+                </View>)
               :
               <View style={styles.vehicleImage}>
                 <Image source={{ uri: getUri(mystore.selectedVehicleImage) }} style={styles.image4} />
@@ -61,18 +82,18 @@ const MainHome = () => {
 
         <View style={styles.other}>
           <View style={styles.heading}>
-            <Text style={styles.fuelText}> Fuel Insights</Text>
+            <CustomText style={styles.fuelText}> Fuel Insights</CustomText>
           </View>
           <FuelInsights />
           <View style={styles.heading}>
-            <Text style={styles.fuelText}>Money spend on fuel</Text>
+            <CustomText style={styles.fuelText}>Money spend on fuel</CustomText>
           </View>
           <MoneyGraph />
           <View style={styles.fuelDataContainer} >
             <View style={styles.fuelHeading}>
-              <Text style={styles.fuelText} >Refuelling history</Text>
+              <CustomText style={styles.fuelText} >Refuelling history</CustomText>
               <Pressable onPress={() => navigation.navigate('RefuelStack')}>
-                <Text style={styles.fuelText2}> see all </Text>
+                <CustomText style={styles.fuelText2}> see all </CustomText>
               </Pressable>
             </View>
             <FuelData2 />
@@ -87,6 +108,15 @@ const styles = StyleSheet.create({
   container2: {
     flex: 1,
     marginTop: 40,
+    // backgroundColor : 'red',
+  },
+  gradient: {
+    position: 'absolute',
+    flexGrow: 1,
+    left: 0,
+    right: 0,
+    top: 0,
+    // bottom: '60%', // Adjust the value to control the height of the gradient
   },
   mainContent: {
     flexGrow: 1,
@@ -112,22 +142,34 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: 20,
     marginBottom: 10,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   vehicleImage: {
     marginTop: 20,
-    borderWidth: 8,
+    borderWidth: 4,
     borderColor: 'white',
     borderRadius: 10,
   },
   fuelText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   fuelText2: {
     fontSize: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
+  },
+  topBar: {
+    flexDirection: 'row',
+    width: '100%',
+    // backgroundColor : 'red',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+
+  },
+  img: {
+    // backgroundColor: 'pink',
+    width: '100%',
   },
   fuelDataContainer: {
     width: '100%',
@@ -141,7 +183,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
 });
 

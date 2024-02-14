@@ -9,10 +9,13 @@ const UseUserStore = create((set) => ({
   
   refuelSelectedVehicle : 'select',
   refuelSelectedVehicleId : null,
+  vehicleType : '2 Wheeler',
   
   vehicleLength : 0,
-  refuelLength : 0,
+  // refuelLength : 0,
   selectedVehicleImage : null,
+
+  
 //////////////////////////////////////////////////////
   setSelectedUserId: (userId) => set({ selectedUserId: userId }),
   setRefuelData: (data) => set({ refuelData: data }),
@@ -25,7 +28,17 @@ const UseUserStore = create((set) => ({
 
   setVehicleLength: (len) => set({ vehicleLength: len }),
   setRefuelLength: (len) => set({ refuelLength: len }),
+  setVehicleType: (len) => set({ vehicleType: len }),
   setSelectedVehicleImage: (img) => set({ selectedVehicleImage: img }),
 }));
 
 export default UseUserStore;
+
+
+/*
+user
+vehicle
+all Vehicle Array
+Refuel Data Array
+
+*/

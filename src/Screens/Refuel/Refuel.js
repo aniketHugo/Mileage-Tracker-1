@@ -9,24 +9,27 @@ import FetchRefuelData from '../../API/FetchRefuelData';
 import { Refuel } from '../../Database/mySchema';
 import DeleteRefuel from '../../utility/DeleteRefuel';
 import { SvgXml } from 'react-native-svg';
-import { AddIcon, ClowdImg, NoVehicleImg } from '../../assets/IconsSvg';
+import { AddIcon, ClowdImg, GoArrow, NoVehicleImg } from '../../assets/IconsSvg';
+import GoButton from '../../Components/Buttons/GoButton';
+import CustomText from '../../Components/CustomText';
+import { PrimaryColor } from '../../Components/Theme';
 
 const NoVehicle = () => {
   const Navigation = useNavigation();
   return (
     <View style={styles.content}>
       {/* No vehicle exists :- */}
-      {/* <Image source={require('../../assets/Maskgroup.png')} style={styles.image2} /> */}
-      <View style={styles.imgBack}>
-      <SvgXml xml={NoVehicleImg} style={styles.image2} />
-      </View>
+      <Image source={require('../../assets/Maskgroup.png')} style={styles.image2} />
 
-      <Text style={styles.heading2} > Add a vehicle to start tracking its {'\n'} refuelling & performance </Text>
-      <Pressable onPress={() => Navigation.navigate('addVehicle')} style={styles.btn3} >
-        <Text style={styles.btnName}>
-          Add Vehicle
-        </Text>
-      </Pressable> 
+
+      {/* <CustomText style={styles.heading2} > Add a vehicle to start tracking its {'\n'} refuelling & performance </CustomText> */}
+      <CustomText style={styles.heading2} > Add a vehicle to start tracking its{'\n'}refuelling & performance </CustomText>
+
+      <GoButton
+        destination="addVehicle"
+        navigation={Navigation}
+        Heading="Add Vehicle"
+      />
     </View>
   )
 }
@@ -38,8 +41,8 @@ const EmptyData = () => {
       <View style={styles.content4}>
         {/* <Image source={require('../../assets/clowd.png')} style={styles.image1} /> */}
         <SvgXml xml={ClowdImg} style={styles.image1} />
-        <Text style={styles.heading1}>No refuelling records yet!</Text>
-        <Text style={styles.heading}>Add a record using the + button below to begin your wealthcare journey</Text>
+        <CustomText style={styles.heading1}>No refuelling records yet!</CustomText>
+        <CustomText style={styles.heading}>Add a record using the + button below to begin your wealthcare journey</CustomText>
       </View>
       <View style={styles.btn2}>
         <Pressable onPress={() => Navigation.navigate('addRefuel')} style={styles.btn} >
@@ -54,55 +57,51 @@ const Refueling = () => {
   const Navigation = useNavigation();
   const realm = useRealm();
   const mystore = UseUserStore();
-  const [refuelData, setRefuelData] = useState([]);
-  const [status, setStatus] = useState(0);
-  const navigation = useNavigation();
-  const options = { weekday: 'short', day: 'numeric', month: 'short', year: '2-digit' };
-
-
-  const rfd = useQuery(Refuel)  
+  
+  const refuelSchema = useQuery(Refuel)
   useEffect(() => {
     const fetchRefuelData = () => {
       try {
-        const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId,mystore);
-        console.log("Refuel :- FetchRefuelData Called")
+        const data = FetchRefuelData(realm, mystore.selectedUserId, mystore.refuelSelectedVehicleId, mystore);
+        // console.log("Refuel :- FetchRefuelData Called")
       } catch (error) {
         console.log('Error fetching refuel data:', error);
       }
     };
     fetchRefuelData();
     // setStatus(0);
-  }, [mystore.refuelSelectedVehicleId, rfd])
+  }, [mystore.refuelSelectedVehicleId, refuelSchema])
 
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.HeadingBox}>
 
-        <Text style={styles.mainHeading}>Refueling</Text>
+        <CustomText style={styles.mainHeading}>Refueling</CustomText>
       </View>
       {
         mystore.vehicleLength == 0 ? (
           NoVehicle()
         ) : (
 
-          ( mystore.refuelData.length == 0) ? (
+          (mystore.refuelData.length == 0) ? (
             EmptyData()
           )
             :
             (
               <View style={styles.container2}>
                 {/* Vehicle Exists */}
-                {/* <Text style={styles.mainHeading}>Refueling</Text> */}
+                {/* <CustomText style={styles.mainHeading}>Refueling</CustomText> */}
                 <VehicleList />
-                <FuelData  refuelData={ mystore.refuelData}  />
-               
+                <FuelData refuelData={mystore.refuelData} />
+
                 <View style={styles.btn2}>
 
                   <Pressable onPress={() => Navigation.navigate('addRefuel')} style={styles.btn} >
-                    {/* <Image source={require('../../assets/Large.png')}></Image> */}
                     <SvgXml xml={AddIcon} width="32" height="32" />
                   </Pressable>
+
+                 
                 </View>
               </View>
             )
@@ -128,12 +127,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     elevation: 3,
   },
-  HeadingBox : {
-    backgroundColor : '#fff',
-    justifyContent : 'center',
-    paddingBottom : 10,
-    borderBottomWidth : 2,
-    borderBottomColor : '#CED8DE'
+  HeadingBox: {
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    paddingBottom: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: '#CED8DE'
   },
   iconContainer: {
     flex: 1,
@@ -150,9 +149,9 @@ const styles = StyleSheet.create({
   },
   mainHeading: {
     fontSize: 25,
-    alignSelf : 'center',
-    marginTop : 20,
-    color : '#0B3C58',
+    alignSelf: 'center',
+    marginTop: 20,
+    // color: '#0B3C58',
   },
   subHeading: {
     fontSize: 14,
@@ -199,8 +198,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     margin: 20,
     // backgroundColor : 'red',
-    position : 'absolute',
-    bottom : 0,
+    position: 'absolute',
+    bottom: 0,
     right: 0,
 
   },
@@ -208,18 +207,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 20,
     fontWeight: 'bold',
-    color: '#0B3C58'
+    // color: '#0B3C58'
   },
   heading: {
     textAlign: 'center',
     margin: 20,
-    color: '#0B3C58'
+    // color: '#0B3C58'
   },
   heading2: {
     textAlign: 'center',
     marginVertical: 20,
     fontSize: 20,
-    color: '#0B3C58'
+    // color: '#0B3C58'
   },
   fuelData: {
     flexDirection: 'column', // Arrange items horizontally
@@ -239,7 +238,7 @@ const styles = StyleSheet.create({
     marginBottom: 10, // Spacing between texts
   },
   btn: {
-    backgroundColor: '#0B3C58',
+    backgroundColor: PrimaryColor,
     padding: 10,
     // width : 100,
     color: 'blue',
@@ -247,19 +246,21 @@ const styles = StyleSheet.create({
     marginTop: 10,
     alignItems: 'center'
   },
-  btn3: {
-    backgroundColor: '#0B3C58',
-    padding: 10,
-    width: 100,
-    color: 'blue',
-    borderRadius: 10,
-    marginTop: 10,
-    alignItems: 'center'
-  },
-  btnName: {
-    color: 'white',
+  // btn3: {
+    // backgroundColor: '#0B3C58',
+  //   padding: 10,
+  //   width: 150,
+  //   color: 'blue',
+  //   borderRadius: 10,
+  //   marginTop: 10,
+  //   alignItems: 'center',
+  //   flexDirection : 'row',
+  //   justifyContent : 'center',
+  // },
+  // btnName: {
+  //   color: 'white',
 
-  },
+  // },
   content3: {
     flex: 1,
     // height : '100%',
@@ -271,20 +272,21 @@ const styles = StyleSheet.create({
   content4: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop : 20,
-    flex : 1,
+    marginTop: 20,
+    flex: 1,
   },
 
-  image1 : {
+  image1: {
     // backgroundColor : 'red',
     // elevation : 3,
   },
   image2: {
     backgroundColor: '#95C3BB',
+    borderRadius: 100,
   },
-  imgBack :{
+  imgBack: {
     borderRadius: 200,
-    overflow : 'hidden'
+    overflow: 'hidden'
   }
 });
 export default Refueling;

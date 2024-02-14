@@ -7,7 +7,9 @@ import CreateUser from '../../utility/CreateUser';
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input'
 import LinearGradient from 'react-native-linear-gradient';
 import UseUserStore from '../../ZustandStore/ZuStore';
-import BackHeader from '../../Navigation/BackHeader';
+import BackHeader from '../../Components/BackHeader';
+import CustomText from '../../Components/CustomText';
+import { PrimaryColor } from '../../Components/Theme';
 
 const SetPassCode = ({ route }) => {
   const navigation = useNavigation();
@@ -39,6 +41,14 @@ const SetPassCode = ({ route }) => {
       // console.log("create user resp = ", datas)
       navigation.replace('TabNav')
     }
+  };
+
+  const handleSubmit2 = async () => {
+    // console.log(pinCode1, pinCode2)
+
+      setErrorMsg('')
+      const datas = CreateUser(realm, data.name, data.nickname, "", data.email, mystore);
+      navigation.replace('TabNav')
   };
 
   const handlePinCodeChange1 = (code) => {
@@ -77,9 +87,9 @@ const SetPassCode = ({ route }) => {
         <View >
           <BackHeader />
 
-          <Text style={styles.mainHeading}> Set a Passcode </Text>
-          <Text style={styles.headings}> Enter a 4-Digit Passcode <Text style={{color : '#EB655F'}}>*</Text> </Text>
-          <Text style={styles.secondHeadings}> You will need to enter at every app launch </Text>
+          <CustomText style={styles.mainHeading}> Set a Passcode </CustomText>
+          <CustomText style={styles.headings}> Enter a 4-Digit Passcode <CustomText style={{color : '#EB655F'}}>*</CustomText> </CustomText>
+          <CustomText style={styles.secondHeadings}> You will need to enter at every app launch </CustomText>
           <View style={styles.inputBox}>
 
             <SmoothPinCodeInput
@@ -95,7 +105,7 @@ const SetPassCode = ({ route }) => {
             />
           </View>
 
-          <Text style={styles.headings}>Confirm Passcode <Text style={{color : '#EB655F'}}>*</Text> </Text>
+          <CustomText style={styles.headings}>Confirm Passcode <CustomText style={{color : '#EB655F'}}>*</CustomText> </CustomText>
           <View style={styles.inputBox}>
 
             <SmoothPinCodeInput
@@ -110,7 +120,7 @@ const SetPassCode = ({ route }) => {
             />
           </View>
 
-          <Text>{errorMsg} </Text>
+          <CustomText>{errorMsg} </CustomText>
 
         </View>
         <View style={styles.container2}>
@@ -120,13 +130,13 @@ const SetPassCode = ({ route }) => {
               checked ? styles.buttonEnable : styles.buttonDisable
             }
             onPress={handleSubmit}
-          ><Text style={styles.btnName}>
+          ><CustomText style={styles.btnName}>
               Continue
-            </Text></TouchableOpacity>
-          <Pressable onPress={handleSubmit} style={styles.btn2} >
-            <Text style={{color: '#0B3C58',}}>
+            </CustomText></TouchableOpacity>
+          <Pressable onPress={handleSubmit2} style={styles.btn2} >
+            <CustomText >
               Skip
-            </Text>
+            </CustomText>
           </Pressable>
         </View>
       </SafeAreaView>
@@ -165,7 +175,7 @@ const styles = StyleSheet.create({
 
   },
   buttonEnable: {
-    backgroundColor: '#0B3C58',
+    backgroundColor: PrimaryColor,
     padding: 10,
     width: 250,
     borderRadius: 10,
@@ -194,17 +204,17 @@ const styles = StyleSheet.create({
   headings: {
     fontSize: 20,
     marginTop: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   secondHeadings: {
     marginBottom: 10,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   mainHeading: {
     fontSize: 25,
     marginVertical: 20,
     fontWeight: 'bold',
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   input: {
     borderWidth: 1,
@@ -215,7 +225,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '20%',
     marginEnd: 20,
-    color: '#0B3C58',
+    // color: '#0B3C58',
   },
   btn: {
     backgroundColor: '#0B3C58',
